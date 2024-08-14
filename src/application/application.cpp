@@ -90,6 +90,9 @@ application::~application()
 
 bool application::on_size_change(const event::window::size_changed &event)
 {
+    m_width = event.m_width;
+    m_height = event.m_height;
+
     emscripten_set_canvas_element_size("canvas", m_width, m_height);
 
     const size_t buffer_size = (LV_COLOR_DEPTH / 8) * m_width * m_height * 0.1f;
@@ -122,9 +125,6 @@ void application::update_size()
 
     if (new_width == m_width && new_height == m_height)
         return;
-
-    m_width = width;
-    m_height = height;
 
     event::dispatcher::global().dispatch(event::window::size_changed(new_width, new_height));
 }
