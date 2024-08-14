@@ -32,6 +32,7 @@ protected:
 private:
     bool on_size_change(const event::window::size_changed &event);
 
+    void update_size();
     void set_bitmap(const int x1, const int y1, const int x2, const int y2, uint8_t *buffer);
 
     float m_previous_timestamp = 0;
