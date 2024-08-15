@@ -10,8 +10,8 @@ namespace input
     public:
         struct state
         {
-            decltype(EmscriptenTouchPoint::targetX) x;
-            decltype(EmscriptenTouchPoint::targetY) y;
+            int x;
+            int y;
             bool present;
         };
 

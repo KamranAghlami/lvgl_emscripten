@@ -1,7 +1,5 @@
 #include "input/touch.h"
 
-#include <iostream>
-
 namespace input
 {
     touch::touch()
