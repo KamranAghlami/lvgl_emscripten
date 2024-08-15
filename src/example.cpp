@@ -8,7 +8,6 @@ public:
     example()
     {
         lv_demo_widgets();
-        lv_demo_widgets_start_slideshow();
     }
 
     ~example()

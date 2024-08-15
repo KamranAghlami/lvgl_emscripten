@@ -3,8 +3,9 @@
 #include <assert.h>
 #include <sstream>
 
-#include <emscripten.h>
 #include <emscripten/html5.h>
+
+#include "input/touch.h"
 
 static application *s_instance = nullptr;
 
@@ -58,6 +59,8 @@ application::application()
     };
 
     emscripten_set_orientationchange_callback(this, EM_FALSE, on_orientation_change);
+
+    input::touch::get();
 
     auto on_update = [](double time, void *user_data) -> EM_BOOL
     {
