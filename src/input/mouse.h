@@ -12,7 +12,7 @@ namespace input
         {
             int x;
             int y;
-            bool present;
+            bool pressed;
         };
 
         static mouse &get()

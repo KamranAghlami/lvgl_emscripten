@@ -47,7 +47,7 @@ namespace input
     {
         m_last_state.x = mouse_event->targetX;
         m_last_state.y = mouse_event->targetY;
-        m_last_state.present = true;
+        m_last_state.pressed = true;
 
         lv_indev_read(mp_device);
 
@@ -56,7 +56,7 @@ namespace input
 
     EM_BOOL mouse::on_mouse_up(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
     {
-        m_last_state.present = false;
+        m_last_state.pressed = false;
 
         lv_indev_read(mp_device);
 
@@ -65,6 +65,9 @@ namespace input
 
     EM_BOOL mouse::on_mouse_move(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
     {
+        if (!m_last_state.pressed)
+            return EM_FALSE;
+
         m_last_state.x = mouse_event->targetX;
         m_last_state.y = mouse_event->targetY;
 
@@ -75,7 +78,7 @@ namespace input
 
     void mouse::on_mouse_read(lv_indev_data_t *data)
     {
-        if (m_last_state.present)
+        if (m_last_state.pressed)
         {
             data->point.x = m_last_state.x;
             data->point.y = m_last_state.y;
