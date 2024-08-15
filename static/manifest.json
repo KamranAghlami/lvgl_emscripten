@@ -1,7 +1,7 @@
 {
   "name": "lvgl_emscripten",
   "short_name": "lvgl_emscripten",
-  "start_url": "/",
+  "start_url": "/lvgl_emscripten",
   "display": "fullscreen",
   "theme_color": "#000000",
   "background_color": "#000000",
