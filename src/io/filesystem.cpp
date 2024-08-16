@@ -1,6 +1,7 @@
 #include "io/filesystem.h"
 
 #include <iostream>
+#include <emscripten/fetch.h>
 
 namespace io
 {
@@ -48,6 +49,31 @@ namespace io
     void *filesystem::open(const char *path, lv_fs_mode_t mode)
     {
         printf("[filesystem::open] path: %s, mode: %d.\n", path, mode);
+
+        auto on_succeeded = [](emscripten_fetch_t *fetch)
+        {
+            printf("Finished downloading %llu bytes from URL %s.\n", fetch->numBytes, fetch->url);
+
+            emscripten_fetch_close(fetch);
+        };
+
+        auto on_failed = [](emscripten_fetch_t *fetch)
+        {
+            printf("Downloading %s failed, HTTP failure status code: %d.\n", fetch->url, fetch->status);
+
+            emscripten_fetch_close(fetch);
+        };
+
+        emscripten_fetch_attr_t attr;
+
+        emscripten_fetch_attr_init(&attr);
+
+        strcpy(attr.requestMethod, "GET");
+        attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
+        attr.onsuccess = on_succeeded;
+        attr.onerror = on_failed;
+
+        emscripten_fetch(&attr, path);
 
         return nullptr;
     }

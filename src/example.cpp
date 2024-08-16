@@ -9,7 +9,12 @@ public:
     {
         set_active_group(mp_group);
 
-        lv_demo_widgets();
+        // lv_demo_widgets();
+
+        auto image = lv_image_create(lv_scr_act());
+
+        lv_image_set_src(image, "N:img/lvgl.png");
+        lv_obj_center(image);
     }
 
     ~example()
