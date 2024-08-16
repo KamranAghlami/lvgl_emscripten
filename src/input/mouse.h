@@ -13,6 +13,8 @@ namespace input
             int x;
             int y;
             bool pressed;
+            double offset;
+            bool pressed_aux;
         };
 
         static mouse &get()
@@ -35,10 +37,13 @@ namespace input
         EM_BOOL on_mouse_down(int type, const EmscriptenMouseEvent *mouse_event, void *user_data);
         EM_BOOL on_mouse_up(int type, const EmscriptenMouseEvent *mouse_event, void *user_data);
         EM_BOOL on_mouse_move(int type, const EmscriptenMouseEvent *mouse_event, void *user_data);
+        EM_BOOL on_wheel(int type, const EmscriptenWheelEvent *wheel_event, void *user_data);
 
         void on_mouse_read(lv_indev_data_t *data);
+        void on_mouse_aux_read(lv_indev_data_t *data);
 
         lv_indev_t *mp_device = nullptr;
+        lv_indev_t *mp_device_aux = nullptr;
         state m_last_state = {};
     };
 }

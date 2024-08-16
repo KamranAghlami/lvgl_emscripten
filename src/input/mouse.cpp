@@ -1,5 +1,7 @@
 #include "input/mouse.h"
 
+#include <iostream>
+
 namespace input
 {
     mouse::mouse()
@@ -36,10 +38,30 @@ namespace input
         lv_indev_set_read_cb(mp_device, on_mouse_read);
         lv_indev_set_mode(mp_device, LV_INDEV_MODE_EVENT);
         lv_indev_set_driver_data(mp_device, this);
+
+        auto on_wheel = [](int type, const EmscriptenWheelEvent *wheel_event, void *user_data)
+        {
+            return static_cast<mouse *>(user_data)->on_wheel(type, wheel_event, user_data);
+        };
+
+        emscripten_set_wheel_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_wheel);
+
+        mp_device_aux = lv_indev_create();
+
+        auto on_mouse_aux_read = [](lv_indev_t *device, lv_indev_data_t *data)
+        {
+            static_cast<mouse *>(lv_indev_get_driver_data(device))->on_mouse_aux_read(data);
+        };
+
+        lv_indev_set_type(mp_device_aux, LV_INDEV_TYPE_ENCODER);
+        lv_indev_set_read_cb(mp_device_aux, on_mouse_aux_read);
+        lv_indev_set_mode(mp_device_aux, LV_INDEV_MODE_EVENT);
+        lv_indev_set_driver_data(mp_device_aux, this);
     }
 
     mouse::~mouse()
     {
+        lv_indev_delete(mp_device_aux);
         lv_indev_delete(mp_device);
     }
 
@@ -76,6 +98,17 @@ namespace input
         return EM_FALSE;
     }
 
+    EM_BOOL mouse::on_wheel(int type, const EmscriptenWheelEvent *wheel_event, void *user_data)
+    {
+        printf("%lf, %lf, %lf\n", wheel_event->deltaX, wheel_event->deltaY, wheel_event->deltaZ);
+
+        m_last_state.offset += wheel_event->deltaY;
+
+        lv_indev_read(mp_device_aux);
+
+        return EM_FALSE;
+    }
+
     void mouse::on_mouse_read(lv_indev_data_t *data)
     {
         if (m_last_state.pressed)
@@ -86,5 +119,12 @@ namespace input
         }
         else
             data->state = LV_INDEV_STATE_RELEASED;
+    }
+
+    void mouse::on_mouse_aux_read(lv_indev_data_t *data)
+    {
+        data->enc_diff = m_last_state.offset;
+        data->state = m_last_state.pressed_aux ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
+        m_last_state.offset -= data->enc_diff;
     }
 }
