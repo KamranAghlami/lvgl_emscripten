@@ -13,7 +13,7 @@ namespace input
             int x;
             int y;
             bool pressed;
-            double offset;
+            int offset;
             bool pressed_aux;
         };
 
@@ -30,6 +30,8 @@ namespace input
         mouse(mouse &&) = delete;
         mouse &operator=(const mouse &) = delete;
         mouse &operator=(mouse &&) = delete;
+
+        void set_group(lv_group_t *group);
 
     private:
         mouse();

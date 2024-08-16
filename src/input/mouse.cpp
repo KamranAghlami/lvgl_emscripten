@@ -63,6 +63,11 @@ namespace input
         lv_indev_delete(mp_device);
     }
 
+    void mouse::set_group(lv_group_t *group)
+    {
+        lv_indev_set_group(mp_device_aux, group);
+    }
+
     EM_BOOL mouse::on_mouse_down(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
     {
         switch (mouse_event->button)
@@ -129,9 +134,12 @@ namespace input
 
     EM_BOOL mouse::on_wheel(int type, const EmscriptenWheelEvent *wheel_event, void *user_data)
     {
-        m_last_state.offset += wheel_event->deltaY;
+        if (wheel_event->deltaY)
+        {
+            m_last_state.offset += wheel_event->deltaY > 0 ? +1 : -1;
 
-        lv_indev_read(mp_device_aux);
+            lv_indev_read(mp_device_aux);
+        }
 
         return EM_FALSE;
     }

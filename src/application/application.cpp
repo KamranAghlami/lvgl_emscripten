@@ -3,7 +3,6 @@
 #include <assert.h>
 
 #include <emscripten/html5.h>
-#include <lvgl.h>
 
 #include "output/display.h"
 #include "input/touch.h"
@@ -53,4 +52,11 @@ application::application()
 application::~application()
 {
     lv_deinit();
+}
+
+void application::set_active_group(lv_group_t *group)
+{
+    lv_group_set_default(group);
+
+    input::mouse::get().set_group(group);
 }
