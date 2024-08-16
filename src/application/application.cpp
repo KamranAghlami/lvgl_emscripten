@@ -7,6 +7,7 @@
 #include "output/display.h"
 #include "input/touch.h"
 #include "input/mouse.h"
+#include "input/keyboard.h"
 
 static application *s_instance = nullptr;
 
@@ -28,6 +29,7 @@ application::application()
     output::display::get();
     input::touch::get();
     input::mouse::get();
+    input::keyboard::get();
 
     auto on_update = [](double time, void *user_data) -> EM_BOOL
     {
@@ -66,4 +68,5 @@ void application::set_active_group(lv_group_t *group)
     lv_group_set_default(group);
 
     input::mouse::get().set_group(group);
+    input::keyboard::get().set_group(group);
 }
