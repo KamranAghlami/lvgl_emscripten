@@ -1,7 +1,5 @@
 #include "input/mouse.h"
 
-#include <iostream>
-
 namespace input
 {
     mouse::mouse()
@@ -67,29 +65,60 @@ namespace input
 
     EM_BOOL mouse::on_mouse_down(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
     {
-        m_last_state.x = mouse_event->targetX;
-        m_last_state.y = mouse_event->targetY;
-        m_last_state.pressed = true;
+        switch (mouse_event->button)
+        {
+        case 0:
+            m_last_state.x = mouse_event->targetX;
+            m_last_state.y = mouse_event->targetY;
+            m_last_state.pressed = true;
 
-        lv_indev_read(mp_device);
+            lv_indev_read(mp_device);
+
+            break;
+
+        case 1:
+            m_last_state.pressed_aux = true;
+
+            lv_indev_read(mp_device_aux);
+
+            break;
+
+        default:
+            break;
+        }
 
         return EM_FALSE;
     }
 
     EM_BOOL mouse::on_mouse_up(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
     {
-        m_last_state.pressed = false;
+        switch (mouse_event->button)
+        {
+        case 0:
+            m_last_state.x = mouse_event->targetX;
+            m_last_state.y = mouse_event->targetY;
+            m_last_state.pressed = false;
 
-        lv_indev_read(mp_device);
+            lv_indev_read(mp_device);
+
+            break;
+
+        case 1:
+            m_last_state.pressed_aux = false;
+
+            lv_indev_read(mp_device_aux);
+
+            break;
+
+        default:
+            break;
+        }
 
         return EM_FALSE;
     }
 
     EM_BOOL mouse::on_mouse_move(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
     {
-        if (!m_last_state.pressed)
-            return EM_FALSE;
-
         m_last_state.x = mouse_event->targetX;
         m_last_state.y = mouse_event->targetY;
 
@@ -100,8 +129,6 @@ namespace input
 
     EM_BOOL mouse::on_wheel(int type, const EmscriptenWheelEvent *wheel_event, void *user_data)
     {
-        printf("%lf, %lf, %lf\n", wheel_event->deltaX, wheel_event->deltaY, wheel_event->deltaZ);
-
         m_last_state.offset += wheel_event->deltaY;
 
         lv_indev_read(mp_device_aux);
@@ -111,14 +138,9 @@ namespace input
 
     void mouse::on_mouse_read(lv_indev_data_t *data)
     {
-        if (m_last_state.pressed)
-        {
-            data->point.x = m_last_state.x;
-            data->point.y = m_last_state.y;
-            data->state = LV_INDEV_STATE_PRESSED;
-        }
-        else
-            data->state = LV_INDEV_STATE_RELEASED;
+        data->point.x = m_last_state.x;
+        data->point.y = m_last_state.y;
+        data->state = m_last_state.pressed ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
     }
 
     void mouse::on_mouse_aux_read(lv_indev_data_t *data)
