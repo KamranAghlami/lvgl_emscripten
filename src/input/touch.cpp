@@ -50,6 +50,11 @@ namespace input
         lv_indev_delete(mp_device);
     }
 
+    void touch::set_scaling(float scaling)
+    {
+        m_scaling = scaling;
+    }
+
     EM_BOOL touch::on_touch_start(int type, const EmscriptenTouchEvent *touch_event, void *user_data)
     {
         if (!touch_event->numTouches)
@@ -60,8 +65,8 @@ namespace input
         if (!touch_point.isChanged)
             return EM_FALSE;
 
-        m_last_state.x = touch_point.targetX;
-        m_last_state.y = touch_point.targetY;
+        m_last_state.x = touch_point.targetX * m_scaling;
+        m_last_state.y = touch_point.targetY * m_scaling;
         m_last_state.present = true;
 
         lv_indev_read(mp_device);
@@ -79,8 +84,8 @@ namespace input
         if (!touch_point.isChanged)
             return EM_FALSE;
 
-        m_last_state.x = touch_point.targetX;
-        m_last_state.y = touch_point.targetY;
+        m_last_state.x = touch_point.targetX * m_scaling;
+        m_last_state.y = touch_point.targetY * m_scaling;
         m_last_state.present = true;
 
         lv_indev_read(mp_device);
@@ -98,6 +103,8 @@ namespace input
         if (!touch_point.isChanged)
             return EM_FALSE;
 
+        m_last_state.x = touch_point.targetX * m_scaling;
+        m_last_state.y = touch_point.targetY * m_scaling;
         m_last_state.present = false;
 
         lv_indev_read(mp_device);

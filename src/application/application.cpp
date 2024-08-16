@@ -54,6 +54,13 @@ application::~application()
     lv_deinit();
 }
 
+void application::set_scaling(float scaling)
+{
+    output::display::get().set_scaling(scaling);
+    input::touch::get().set_scaling(scaling);
+    input::mouse::get().set_scaling(scaling);
+}
+
 void application::set_active_group(lv_group_t *group)
 {
     lv_group_set_default(group);

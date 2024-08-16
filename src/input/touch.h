@@ -29,6 +29,8 @@ namespace input
         touch &operator=(const touch &) = delete;
         touch &operator=(touch &&) = delete;
 
+        void set_scaling(float scaling);
+
     private:
         touch();
 
@@ -38,6 +40,8 @@ namespace input
         EM_BOOL on_touch_cancel(int type, const EmscriptenTouchEvent *touch_event, void *user_data);
 
         void on_touch_read(lv_indev_data_t *data);
+
+        float m_scaling = 1.0f;
 
         lv_indev_t *mp_device = nullptr;
         state m_last_state = {};

@@ -27,6 +27,8 @@ namespace output
         display &operator=(const display &) = delete;
         display &operator=(display &&) = delete;
 
+        void set_scaling(float scaling);
+
     private:
         display();
 
@@ -35,9 +37,9 @@ namespace output
         void update_size();
         void set_bitmap(const int x1, const int y1, const int x2, const int y2, uint8_t *buffer);
 
-        double m_scaling = 1.0f;
         int m_width = 0;
         int m_height = 0;
+        float m_scaling = 1.0f;
 
         void *mp_draw_buf_1 = nullptr;
         void *mp_draw_buf_2 = nullptr;

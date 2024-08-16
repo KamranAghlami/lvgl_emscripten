@@ -49,6 +49,13 @@ namespace output
         free(mp_draw_buf_1);
     }
 
+    void display::set_scaling(float scaling)
+    {
+        m_scaling = scaling;
+
+        update_size();
+    }
+
     bool display::on_size_change(const event::window::size_changed &event)
     {
         m_width = event.m_width;

@@ -63,6 +63,11 @@ namespace input
         lv_indev_delete(mp_device);
     }
 
+    void mouse::set_scaling(float scaling)
+    {
+        m_scaling = scaling;
+    }
+
     void mouse::set_group(lv_group_t *group)
     {
         lv_indev_set_group(mp_device_aux, group);
@@ -73,8 +78,8 @@ namespace input
         switch (mouse_event->button)
         {
         case 0:
-            m_last_state.x = mouse_event->targetX;
-            m_last_state.y = mouse_event->targetY;
+            m_last_state.x = mouse_event->targetX * m_scaling;
+            m_last_state.y = mouse_event->targetY * m_scaling;
             m_last_state.pressed = true;
 
             lv_indev_read(mp_device);
@@ -100,8 +105,8 @@ namespace input
         switch (mouse_event->button)
         {
         case 0:
-            m_last_state.x = mouse_event->targetX;
-            m_last_state.y = mouse_event->targetY;
+            m_last_state.x = mouse_event->targetX * m_scaling;
+            m_last_state.y = mouse_event->targetY * m_scaling;
             m_last_state.pressed = false;
 
             lv_indev_read(mp_device);
@@ -124,8 +129,8 @@ namespace input
 
     EM_BOOL mouse::on_mouse_move(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
     {
-        m_last_state.x = mouse_event->targetX;
-        m_last_state.y = mouse_event->targetY;
+        m_last_state.x = mouse_event->targetX * m_scaling;
+        m_last_state.y = mouse_event->targetY * m_scaling;
 
         lv_indev_read(mp_device);
 

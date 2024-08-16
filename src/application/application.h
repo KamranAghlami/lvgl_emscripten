@@ -21,6 +21,7 @@ public:
     application &operator=(const application &) = delete;
     application &operator=(application &&) = delete;
 
+    void set_scaling(float scaling);
     void set_active_group(lv_group_t *group);
 
 protected:

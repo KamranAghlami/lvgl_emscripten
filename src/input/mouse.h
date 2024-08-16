@@ -31,6 +31,7 @@ namespace input
         mouse &operator=(const mouse &) = delete;
         mouse &operator=(mouse &&) = delete;
 
+        void set_scaling(float scaling);
         void set_group(lv_group_t *group);
 
     private:
@@ -43,6 +44,8 @@ namespace input
 
         void on_mouse_read(lv_indev_data_t *data);
         void on_mouse_aux_read(lv_indev_data_t *data);
+
+        float m_scaling = 1.0f;
 
         lv_indev_t *mp_device = nullptr;
         lv_indev_t *mp_device_aux = nullptr;
