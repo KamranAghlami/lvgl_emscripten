@@ -1,6 +1,6 @@
-#include "input/mouse.h"
+#include "io/mouse.h"
 
-namespace input
+namespace io
 {
     mouse::mouse()
     {

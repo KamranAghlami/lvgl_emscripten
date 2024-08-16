@@ -4,10 +4,10 @@
 
 #include <emscripten/html5.h>
 
-#include "output/display.h"
-#include "input/touch.h"
-#include "input/mouse.h"
-#include "input/keyboard.h"
+#include "io/display.h"
+#include "io/touch.h"
+#include "io/mouse.h"
+#include "io/keyboard.h"
 
 static application *s_instance = nullptr;
 
@@ -26,10 +26,10 @@ application::application()
 
     lv_tick_set_cb(tick_get_cb);
 
-    output::display::get();
-    input::touch::get();
-    input::mouse::get();
-    input::keyboard::get();
+    io::display::get();
+    io::touch::get();
+    io::mouse::get();
+    io::keyboard::get();
 
     auto on_update = [](double time, void *user_data) -> EM_BOOL
     {
@@ -58,15 +58,15 @@ application::~application()
 
 void application::set_scaling(float scaling)
 {
-    output::display::get().set_scaling(scaling);
-    input::touch::get().set_scaling(scaling);
-    input::mouse::get().set_scaling(scaling);
+    io::display::get().set_scaling(scaling);
+    io::touch::get().set_scaling(scaling);
+    io::mouse::get().set_scaling(scaling);
 }
 
 void application::set_active_group(lv_group_t *group)
 {
     lv_group_set_default(group);
 
-    input::mouse::get().set_group(group);
-    input::keyboard::get().set_group(group);
+    io::mouse::get().set_group(group);
+    io::keyboard::get().set_group(group);
 }

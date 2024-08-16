@@ -8,7 +8,7 @@
 #include "event/handler.h"
 #include "event/window.h"
 
-namespace output
+namespace io
 {
     class display : public event::handler<display>
     {

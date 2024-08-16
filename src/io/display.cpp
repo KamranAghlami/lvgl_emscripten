@@ -1,6 +1,6 @@
-#include "output/display.h"
+#include "io/display.h"
 
-namespace output
+namespace io
 {
     display::display()
     {

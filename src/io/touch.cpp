@@ -1,6 +1,6 @@
-#include "input/touch.h"
+#include "io/touch.h"
 
-namespace input
+namespace io
 {
     touch::touch()
     {

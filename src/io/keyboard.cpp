@@ -1,6 +1,6 @@
-#include "input/keyboard.h"
+#include "io/keyboard.h"
 
-namespace input
+namespace io
 {
     keyboard::keyboard()
     {

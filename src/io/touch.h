@@ -3,7 +3,7 @@
 #include <emscripten/html5.h>
 #include <lvgl.h>
 
-namespace input
+namespace io
 {
     class touch
     {
