@@ -1,0 +1,82 @@
+#include "io/filesystem.h"
+
+#include <iostream>
+
+namespace io
+{
+    filesystem::filesystem()
+    {
+        lv_fs_drv_init(&m_driver);
+
+        m_driver.letter = 'N';
+        m_driver.cache_size = 0;
+
+        m_driver.open_cb = [](lv_fs_drv_t *drive, const char *path, lv_fs_mode_t mode) -> void *
+        {
+            return static_cast<filesystem *>(drive->user_data)->open(path, mode);
+        };
+
+        m_driver.close_cb = [](lv_fs_drv_t *drive, void *file) -> lv_fs_res_t
+        {
+            return static_cast<filesystem *>(drive->user_data)->close(file);
+        };
+
+        m_driver.read_cb = [](lv_fs_drv_t *drive, void *file, void *buffer, uint32_t size, uint32_t *size_read) -> lv_fs_res_t
+        {
+            return static_cast<filesystem *>(drive->user_data)->read(file, buffer, size, size_read);
+        };
+
+        m_driver.seek_cb = [](lv_fs_drv_t *drive, void *file, uint32_t position, lv_fs_whence_t whence) -> lv_fs_res_t
+        {
+            return static_cast<filesystem *>(drive->user_data)->seek(file, position, whence);
+        };
+
+        m_driver.tell_cb = [](lv_fs_drv_t *drive, void *file, uint32_t *position) -> lv_fs_res_t
+        {
+            return static_cast<filesystem *>(drive->user_data)->tell(file, position);
+        };
+
+        m_driver.user_data = this;
+
+        lv_fs_drv_register(&m_driver);
+    }
+
+    filesystem::~filesystem()
+    {
+    }
+
+    void *filesystem::open(const char *path, lv_fs_mode_t mode)
+    {
+        printf("[filesystem::open] path: %s, mode: %d.\n", path, mode);
+
+        return nullptr;
+    }
+
+    lv_fs_res_t filesystem::close(void *file)
+    {
+        printf("[filesystem::close] file: %p.\n", file);
+
+        return LV_FS_RES_NOT_IMP;
+    }
+
+    lv_fs_res_t filesystem::read(void *file, void *buffer, uint32_t size, uint32_t *size_read)
+    {
+        printf("[filesystem::read] file: %p, buffer: %p, size: %u, size_read: %u.\n", file, buffer, size, *size_read);
+
+        return LV_FS_RES_NOT_IMP;
+    }
+
+    lv_fs_res_t filesystem::seek(void *file, uint32_t position, lv_fs_whence_t whence)
+    {
+        printf("[filesystem::seek] file: %p, position: %u, whence: %d.\n", file, position, whence);
+
+        return LV_FS_RES_NOT_IMP;
+    }
+
+    lv_fs_res_t filesystem::tell(void *file, uint32_t *position)
+    {
+        printf("[filesystem::tell] file: %p, position: %d.\n", file, *position);
+
+        return LV_FS_RES_NOT_IMP;
+    }
+}

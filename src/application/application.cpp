@@ -5,6 +5,7 @@
 #include <emscripten/html5.h>
 
 #include "io/display.h"
+#include "io/filesystem.h"
 #include "io/touch.h"
 #include "io/mouse.h"
 #include "io/keyboard.h"
@@ -27,6 +28,7 @@ application::application()
     lv_tick_set_cb(tick_get_cb);
 
     io::display::get();
+    io::filesystem::get();
     io::touch::get();
     io::mouse::get();
     io::keyboard::get();
