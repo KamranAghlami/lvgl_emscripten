@@ -1,7 +1,5 @@
 #include "input/keyboard.h"
 
-#include <iostream>
-
 namespace input
 {
     keyboard::keyboard()
@@ -38,16 +36,12 @@ namespace input
 
     EM_BOOL keyboard::on_key_down(int type, const EmscriptenKeyboardEvent *keyboard_event, void *user_data)
     {
-        printf("key: %s\n", keyboard_event->key);
-
         m_last_state.key = keyboard_event->key[0];
         m_last_state.pressed = true;
 
         if (keyboard_event->key[1] != '\0')
             if (!(m_last_state.key = map_control_key(keyboard_event)))
                 return EM_FALSE;
-
-        printf("%u, pressed\n", m_last_state.key);
 
         lv_indev_read(mp_device);
 
@@ -75,8 +69,8 @@ namespace input
         if (!strcmp("Escape", keyboard_event->key))
             return LV_KEY_ESC;
 
-        // if (!strcmp("", keyboard_event->key))
-        //     return LV_KEY_DEL;
+        if (!strcmp("Delete", keyboard_event->key))
+            return LV_KEY_DEL;
 
         if (!strcmp("Backspace", keyboard_event->key))
             return LV_KEY_BACKSPACE;
@@ -85,16 +79,18 @@ namespace input
             return LV_KEY_ENTER;
 
         if (!strcmp("Tab", keyboard_event->key))
-            // if ()
-            // return LV_KEY_PREV;
-            // else
-            return LV_KEY_NEXT;
+        {
+            if (keyboard_event->shiftKey)
+                return LV_KEY_PREV;
+            else
+                return LV_KEY_NEXT;
+        }
 
-        // if (!strcmp("", keyboard_event->key))
-        //     return LV_KEY_HOME;
+        if (!strcmp("Home", keyboard_event->key))
+            return LV_KEY_HOME;
 
-        // if (!strcmp("", keyboard_event->key))
-        //     return LV_KEY_END;
+        if (!strcmp("End", keyboard_event->key))
+            return LV_KEY_END;
 
         return 0;
     }
