@@ -96,7 +96,6 @@ namespace io
         }
         else
             printf("Fetching %s failed.\n", path);
-
 #endif
 
         return nullptr;
