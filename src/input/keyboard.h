@@ -8,9 +8,9 @@ namespace input
     class keyboard
     {
     public:
-        struct event
+        struct state
         {
-            int key_code;
+            uint32_t key;
             bool pressed;
         };
 
@@ -34,10 +34,11 @@ namespace input
         keyboard();
 
         EM_BOOL on_key_down(int type, const EmscriptenKeyboardEvent *keyboard_event, void *user_data);
-        EM_BOOL on_key_up(int type, const EmscriptenKeyboardEvent *keyboard_event, void *user_data);
 
+        uint32_t map_control_key(const EmscriptenKeyboardEvent *keyboard_event);
         void on_keyboard_read(lv_indev_data_t *data);
 
         lv_indev_t *mp_device = nullptr;
+        state m_last_state = {};
     };
 }

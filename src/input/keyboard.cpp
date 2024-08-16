@@ -1,5 +1,7 @@
 #include "input/keyboard.h"
 
+#include <iostream>
+
 namespace input
 {
     keyboard::keyboard()
@@ -10,13 +12,6 @@ namespace input
         };
 
         emscripten_set_keydown_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_key_down);
-
-        auto on_key_up = [](int type, const EmscriptenKeyboardEvent *mouse_event, void *user_data)
-        {
-            return static_cast<keyboard *>(user_data)->on_key_up(type, mouse_event, user_data);
-        };
-
-        emscripten_set_keyup_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_key_up);
 
         mp_device = lv_indev_create();
 
@@ -43,19 +38,70 @@ namespace input
 
     EM_BOOL keyboard::on_key_down(int type, const EmscriptenKeyboardEvent *keyboard_event, void *user_data)
     {
+        printf("key: %s\n", keyboard_event->key);
+
+        m_last_state.key = keyboard_event->key[0];
+        m_last_state.pressed = true;
+
+        if (keyboard_event->key[1] != '\0')
+            if (!(m_last_state.key = map_control_key(keyboard_event)))
+                return EM_FALSE;
+
+        printf("%u, pressed\n", m_last_state.key);
+
+        lv_indev_read(mp_device);
+
+        m_last_state.pressed = false;
+
         lv_indev_read(mp_device);
 
         return EM_FALSE;
     }
 
-    EM_BOOL keyboard::on_key_up(int type, const EmscriptenKeyboardEvent *keyboard_event, void *user_data)
+    uint32_t keyboard::map_control_key(const EmscriptenKeyboardEvent *keyboard_event)
     {
-        lv_indev_read(mp_device);
+        if (!strcmp("ArrowUp", keyboard_event->key))
+            return LV_KEY_UP;
 
-        return EM_FALSE;
+        if (!strcmp("ArrowDown", keyboard_event->key))
+            return LV_KEY_DOWN;
+
+        if (!strcmp("ArrowRight", keyboard_event->key))
+            return LV_KEY_RIGHT;
+
+        if (!strcmp("ArrowLeft", keyboard_event->key))
+            return LV_KEY_LEFT;
+
+        if (!strcmp("Escape", keyboard_event->key))
+            return LV_KEY_ESC;
+
+        // if (!strcmp("", keyboard_event->key))
+        //     return LV_KEY_DEL;
+
+        if (!strcmp("Backspace", keyboard_event->key))
+            return LV_KEY_BACKSPACE;
+
+        if (!strcmp("Enter", keyboard_event->key))
+            return LV_KEY_ENTER;
+
+        if (!strcmp("Tab", keyboard_event->key))
+            // if ()
+            // return LV_KEY_PREV;
+            // else
+            return LV_KEY_NEXT;
+
+        // if (!strcmp("", keyboard_event->key))
+        //     return LV_KEY_HOME;
+
+        // if (!strcmp("", keyboard_event->key))
+        //     return LV_KEY_END;
+
+        return 0;
     }
 
     void keyboard::on_keyboard_read(lv_indev_data_t *data)
     {
+        data->key = m_last_state.key;
+        data->state = m_last_state.pressed ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
     }
 }
