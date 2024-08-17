@@ -42,15 +42,7 @@ namespace io
         class cache_entry
         {
         public:
-            cache_entry(const uint8_t *data, const size_t size) : m_data(data, data + size)
-            {
-                LV_LOG_WARN(" + cache_entry");
-            };
-
-            ~cache_entry()
-            {
-                LV_LOG_WARN(" - cache_entry");
-            };
+            cache_entry(const uint8_t *data, const size_t size) : m_data(data, data + size) {};
 
             void increase_reference()
             {

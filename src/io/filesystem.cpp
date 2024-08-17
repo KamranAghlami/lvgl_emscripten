@@ -54,15 +54,11 @@ namespace io
 
         if (m_cache.find(full_path) != m_cache.end())
         {
-            LV_LOG_WARN("cache hit %s", full_path.c_str());
-
             if (callback)
                 callback(m_letter + std::string(":") + full_path);
 
             return;
         }
-
-        LV_LOG_WARN("cache miss %s", full_path.c_str());
 
         emscripten_fetch_attr_t attribute;
 
@@ -76,8 +72,6 @@ namespace io
         auto on_succeeded = [](emscripten_fetch_t *fetch)
         {
             auto context = static_cast<fetch_context *>(fetch->userData);
-
-            LV_LOG_WARN("fetched %llu bytes from %s.", fetch->numBytes, fetch->url);
 
             auto &fs = io::filesystem::get();
 
@@ -116,8 +110,6 @@ namespace io
 
     filesystem::file_handle *filesystem::open(const char *path, lv_fs_mode_t mode)
     {
-        LV_LOG_WARN("path: %s, mode: %d.", path, mode);
-
         if (mode & LV_FS_MODE_WR)
             return nullptr;
 
@@ -133,8 +125,6 @@ namespace io
 
     lv_fs_res_t filesystem::close(file_handle *file)
     {
-        LV_LOG_WARN("file: %p.", file);
-
         auto entry = m_cache[file->m_path];
 
         entry->decrease_reference();
@@ -153,8 +143,6 @@ namespace io
 
     lv_fs_res_t filesystem::read(file_handle *file, void *buffer, uint32_t size, uint32_t *size_read)
     {
-        LV_LOG_WARN("file: %p, buffer: %p, size: %u, size_read: %u.", file, buffer, size, *size_read);
-
         size_t availble = file->m_size - file->m_position;
         size_t read_size = std::min(static_cast<size_t>(size), availble);
 
@@ -168,8 +156,6 @@ namespace io
 
     lv_fs_res_t filesystem::seek(file_handle *file, uint32_t position, lv_fs_whence_t whence)
     {
-        LV_LOG_WARN("file: %p, position: %u, whence: %d.", file, position, whence);
-
         switch (whence)
         {
         case LV_FS_SEEK_SET:
@@ -190,8 +176,6 @@ namespace io
 
     lv_fs_res_t filesystem::tell(file_handle *file, uint32_t *position)
     {
-        LV_LOG_WARN("file: %p, position: %d.", file, *position);
-
         *position = file->m_position + 1;
 
         return LV_FS_RES_OK;
