@@ -118,6 +118,9 @@ namespace io
     {
         LV_LOG_WARN("path: %s, mode: %d.", path, mode);
 
+        if (mode & LV_FS_MODE_WR)
+            return nullptr;
+
         auto iterator = m_cache.find(path);
 
         if (iterator == m_cache.end())
@@ -136,12 +139,12 @@ namespace io
 
         entry->decrease_reference();
 
-        if (entry->invalidated())
-        {
-            delete entry;
+        // if (entry->invalidated())
+        // {
+        //     delete entry;
 
-            m_cache.erase(file->m_path);
-        }
+        //     m_cache.erase(file->m_path);
+        // }
 
         delete file;
 
@@ -152,21 +155,46 @@ namespace io
     {
         LV_LOG_WARN("file: %p, buffer: %p, size: %u, size_read: %u.", file, buffer, size, *size_read);
 
-        return LV_FS_RES_NOT_IMP;
+        size_t availble = file->m_size - file->m_position;
+        size_t read_size = std::min(static_cast<size_t>(size), availble);
+
+        memcpy(buffer, reinterpret_cast<const void *>(file->m_data + file->m_position), read_size);
+
+        file->m_position += read_size;
+        *size_read = read_size;
+
+        return LV_FS_RES_OK;
     }
 
     lv_fs_res_t filesystem::seek(file_handle *file, uint32_t position, lv_fs_whence_t whence)
     {
         LV_LOG_WARN("file: %p, position: %u, whence: %d.", file, position, whence);
 
-        return LV_FS_RES_NOT_IMP;
+        switch (whence)
+        {
+        case LV_FS_SEEK_SET:
+            file->m_position = position;
+            break;
+
+        case LV_FS_SEEK_CUR:
+            file->m_position += position;
+            break;
+
+        case LV_FS_SEEK_END:
+            file->m_position = file->m_size - 1 - position;
+            break;
+        }
+
+        return LV_FS_RES_OK;
     }
 
     lv_fs_res_t filesystem::tell(file_handle *file, uint32_t *position)
     {
         LV_LOG_WARN("file: %p, position: %d.", file, *position);
 
-        return LV_FS_RES_NOT_IMP;
+        *position = file->m_position + 1;
+
+        return LV_FS_RES_OK;
     }
 
     std::string filesystem::get_full_path(const std::string &path)

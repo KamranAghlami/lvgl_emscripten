@@ -87,12 +87,12 @@ namespace io
             file_handle(const std::string &path, const cache_entry *entry) : m_path(path),
                                                                              m_data(entry->data()),
                                                                              m_size(entry->size()),
-                                                                             m_pos(0) {}
+                                                                             m_position(0) {}
 
             const std::string m_path;
             const uint8_t *m_data;
             const size_t m_size;
-            size_t m_pos = 0;
+            size_t m_position = 0;
         };
 
         filesystem();
