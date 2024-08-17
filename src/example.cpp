@@ -2,6 +2,8 @@
 
 #include <demos/lv_demos.h>
 
+#include "io/filesystem.h"
+
 class example : public application
 {
 public:
@@ -13,8 +15,14 @@ public:
 
         auto image = lv_image_create(lv_scr_act());
 
-        lv_image_set_src(image, "N:img/lvgl.png");
         lv_obj_center(image);
+
+        auto on_fetch = [this, image](const std::string &path)
+        {
+            lv_image_set_src(image, path.c_str());
+        };
+
+        io::filesystem::get().fetch("img/lvgl.png", on_fetch);
     }
 
     ~example()
