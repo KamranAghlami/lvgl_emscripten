@@ -18,22 +18,22 @@ namespace io
 
         m_driver.close_cb = [](lv_fs_drv_t *drive, void *file) -> lv_fs_res_t
         {
-            return static_cast<filesystem *>(drive->user_data)->close(file);
+            return static_cast<filesystem *>(drive->user_data)->close(static_cast<file_handle *>(file));
         };
 
         m_driver.read_cb = [](lv_fs_drv_t *drive, void *file, void *buffer, uint32_t size, uint32_t *size_read) -> lv_fs_res_t
         {
-            return static_cast<filesystem *>(drive->user_data)->read(file, buffer, size, size_read);
+            return static_cast<filesystem *>(drive->user_data)->read(static_cast<file_handle *>(file), buffer, size, size_read);
         };
 
         m_driver.seek_cb = [](lv_fs_drv_t *drive, void *file, uint32_t position, lv_fs_whence_t whence) -> lv_fs_res_t
         {
-            return static_cast<filesystem *>(drive->user_data)->seek(file, position, whence);
+            return static_cast<filesystem *>(drive->user_data)->seek(static_cast<file_handle *>(file), position, whence);
         };
 
         m_driver.tell_cb = [](lv_fs_drv_t *drive, void *file, uint32_t *position) -> lv_fs_res_t
         {
-            return static_cast<filesystem *>(drive->user_data)->tell(file, position);
+            return static_cast<filesystem *>(drive->user_data)->tell(static_cast<file_handle *>(file), position);
         };
 
         m_driver.user_data = this;
@@ -52,15 +52,25 @@ namespace io
 
         std::string full_path = get_full_path(path);
 
+        if (m_cache.find(full_path) != m_cache.end())
+        {
+            LV_LOG_WARN("cache hit %s", full_path.c_str());
+
+            if (callback)
+                callback(m_letter + std::string(":") + full_path);
+
+            return;
+        }
+
+        LV_LOG_WARN("cache miss %s", full_path.c_str());
+
         emscripten_fetch_attr_t attribute;
 
         emscripten_fetch_attr_init(&attribute);
 
         strcpy(attribute.requestMethod, "GET");
 
-        if (callback)
-            attribute.userData = new fetch_context(full_path, callback);
-
+        attribute.userData = new fetch_context(full_path, callback);
         attribute.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
 
         auto on_succeeded = [](emscripten_fetch_t *fetch)
@@ -70,6 +80,9 @@ namespace io
             LV_LOG_WARN("fetched %llu bytes from %s.", fetch->numBytes, fetch->url);
 
             auto &fs = io::filesystem::get();
+
+            if (fs.m_cache.find(context->m_path) == fs.m_cache.end())
+                fs.m_cache[context->m_path] = new cache_entry(reinterpret_cast<const uint8_t *>(fetch->data), fetch->numBytes);
 
             if (context->m_callback)
                 context->m_callback(fs.m_letter + std::string(":") + context->m_path);
@@ -101,35 +114,55 @@ namespace io
         }
     }
 
-    void *filesystem::open(const char *path, lv_fs_mode_t mode)
+    filesystem::file_handle *filesystem::open(const char *path, lv_fs_mode_t mode)
     {
         LV_LOG_WARN("path: %s, mode: %d.", path, mode);
 
-        return nullptr;
+        auto iterator = m_cache.find(path);
+
+        if (iterator == m_cache.end())
+            return nullptr;
+
+        iterator->second->increase_reference();
+
+        return new file_handle(iterator->first, iterator->second);
     }
 
-    lv_fs_res_t filesystem::close(void *file)
+    lv_fs_res_t filesystem::close(file_handle *file)
     {
         LV_LOG_WARN("file: %p.", file);
 
-        return LV_FS_RES_NOT_IMP;
+        auto entry = m_cache[file->m_path];
+
+        entry->decrease_reference();
+
+        if (entry->invalidated())
+        {
+            delete entry;
+
+            m_cache.erase(file->m_path);
+        }
+
+        delete file;
+
+        return LV_FS_RES_OK;
     }
 
-    lv_fs_res_t filesystem::read(void *file, void *buffer, uint32_t size, uint32_t *size_read)
+    lv_fs_res_t filesystem::read(file_handle *file, void *buffer, uint32_t size, uint32_t *size_read)
     {
         LV_LOG_WARN("file: %p, buffer: %p, size: %u, size_read: %u.", file, buffer, size, *size_read);
 
         return LV_FS_RES_NOT_IMP;
     }
 
-    lv_fs_res_t filesystem::seek(void *file, uint32_t position, lv_fs_whence_t whence)
+    lv_fs_res_t filesystem::seek(file_handle *file, uint32_t position, lv_fs_whence_t whence)
     {
         LV_LOG_WARN("file: %p, position: %u, whence: %d.", file, position, whence);
 
         return LV_FS_RES_NOT_IMP;
     }
 
-    lv_fs_res_t filesystem::tell(void *file, uint32_t *position)
+    lv_fs_res_t filesystem::tell(file_handle *file, uint32_t *position)
     {
         LV_LOG_WARN("file: %p, position: %d.", file, *position);
 
