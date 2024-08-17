@@ -9,7 +9,7 @@ namespace io
         lv_fs_drv_init(&m_driver);
 
         m_driver.letter = m_letter;
-        m_driver.cache_size = 0;
+        m_driver.cache_size = 4U * 1024U;
 
         m_driver.open_cb = [](lv_fs_drv_t *drive, const char *path, lv_fs_mode_t mode) -> void *
         {
