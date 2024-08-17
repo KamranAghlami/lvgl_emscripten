@@ -9,7 +9,7 @@ file(GLOB_RECURSE SOURCES "src/*.h" "src/*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE src)
-target_link_options(${PROJECT_NAME} PRIVATE -sFETCH -sFETCH_DEBUG=1)
+target_link_options(${PROJECT_NAME} PRIVATE -sFETCH)
 
 include(FetchContent)
 FetchContent_Declare(

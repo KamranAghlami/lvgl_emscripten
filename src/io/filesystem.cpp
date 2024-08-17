@@ -50,7 +50,6 @@ namespace io
     {
         printf("[filesystem::open] path: %s, mode: %d.\n", path, mode);
 
-#if 0
         auto on_succeeded = [](emscripten_fetch_t *fetch)
         {
             printf("Finished downloading %llu bytes from URL %s.\n", fetch->numBytes, fetch->url);
@@ -75,28 +74,6 @@ namespace io
         attr.onerror = on_failed;
 
         emscripten_fetch(&attr, path);
-#else
-        emscripten_fetch_attr_t attr;
-
-        emscripten_fetch_attr_init(&attr);
-
-        strcpy(attr.requestMethod, "GET");
-        attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY | EMSCRIPTEN_FETCH_SYNCHRONOUS;
-
-        emscripten_fetch_t *fetch = emscripten_fetch(&attr, path);
-
-        if (fetch)
-        {
-            if (fetch->status == 200)
-                printf("Finished downloading %llu bytes from URL %s.\n", fetch->numBytes, fetch->url);
-            else
-                printf("Downloading %s failed, HTTP failure status code: %d.\n", fetch->url, fetch->status);
-
-            emscripten_fetch_close(fetch);
-        }
-        else
-            printf("Fetching %s failed.\n", path);
-#endif
 
         return nullptr;
     }
