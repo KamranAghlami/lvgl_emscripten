@@ -43,6 +43,8 @@ namespace io
 
     filesystem::~filesystem()
     {
+        for (auto pair : m_cache)
+            delete pair.second;
     }
 
     void filesystem::fetch(const std::string &path, const fetch_callback callback)
