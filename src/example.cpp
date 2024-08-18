@@ -2,8 +2,6 @@
 
 #include <demos/lv_demos.h>
 
-#include "io/filesystem.h"
-
 class example : public application
 {
 public:
