@@ -15,7 +15,7 @@ public:
     ~example()
     {
         if (m_image)
-            lv_obj_del(m_image);
+            lv_obj_delete(m_image);
     }
 
 private:
