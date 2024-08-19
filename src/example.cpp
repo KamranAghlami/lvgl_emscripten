@@ -12,20 +12,30 @@ public:
         });
     }
 
+    ~example()
+    {
+        if (m_image)
+            lv_obj_del(m_image);
+    }
+
 private:
     void on_ready() override
     {
-        auto image = lv_image_create(lv_scr_act());
-        auto on_fetch = [image](const std::string &path)
+        auto on_fetch = [this](const std::string &path)
         {
-            if (!path.empty())
-                lv_image_set_src(image, path.c_str());
+            if (path.empty())
+                return;
 
-            lv_obj_center(image);
+            m_image = lv_image_create(lv_scr_act());
+
+            lv_image_set_src(m_image, path.c_str());
+            lv_obj_center(m_image);
         };
 
         io::filesystem::get().fetch("img/lvgl.png", on_fetch);
     };
+
+    lv_obj_t *m_image = nullptr;
 };
 
 DEFINE_MAIN(example);
