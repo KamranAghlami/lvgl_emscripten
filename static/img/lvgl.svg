@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+    <g fill="#343839">
+        <path fill-rule="evenodd"
+            d="M3 0a3 3 0 0 0-3 3v4a1 1 0 0 0 1 1h6a2 2 0 0 1 2 2v6a1 1 0 0 0 1 1h6a2 2 0 0 1 2 2v6a1 1 0 0 0 1 1h4a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3zm19.5 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"
+            clip-rule="evenodd"></path>
+    </g>
+    <rect width="8" height="8" y="9" fill="#f35f20" rx="1"></rect>
+    <path fill="#62d367" d="M0 19a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H3a3 3 0 0 1-3-3z"></path>
+    <rect width="8" height="8" x="9" y="18" fill="#3c65f8" rx="1"></rect>
+</svg>
