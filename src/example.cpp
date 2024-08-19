@@ -26,7 +26,7 @@ private:
             if (path.empty())
                 return;
 
-            m_image = lv_image_create(lv_scr_act());
+            m_image = lv_image_create(lv_screen_active());
 
             lv_image_set_src(m_image, path.c_str());
             lv_obj_center(m_image);
