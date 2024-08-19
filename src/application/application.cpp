@@ -33,24 +33,28 @@ application::application()
     io::mouse::get();
     io::keyboard::get();
 
-    auto on_update = [](double time, void *user_data) -> EM_BOOL
+    auto on_fs_ready = [](lv_timer_t *timer) -> void
     {
-        static const auto app = static_cast<application *>(user_data);
+        auto *app = static_cast<application *>(lv_timer_get_user_data(timer));
 
-        float timestep = time - app->m_previous_timestamp;
-        app->m_previous_timestamp = time;
+        if (!io::filesystem::get().ready())
+            return;
 
-        if (timestep < 0.0f)
-            timestep = 0.0f;
+        app->on_ready();
 
-        app->update(timestep);
+        lv_timer_delete(timer);
+    };
 
+    lv_timer_create(on_fs_ready, 0, this);
+
+    auto on_update = [](double, void *) -> EM_BOOL
+    {
         lv_timer_handler();
 
         return EM_TRUE;
     };
 
-    emscripten_request_animation_frame_loop(on_update, this);
+    emscripten_request_animation_frame_loop(on_update, nullptr);
 }
 
 application::~application()

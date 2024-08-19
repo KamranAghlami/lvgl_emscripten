@@ -4,12 +4,17 @@
 
 namespace io
 {
-    filesystem::filesystem() : m_letter('N')
+    filesystem::filesystem() : m_letter('N'), m_prefetching_count(0)
     {
         lv_fs_drv_init(&m_driver);
 
         m_driver.letter = m_letter;
         m_driver.cache_size = 4U * 1024U;
+
+        m_driver.ready_cb = [](lv_fs_drv_t *drive) -> bool
+        {
+            return static_cast<filesystem *>(drive->user_data)->ready();
+        };
 
         m_driver.open_cb = [](lv_fs_drv_t *drive, const char *path, lv_fs_mode_t mode) -> void *
         {
@@ -45,6 +50,24 @@ namespace io
     {
         for (auto pair : m_cache)
             delete pair.second;
+    }
+
+    void filesystem::prefetch(const std::vector<std::string> &paths)
+    {
+        size_t count = paths.size() - std::count(paths.begin(), paths.end(), "");
+
+        if (!count)
+            return;
+
+        m_prefetching_count += count;
+
+        auto on_fetch = [this, count](const std::string &)
+        {
+            m_prefetching_count--;
+        };
+
+        for (const auto &path : paths)
+            fetch(path, on_fetch);
     }
 
     void filesystem::fetch(const std::string &path, const fetch_callback callback)
@@ -92,7 +115,12 @@ namespace io
         {
             LV_LOG_WARN("fetching %s failed, HTTP status code: %d.", fetch->url, fetch->status);
 
-            delete static_cast<fetch_context *>(fetch->userData);
+            auto context = static_cast<fetch_context *>(fetch->userData);
+
+            if (context->m_callback)
+                context->m_callback("");
+
+            delete context;
 
             emscripten_fetch_close(fetch);
         };
@@ -108,6 +136,11 @@ namespace io
 
             delete static_cast<fetch_context *>(attribute.userData);
         }
+    }
+
+    bool filesystem::ready()
+    {
+        return !m_prefetching_count;
     }
 
     filesystem::file_handle *filesystem::open(const char *path, lv_fs_mode_t mode)

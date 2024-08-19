@@ -25,7 +25,7 @@ public:
     void set_active_group(lv_group_t *group);
 
 protected:
-    virtual void update(float timestep) = 0;
+    virtual void on_ready() = 0;
 
 private:
     float m_previous_timestamp = 0;

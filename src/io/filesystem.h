@@ -28,7 +28,10 @@ namespace io
         filesystem &operator=(const filesystem &) = delete;
         filesystem &operator=(filesystem &&) = delete;
 
+        void prefetch(const std::vector<std::string> &paths);
         void fetch(const std::string &path, const fetch_callback callback = nullptr);
+
+        bool ready();
 
     private:
         struct fetch_context
@@ -98,6 +101,7 @@ namespace io
         std::string get_full_path(const std::string &path);
 
         const char m_letter;
+        size_t m_prefetching_count;
         std::unordered_map<std::string, cache_entry *> m_cache;
 
         lv_fs_drv_t m_driver;

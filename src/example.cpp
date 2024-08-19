@@ -1,28 +1,31 @@
 #include "application/application.h"
 
-#include <demos/lv_demos.h>
+#include "io/filesystem.h"
 
 class example : public application
 {
 public:
-    example() : mp_group(lv_group_create())
+    example()
     {
-        set_active_group(mp_group);
-
-        lv_demo_widgets();
-    }
-
-    ~example()
-    {
-        lv_group_delete(mp_group);
+        io::filesystem::get().prefetch({
+            "img/lvgl.png",
+        });
     }
 
 private:
-    void update(float timestep) override
+    void on_ready() override
     {
-    }
+        auto image = lv_image_create(lv_scr_act());
+        auto on_fetch = [image](const std::string &path)
+        {
+            if (!path.empty())
+                lv_image_set_src(image, path.c_str());
 
-    lv_group_t *mp_group = nullptr;
+            lv_obj_center(image);
+        };
+
+        io::filesystem::get().fetch("img/lvgl.png", on_fetch);
+    };
 };
 
 DEFINE_MAIN(example);
