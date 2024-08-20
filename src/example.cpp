@@ -8,7 +8,7 @@ public:
     example()
     {
         io::filesystem::get().prefetch({
-            "img/lvgl.png",
+            "image/lvgl.png",
         });
     }
 
@@ -32,7 +32,7 @@ private:
             lv_obj_center(m_image);
         };
 
-        io::filesystem::get().fetch("img/lvgl.png", on_fetch);
+        io::filesystem::get().fetch("image/lvgl.png", on_fetch);
     };
 
     lv_obj_t *m_image = nullptr;
