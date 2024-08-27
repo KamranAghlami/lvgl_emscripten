@@ -61,7 +61,7 @@ namespace io
 
         m_prefetching_count += count;
 
-        auto on_fetch = [this, count](const std::string &)
+        auto on_fetch = [this](const std::string &)
         {
             m_prefetching_count--;
         };
@@ -70,7 +70,7 @@ namespace io
             fetch(path, on_fetch);
     }
 
-    void filesystem::fetch(const std::string &path, const fetch_callback callback)
+    void filesystem::fetch(const std::string &path, const fetch_callback &callback)
     {
         if (path.empty())
             return;

@@ -26,7 +26,4 @@ public:
 
 protected:
     virtual void on_ready() = 0;
-
-private:
-    float m_previous_timestamp = 0;
 };

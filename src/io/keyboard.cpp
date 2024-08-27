@@ -1,5 +1,7 @@
 #include "io/keyboard.h"
 
+#include <cstring>
+
 namespace io
 {
     keyboard::keyboard()

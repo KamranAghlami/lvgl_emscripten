@@ -29,14 +29,14 @@ namespace io
         filesystem &operator=(filesystem &&) = delete;
 
         void prefetch(const std::vector<std::string> &paths);
-        void fetch(const std::string &path, const fetch_callback callback = nullptr);
+        void fetch(const std::string &path, const fetch_callback &callback = nullptr);
 
         bool ready();
 
     private:
         struct fetch_context
         {
-            fetch_context(const std::string &path, const fetch_callback callback) : m_path(path), m_callback(callback) {}
+            fetch_context(const std::string &path, const fetch_callback &callback) : m_path(path), m_callback(callback) {}
 
             const std::string m_path;
             const fetch_callback m_callback;
@@ -67,7 +67,7 @@ namespace io
                 return m_data.data();
             }
 
-            const size_t size() const
+            size_t size() const
             {
                 return m_data.size();
             }
