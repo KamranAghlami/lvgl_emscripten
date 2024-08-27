@@ -15,7 +15,7 @@ include(FetchContent)
 FetchContent_Declare(
   lvgl
   GIT_REPOSITORY https://github.com/lvgl/lvgl.git
-  GIT_TAG tags/v9.1.0
+  GIT_TAG tags/v9.2.0
 )
 FetchContent_MakeAvailable(lvgl)
 target_compile_definitions(lvgl PUBLIC LV_CONF_INCLUDE_SIMPLE)
