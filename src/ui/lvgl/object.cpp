@@ -1,13 +1,25 @@
 #include "ui/lvgl/object.h"
 
 #include <cassert>
-#include "lvgl.h"
+#include <lvgl.h>
+
+#include "ui/lvgl/screen.h"
 
 namespace ui
 {
     namespace lvgl
     {
         std::unordered_map<void *, object *> object::s_objects;
+
+        int32_t object::SIZE_CONTENT()
+        {
+            return LV_SIZE_CONTENT;
+        }
+
+        int32_t object::PERCENTAGE(uint32_t percentage)
+        {
+            return LV_PCT(percentage);
+        }
 
         object &object::from_lv_object(void *lv_obj)
         {
@@ -38,8 +50,12 @@ namespace ui
         {
             lv_obj_delete(static_cast<lv_obj_t *>(mp_object));
 
-            for (auto event_descriptor : m_event_descriptors)
-                delete event_descriptor;
+            for (auto dsc : m_event_descriptors)
+            {
+                dsc->~descriptor();
+
+                lv_free(dsc);
+            }
 
             s_objects.erase(mp_object);
         }
@@ -163,6 +179,45 @@ namespace ui
             return *this;
         }
 
+        object &object::set_layout(layout l)
+        {
+            lv_obj_set_layout(static_cast<lv_obj_t *>(mp_object), static_cast<lv_layout_t>(l));
+
+            return *this;
+        }
+
+        object &object::update_layout()
+        {
+            lv_obj_update_layout(static_cast<lv_obj_t *>(mp_object));
+
+            return *this;
+        }
+
+        object &object::set_flex_flow(flex_flow f)
+        {
+            lv_obj_set_flex_flow(static_cast<lv_obj_t *>(mp_object), static_cast<lv_flex_flow_t>(f));
+
+            return *this;
+        }
+
+        object &object::set_flex_align(flex_alignment main, flex_alignment cross, flex_alignment track_cross)
+        {
+            lv_obj_set_flex_align(
+                static_cast<lv_obj_t *>(mp_object),
+                static_cast<lv_flex_align_t>(main),
+                static_cast<lv_flex_align_t>(cross),
+                static_cast<lv_flex_align_t>(track_cross));
+
+            return *this;
+        }
+
+        object &object::set_flex_grow(uint8_t grow)
+        {
+            lv_obj_set_flex_grow(static_cast<lv_obj_t *>(mp_object), grow);
+
+            return *this;
+        }
+
         object &object::invalidate()
         {
             lv_obj_invalidate(static_cast<lv_obj_t *>(mp_object));
@@ -175,7 +230,7 @@ namespace ui
             return lv_obj_is_visible(static_cast<lv_obj_t *>(mp_object));
         }
 
-        void object::add_event_callback(event::code code, const event::callback &callback)
+        void object::add_event_callback(event::code c, const event::callback &callback, void *user_data)
         {
             auto proxy_callback = [](lv_event_t *lv_event)
             {
@@ -187,20 +242,78 @@ namespace ui
                 object &current_target = from_lv_object(lv_target_current);
                 object &original_target = bubbled ? from_lv_object(lv_target) : current_target;
 
+                auto dsc = static_cast<event::descriptor *>(lv_event_get_user_data(lv_event));
+
                 event e{
                     .m_code = static_cast<event::code>(lv_event_get_code(lv_event)),
+                    .m_user_data = dsc->m_user_data,
+                    .m_parameter = lv_event_get_param(lv_event),
                     .m_current_target = current_target,
                     .m_original_target = original_target,
                 };
 
-                static_cast<event::descriptor *>(lv_event_get_user_data(lv_event))->m_callback(e);
+                dsc->m_callback(e);
             };
 
-            auto dsc = new event::descriptor(callback);
+            auto dsc_mem = lv_malloc(sizeof(event::descriptor));
+            auto dsc = new (dsc_mem) event::descriptor(callback, user_data);
 
-            dsc->mp_descriptor = lv_obj_add_event_cb(static_cast<lv_obj_t *>(mp_object), proxy_callback, static_cast<lv_event_code_t>(code), dsc);
+            dsc->mp_descriptor = lv_obj_add_event_cb(static_cast<lv_obj_t *>(mp_object), proxy_callback, static_cast<lv_event_code_t>(c), dsc);
 
             m_event_descriptors.push_back(dsc);
+        }
+
+        void object::send_event(event::code c, void *parameter)
+        {
+            lv_obj_send_event(static_cast<lv_obj_t *>(mp_object), static_cast<lv_event_code_t>(c), parameter);
+        }
+
+        int32_t object::index()
+        {
+            return lv_obj_get_index(static_cast<lv_obj_t *>(mp_object));
+        }
+
+        void object::set_index(int32_t index)
+        {
+            lv_obj_move_to_index(static_cast<lv_obj_t *>(mp_object), index);
+        }
+
+        object *object::parent()
+        {
+            auto lv_parent = lv_obj_get_parent(static_cast<lv_obj_t *>(mp_object));
+
+            return lv_parent ? &from_lv_object(lv_parent) : nullptr;
+        }
+
+        void object::set_parent(object &parent)
+        {
+            lv_obj_set_parent(static_cast<lv_obj_t *>(mp_object), static_cast<lv_obj_t *>(parent.mp_object));
+        }
+
+        object *object::child(int32_t index)
+        {
+            auto lv_child = lv_obj_get_child(static_cast<lv_obj_t *>(mp_object), index);
+
+            return lv_child ? &from_lv_object(lv_child) : nullptr;
+        }
+
+        uint32_t object::child_count()
+        {
+            return lv_obj_get_child_count(static_cast<lv_obj_t *>(mp_object));
+        }
+
+        object *object::sibling(int32_t index)
+        {
+            auto lv_sibling = lv_obj_get_sibling(static_cast<lv_obj_t *>(mp_object), index);
+
+            return lv_sibling ? &from_lv_object(lv_sibling) : nullptr;
+        }
+
+        screen &object::screen()
+        {
+            auto lv_screen = lv_obj_get_screen(static_cast<lv_obj_t *>(mp_object));
+
+            return static_cast<lvgl::screen &>(object::from_lv_object(lv_screen));
         }
     };
 }

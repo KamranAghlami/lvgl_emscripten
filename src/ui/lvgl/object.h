@@ -9,6 +9,8 @@ namespace ui
 {
     namespace lvgl
     {
+        class screen;
+
         class object
         {
         public:
@@ -91,6 +93,35 @@ namespace ui
                 OUT_RIGHT_BOTTOM,
             };
 
+            enum class layout : uint8_t
+            {
+                NONE,
+                FLEX,
+                GRID,
+            };
+
+            enum class flex_flow : uint8_t
+            {
+                ROW = 0x00,
+                COLUMN = 0x01,
+                ROW_WRAP = ROW | 0x04,
+                ROW_REVERSE = ROW | 0x08,
+                ROW_WRAP_REVERSE = ROW | 0x04 | 0x08,
+                COLUMN_WRAP = COLUMN | 0x04,
+                COLUMN_REVERSE = COLUMN | 0x08,
+                COLUMN_WRAP_REVERSE = COLUMN | 0x04 | 0x08,
+            };
+
+            enum class flex_alignment : uint8_t
+            {
+                START,
+                END,
+                CENTER,
+                SPACE_EVENLY,
+                SPACE_AROUND,
+                SPACE_BETWEEN,
+            };
+
             struct event
             {
                 using callback = std::function<void(event &)>;
@@ -160,22 +191,27 @@ namespace ui
                     FLUSH_WAIT_START,
                     FLUSH_WAIT_FINISH,
                     VSYNC,
-                    LAST,
                     PREPROCESS = 0x8000,
                 };
 
                 struct descriptor
                 {
-                    descriptor(const callback &cb) : m_callback(cb) {}
+                    descriptor(const callback &cb, void *user_data = nullptr) : m_callback(cb), m_user_data(user_data) {}
 
                     const callback m_callback;
+                    void *m_user_data;
                     void *mp_descriptor;
                 };
 
                 code m_code;
+                void *m_user_data;
+                void *m_parameter;
                 object &m_current_target;
                 object &m_original_target;
             };
+
+            static int32_t SIZE_CONTENT();
+            static int32_t PERCENTAGE(uint32_t percentage);
 
             object(object *parent);
 
@@ -208,11 +244,31 @@ namespace ui
             object &align(const alignment align, const int32_t x_ofs = 0, const int32_t y_ofs = 0);
             object &align_to(const object &base, const alignment align, const int32_t x_ofs = 0, const int32_t y_ofs = 0);
 
+            object &set_layout(layout l);
+            object &update_layout();
+            object &set_flex_flow(flex_flow f);
+            object &set_flex_align(flex_alignment main, flex_alignment cross = flex_alignment::START, flex_alignment track_cross = flex_alignment::START);
+            object &set_flex_grow(uint8_t grow);
+
             object &invalidate();
 
             bool is_visible();
 
-            void add_event_callback(event::code code, const event::callback &callback);
+            void add_event_callback(event::code c, const event::callback &callback, void *user_data = nullptr);
+            void send_event(event::code c, void *parameter = nullptr);
+
+            int32_t index();
+            void set_index(int32_t index);
+
+            object *parent();
+            void set_parent(object &parent);
+
+            object *child(int32_t index = 0);
+            uint32_t child_count();
+
+            object *sibling(int32_t index = 1);
+
+            screen &screen();
 
             void *lv_object();
 

@@ -1,6 +1,6 @@
 #include "ui/lvgl/screen.h"
 
-#include "lvgl.h"
+#include <lvgl.h>
 
 namespace ui
 {
