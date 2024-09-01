@@ -21,6 +21,21 @@ namespace ui
             return LV_PCT(percentage);
         }
 
+        int32_t object::GRID_CONTENT()
+        {
+            return LV_GRID_CONTENT;
+        }
+
+        int32_t object::GRID_FR(uint32_t fr)
+        {
+            return LV_GRID_FR(fr);
+        }
+
+        int32_t object::GRID_TEMPLATE_LAST()
+        {
+            return LV_GRID_TEMPLATE_LAST;
+        }
+
         object &object::from_lv_object(void *lv_obj)
         {
             auto it = s_objects.find(lv_obj);
@@ -214,6 +229,30 @@ namespace ui
         object &object::set_flex_grow(uint8_t grow)
         {
             lv_obj_set_flex_grow(static_cast<lv_obj_t *>(mp_object), grow);
+
+            return *this;
+        }
+
+        object &object::set_grid_dsc_array(const int32_t col_dsc[], const int32_t row_dsc[])
+        {
+            lv_obj_set_grid_dsc_array(static_cast<lv_obj_t *>(mp_object), col_dsc, row_dsc);
+
+            return *this;
+        }
+
+        object &object::set_grid_align(grid_alignment column, grid_alignment row)
+        {
+            lv_obj_set_grid_align(static_cast<lv_obj_t *>(mp_object), static_cast<lv_grid_align_t>(column), static_cast<lv_grid_align_t>(row));
+
+            return *this;
+        }
+
+        object &object::set_grid_cell(grid_alignment column, int32_t col_pos, int32_t col_span,
+                                      grid_alignment row, int32_t row_pos, int32_t row_span)
+        {
+            lv_obj_set_grid_cell(static_cast<lv_obj_t *>(mp_object),
+                                 static_cast<lv_grid_align_t>(column), col_pos, col_span,
+                                 static_cast<lv_grid_align_t>(row), row_pos, row_span);
 
             return *this;
         }

@@ -122,6 +122,17 @@ namespace ui
                 SPACE_BETWEEN,
             };
 
+            enum class grid_alignment : uint8_t
+            {
+                START,
+                CENTER,
+                END,
+                STRETCH,
+                SPACE_EVENLY,
+                SPACE_AROUND,
+                SPACE_BETWEEN,
+            };
+
             struct event
             {
                 using callback = std::function<void(event &)>;
@@ -212,6 +223,9 @@ namespace ui
 
             static int32_t SIZE_CONTENT();
             static int32_t PERCENTAGE(uint32_t percentage);
+            static int32_t GRID_CONTENT();
+            static int32_t GRID_FR(uint32_t fr);
+            static int32_t GRID_TEMPLATE_LAST();
 
             object(object *parent);
 
@@ -249,6 +263,10 @@ namespace ui
             object &set_flex_flow(flex_flow f);
             object &set_flex_align(flex_alignment main, flex_alignment cross = flex_alignment::START, flex_alignment track_cross = flex_alignment::START);
             object &set_flex_grow(uint8_t grow);
+            object &set_grid_dsc_array(const int32_t col_dsc[], const int32_t row_dsc[]);
+            object &set_grid_align(grid_alignment column, grid_alignment row);
+            object &set_grid_cell(grid_alignment column, int32_t col_pos, int32_t col_span,
+                                  grid_alignment row, int32_t row_pos, int32_t row_span);
 
             object &invalidate();
 
