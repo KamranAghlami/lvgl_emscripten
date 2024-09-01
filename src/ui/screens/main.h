@@ -10,41 +10,63 @@ namespace ui
     namespace screens
     {
         // TODO:
-        // grids groups styles selectors timers animations labels buttons images fonts ...
+        // groups styles selectors timers animations labels buttons images fonts ...
 
         class main : public lvgl::screen
         {
         public:
             main()
             {
-                set_layout(layout::FLEX);
-                set_flex_flow(flex_flow::ROW_WRAP);
-                set_flex_align(flex_alignment::SPACE_EVENLY, flex_alignment::SPACE_EVENLY, flex_alignment::SPACE_EVENLY);
+                const size_t columns = 20;
+                const size_t rows = 20;
 
-                for (int32_t x = 0; x < 400; x++)
-                {
-                    m_children.push_back(std::make_unique<object>(this));
+                m_col_dsc = static_cast<int32_t *>(lv_malloc((columns + 1) * sizeof(int32_t)));
+                m_row_dsc = static_cast<int32_t *>(lv_malloc((rows + 1) * sizeof(int32_t)));
 
-                    auto on_pressed = [this](event &e)
+                std::fill(m_col_dsc, m_col_dsc + columns, GRID_FR(1));
+                std::fill(m_row_dsc, m_row_dsc + rows, GRID_FR(1));
+
+                m_col_dsc[columns] = GRID_TEMPLATE_LAST();
+                m_row_dsc[rows] = GRID_TEMPLATE_LAST();
+
+                set_layout(layout::GRID);
+                set_grid_dsc_array(m_col_dsc, m_row_dsc);
+                set_grid_align(grid_alignment::CENTER, grid_alignment::CENTER);
+
+                for (int32_t i = 0; i < rows; i++)
+                    for (int32_t j = 0; j < columns; j++)
                     {
-                        lv_obj_set_style_bg_color(static_cast<lv_obj_t *>(e.m_current_target.lv_object()),
-                                                  lv_color_make(lv_rand(0, 0xFF),
-                                                                lv_rand(0, 0xFF),
-                                                                lv_rand(0, 0xFF)),
-                                                  LV_PART_MAIN | LV_STATE_DEFAULT);
-                    };
+                        m_children.push_back(std::make_unique<object>(this));
 
-                    object &rect = *m_children.back();
+                        auto on_pressed = [this](event &e)
+                        {
+                            lv_obj_set_style_bg_color(static_cast<lv_obj_t *>(e.m_current_target.lv_object()),
+                                                      lv_color_make(lv_rand(0, 0xFF),
+                                                                    lv_rand(0, 0xFF),
+                                                                    lv_rand(0, 0xFF)),
+                                                      LV_PART_MAIN | LV_STATE_DEFAULT);
+                        };
 
-                    rect.set_width(object::PERCENTAGE(5))
-                        .set_height(object::PERCENTAGE(5))
-                        .add_flag(flag::CLICKABLE)
-                        .add_event_callback(event::code::PRESSED, on_pressed);
-                }
+                        object &rect = *m_children.back();
+
+                        rect.set_grid_cell(
+                                grid_alignment::STRETCH, j, 1,
+                                grid_alignment::STRETCH, i, 1)
+                            .add_flag(flag::CLICKABLE)
+                            .add_event_callback(event::code::PRESSED, on_pressed);
+                    }
+            }
+
+            ~main()
+            {
+                lv_free(m_row_dsc);
+                lv_free(m_col_dsc);
             }
 
         private:
             std::vector<std::unique_ptr<object>> m_children;
+            int32_t *m_col_dsc = nullptr;
+            int32_t *m_row_dsc = nullptr;
         };
     }
 }
