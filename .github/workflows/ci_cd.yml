@@ -37,6 +37,8 @@ jobs:
           sed -i 's|\.\./build/application\.js|wasm/application.js|' index.js
           TAG_NAME=${GITHUB_REF#refs/tags/}
           sed -i "s|v0\.0\.0|$TAG_NAME|" service_worker.js
+          sed -i 's|\.\./build/application\.js|wasm/application.js|' service_worker.js
+          sed -i 's|\.\./build/application\.wasm|wasm/application.wasm|' service_worker.js
           tar zcf ../${{github.event.repository.name}}.tar.gz *
 
       - name: Release (1/4)
