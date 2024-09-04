@@ -216,6 +216,8 @@ namespace ui
             void *mp_object;
 
             std::vector<event::descriptor *> m_event_descriptors;
+
+            friend class event;
         };
 
         inline object::flag operator|(object::flag lhs, object::flag rhs)

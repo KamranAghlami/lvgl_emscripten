@@ -273,25 +273,9 @@ namespace ui
         {
             auto proxy_callback = [](lv_event_t *lv_event)
             {
-                lv_obj_t *lv_target_current = lv_event_get_current_target_obj(lv_event);
-                lv_obj_t *lv_target = lv_event_get_target_obj(lv_event);
+                event e(lv_event);
 
-                const bool bubbled = lv_target_current != lv_target;
-
-                object &current_target = from_lv_object(lv_target_current);
-                object &original_target = bubbled ? from_lv_object(lv_target) : current_target;
-
-                auto dsc = static_cast<event::descriptor *>(lv_event_get_user_data(lv_event));
-
-                event e{
-                    .m_code = static_cast<event::code>(lv_event_get_code(lv_event)),
-                    .m_user_data = dsc->m_user_data,
-                    .m_parameter = lv_event_get_param(lv_event),
-                    .m_current_target = current_target,
-                    .m_original_target = original_target,
-                };
-
-                dsc->m_callback(e);
+                static_cast<event::descriptor *>(lv_event_get_user_data(lv_event))->m_callback(e);
             };
 
             auto dsc_mem = lv_malloc(sizeof(event::descriptor));

@@ -30,13 +30,10 @@ namespace ui
 
                 auto on_key = [this](lvgl::event &e)
                 {
-                    auto key = *static_cast<uint32_t *>(e.m_parameter);
-
-                    switch (key)
+                    switch (e.get_key_code())
                     {
-                    case 17:
-                    case 19:
-                    case 43:
+                    case lvgl::event::key_code::UP:
+                    case lvgl::event::key_code::RIGHT:
                         m_columns++;
                         m_rows++;
 
@@ -44,9 +41,8 @@ namespace ui
 
                         break;
 
-                    case 18:
-                    case 20:
-                    case 45:
+                    case lvgl::event::key_code::DOWN:
+                    case lvgl::event::key_code::LEFT:
                         if (m_columns > 1 && m_rows > 1)
                         {
                             m_columns--;
@@ -104,7 +100,7 @@ namespace ui
 
                         auto on_pressed = [this](lvgl::event &e)
                         {
-                            lv_obj_set_style_bg_color(static_cast<lv_obj_t *>(e.m_current_target.lv_object()),
+                            lv_obj_set_style_bg_color(static_cast<lv_obj_t *>(e.current_target().lv_object()),
                                                       lv_color_make(lv_rand(0, 0xFF),
                                                                     lv_rand(0, 0xFF),
                                                                     lv_rand(0, 0xFF)),
