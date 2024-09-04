@@ -34,10 +34,13 @@ namespace ui
                     {
                     case lvgl::event::key_code::UP:
                     case lvgl::event::key_code::RIGHT:
-                        m_columns++;
-                        m_rows++;
+                        if (m_columns < 16 && m_rows < 16)
+                        {
+                            m_columns *= 2;
+                            m_rows *= 2;
 
-                        draw();
+                            draw();
+                        }
 
                         break;
 
@@ -45,8 +48,8 @@ namespace ui
                     case lvgl::event::key_code::LEFT:
                         if (m_columns > 1 && m_rows > 1)
                         {
-                            m_columns--;
-                            m_rows--;
+                            m_columns /= 2;
+                            m_rows /= 2;
 
                             draw();
                         }
@@ -119,8 +122,8 @@ namespace ui
 
             lvgl::group m_group;
             std::vector<std::unique_ptr<object>> m_children;
-            size_t m_columns = 5;
-            size_t m_rows = 5;
+            size_t m_columns = 4;
+            size_t m_rows = 4;
             int32_t *m_col_dsc = nullptr;
             int32_t *m_row_dsc = nullptr;
         };
