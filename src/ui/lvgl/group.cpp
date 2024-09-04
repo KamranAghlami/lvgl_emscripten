@@ -28,6 +28,8 @@ namespace ui
 
         group::~group()
         {
+            lv_group_delete(static_cast<lv_group_t *>(mp_group));
+
             s_groups.erase(mp_group);
         }
 
