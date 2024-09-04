@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lvgl.h>
+#include "ui/lvgl/group.h"
 
 #define DEFINE_MAIN(class) \
     int main()             \
@@ -13,6 +13,8 @@
 class application
 {
 public:
+    static application *get();
+
     application();
     virtual ~application();
 
@@ -22,7 +24,7 @@ public:
     application &operator=(application &&) = delete;
 
     void set_scaling(float scaling);
-    void set_active_group(lv_group_t *group);
+    void set_active_group(ui::lvgl::group &group);
 
 protected:
     virtual void on_ready() = 0;

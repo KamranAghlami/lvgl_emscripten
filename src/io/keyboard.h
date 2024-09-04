@@ -3,6 +3,8 @@
 #include <emscripten/html5.h>
 #include <lvgl.h>
 
+#include "ui/lvgl/group.h"
+
 namespace io
 {
     class keyboard
@@ -28,7 +30,7 @@ namespace io
         keyboard &operator=(const keyboard &) = delete;
         keyboard &operator=(keyboard &&) = delete;
 
-        void set_group(lv_group_t *group);
+        void set_group(ui::lvgl::group &group);
 
     private:
         keyboard();

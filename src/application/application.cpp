@@ -3,6 +3,7 @@
 #include <assert.h>
 
 #include <emscripten/html5.h>
+#include <lvgl.h>
 
 #include "io/display.h"
 #include "io/filesystem.h"
@@ -11,6 +12,13 @@
 #include "io/keyboard.h"
 
 static application *s_instance = nullptr;
+
+application *application::get()
+{
+    assert(s_instance);
+
+    return s_instance;
+}
 
 application::application()
 {
@@ -69,10 +77,8 @@ void application::set_scaling(float scaling)
     io::mouse::get().set_scaling(scaling);
 }
 
-void application::set_active_group(lv_group_t *group)
+void application::set_active_group(ui::lvgl::group &group)
 {
-    lv_group_set_default(group);
-
     io::mouse::get().set_group(group);
     io::keyboard::get().set_group(group);
 }

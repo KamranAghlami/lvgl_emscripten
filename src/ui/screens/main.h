@@ -3,6 +3,8 @@
 #include <vector>
 #include <memory>
 
+#include <lvgl.h>
+
 #include "ui/lvgl/screen.h"
 
 namespace ui

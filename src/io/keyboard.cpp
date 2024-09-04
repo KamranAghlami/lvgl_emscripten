@@ -31,9 +31,9 @@ namespace io
         lv_indev_delete(mp_device);
     }
 
-    void keyboard::set_group(lv_group_t *group)
+    void keyboard::set_group(ui::lvgl::group &group)
     {
-        lv_indev_set_group(mp_device, group);
+        lv_indev_set_group(mp_device, static_cast<lv_group_t *>(group.lv_group()));
     }
 
     EM_BOOL keyboard::on_key_down(int type, const EmscriptenKeyboardEvent *keyboard_event, void *user_data)

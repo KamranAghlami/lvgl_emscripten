@@ -3,6 +3,8 @@
 #include <emscripten/html5.h>
 #include <lvgl.h>
 
+#include "ui/lvgl/group.h"
+
 namespace io
 {
     class mouse
@@ -32,7 +34,7 @@ namespace io
         mouse &operator=(mouse &&) = delete;
 
         void set_scaling(float scaling);
-        void set_group(lv_group_t *group);
+        void set_group(ui::lvgl::group &group);
 
     private:
         mouse();

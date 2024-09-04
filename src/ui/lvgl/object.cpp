@@ -354,5 +354,12 @@ namespace ui
 
             return static_cast<lvgl::screen &>(object::from_lv_object(lv_screen));
         }
+
+        group *object::group()
+        {
+            auto lv_group = lv_obj_get_group(static_cast<lv_obj_t *>(mp_object));
+
+            return lv_group ? &group::from_lv_group(lv_group) : nullptr;
+        }
     };
 }

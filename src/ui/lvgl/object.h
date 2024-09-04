@@ -5,6 +5,8 @@
 #include <functional>
 #include <vector>
 
+#include "ui/lvgl/group.h"
+
 namespace ui
 {
     namespace lvgl
@@ -287,6 +289,7 @@ namespace ui
             object *sibling(int32_t index = 1);
 
             screen &screen();
+            group *group();
 
             void *lv_object();
 

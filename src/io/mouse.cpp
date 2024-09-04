@@ -68,9 +68,9 @@ namespace io
         m_scaling = scaling;
     }
 
-    void mouse::set_group(lv_group_t *group)
+    void mouse::set_group(ui::lvgl::group &group)
     {
-        lv_indev_set_group(mp_device_aux, group);
+        lv_indev_set_group(mp_device_aux, static_cast<lv_group_t *>(group.lv_group()));
     }
 
     EM_BOOL mouse::on_mouse_down(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
