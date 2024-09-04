@@ -21,9 +21,9 @@ namespace ui
             group &operator=(const group &) = delete;
             group &operator=(group &&) = delete;
 
-            void add_object(object &obj);
+            group &add_object(object &obj);
 
-            void activate();
+            group &activate();
 
             void *lv_group();
 

@@ -39,14 +39,18 @@ namespace ui
             s_groups.erase(mp_group);
         }
 
-        void group::add_object(object &obj)
+        group &group::add_object(object &obj)
         {
             lv_group_add_obj(static_cast<lv_group_t *>(mp_group), static_cast<lv_obj_t *>(obj.lv_object()));
+
+            return *this;
         }
 
-        void group::activate()
+        group &group::activate()
         {
             application::get()->set_active_group(*this);
+
+            return *this;
         }
 
         void *group::lv_group()
