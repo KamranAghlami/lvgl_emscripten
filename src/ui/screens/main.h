@@ -19,6 +19,51 @@ namespace ui
         public:
             main()
             {
+                m_group.add_object(*this);
+
+                auto on_load = [this](lvgl::event &e)
+                {
+                    m_group.activate();
+                };
+
+                add_event_callback(lvgl::event::code::SCREEN_LOADED, on_load);
+
+                auto on_key = [this](lvgl::event &e)
+                {
+                    auto key = *static_cast<uint32_t *>(e.m_parameter);
+
+                    switch (key)
+                    {
+                    case 17:
+                    case 19:
+                    case 43:
+                        m_columns++;
+                        m_rows++;
+
+                        draw();
+
+                        break;
+
+                    case 18:
+                    case 20:
+                    case 45:
+                        if (m_columns > 1 && m_rows > 1)
+                        {
+                            m_columns--;
+                            m_rows--;
+
+                            draw();
+                        }
+
+                        break;
+
+                    default:
+                        break;
+                    }
+                };
+
+                add_event_callback(lvgl::event::code::KEY, on_key);
+
                 draw();
             }
 
@@ -76,9 +121,10 @@ namespace ui
                     }
             }
 
+            lvgl::group m_group;
             std::vector<std::unique_ptr<object>> m_children;
-            size_t m_columns = 10;
-            size_t m_rows = 10;
+            size_t m_columns = 5;
+            size_t m_rows = 5;
             int32_t *m_col_dsc = nullptr;
             int32_t *m_row_dsc = nullptr;
         };

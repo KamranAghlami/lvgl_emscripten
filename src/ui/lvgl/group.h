@@ -6,11 +6,22 @@ namespace ui
 {
     namespace lvgl
     {
+        class object;
+
         class group
         {
         public:
+            static void focus_object(object &obj);
+
             group();
             ~group();
+
+            group(const group &) = delete;
+            group(group &&) = delete;
+            group &operator=(const group &) = delete;
+            group &operator=(group &&) = delete;
+
+            void add_object(object &obj);
 
             void activate();
 
