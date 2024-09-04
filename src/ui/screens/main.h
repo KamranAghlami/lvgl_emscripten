@@ -57,7 +57,7 @@ namespace ui
                     {
                         m_children.push_back(std::make_unique<object>(this));
 
-                        auto on_pressed = [this](event &e)
+                        auto on_pressed = [this](lvgl::event &e)
                         {
                             lv_obj_set_style_bg_color(static_cast<lv_obj_t *>(e.m_current_target.lv_object()),
                                                       lv_color_make(lv_rand(0, 0xFF),
@@ -72,7 +72,7 @@ namespace ui
                                 grid_alignment::STRETCH, j, 1,
                                 grid_alignment::STRETCH, i, 1)
                             .add_flag(flag::CLICKABLE | flag::EVENT_BUBBLE)
-                            .add_event_callback(event::code::PRESSED, on_pressed);
+                            .add_event_callback(lvgl::event::code::PRESSED, on_pressed);
                     }
             }
 
