@@ -12,7 +12,7 @@ namespace ui
     namespace screens
     {
         // TODO:
-        // groups styles selectors timers animations labels buttons images fonts ...
+        // styles selectors timers animations labels buttons images fonts ...
 
         class main : public lvgl::screen
         {
@@ -65,7 +65,7 @@ namespace ui
 
                 auto on_pressed = [this](lvgl::event &e)
                 {
-                    lv_obj_set_style_bg_color(static_cast<lv_obj_t *>(e.target().lv_object()),
+                    lv_obj_set_style_bg_color(static_cast<lv_obj_t *>(e.target_object().lv_object()),
                                               lv_color_make(lv_rand(0, 0xFF),
                                                             lv_rand(0, 0xFF),
                                                             lv_rand(0, 0xFF)),

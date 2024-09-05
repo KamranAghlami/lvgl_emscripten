@@ -27,14 +27,14 @@ namespace ui
             return lv_event_get_param(e);
         }
 
-        object &event::current_target()
+        object &event::current_target_object()
         {
             auto e = static_cast<lv_event_t *>(mp_event);
 
             return object::from_lv_object(lv_event_get_current_target_obj(e));
         }
 
-        object &event::target()
+        object &event::target_object()
         {
             auto e = static_cast<lv_event_t *>(mp_event);
 

@@ -93,8 +93,8 @@ namespace ui
             code get_code();
             void *user_data();
             void *parameter();
-            object &current_target();
-            object &target();
+            object &current_target_object();
+            object &target_object();
             uint32_t get_key();
 
         private:
