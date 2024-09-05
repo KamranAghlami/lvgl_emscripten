@@ -5,14 +5,14 @@
 
 #include <lvgl.h>
 
-#include "ui/lvgl/screen.h"
+#include "ui/lvgl/lvgl.h"
 
 namespace ui
 {
     namespace screens
     {
         // TODO:
-        // styles selectors timers animations labels buttons images fonts ...
+        // styles selectors animations labels buttons images fonts ...
 
         class main : public lvgl::screen
         {
@@ -34,7 +34,7 @@ namespace ui
                     {
                     case lvgl::group::key_code::UP:
                     case lvgl::group::key_code::RIGHT:
-                        if (m_columns < 16 && m_rows < 16)
+                        if (m_columns < 32 && m_rows < 32)
                         {
                             m_columns *= 2;
                             m_rows *= 2;
@@ -73,6 +73,8 @@ namespace ui
                 };
 
                 add_event_callback(lvgl::event::code::PRESSED, on_pressed);
+
+                remove_flag(flag::CLICKABLE);
 
                 draw();
             }
