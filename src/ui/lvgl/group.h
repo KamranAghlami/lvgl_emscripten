@@ -65,13 +65,13 @@ namespace ui
             uint32_t get_object_count();
 
             group &set_refocus_policy(refocus_policy policy);
-            group &set_focus_callback(focus_callback focus_cb);
-            group &set_edge_callback(edge_callback edge_cb);
+            group &set_focus_callback(const focus_callback &cb);
+            group &set_edge_callback(const edge_callback &cb);
             group &set_editing(bool enable);
             group &set_wrap(bool enable);
 
-            focus_callback get_focus_callback();
-            edge_callback get_edge_callback();
+            const focus_callback &get_focus_callback();
+            const edge_callback &get_edge_callback();
             bool get_editing();
             bool get_wrap();
 

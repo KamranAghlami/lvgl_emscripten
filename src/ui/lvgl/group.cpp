@@ -134,7 +134,7 @@ namespace ui
             return *this;
         }
 
-        group &group::set_focus_callback(focus_callback cb)
+        group &group::set_focus_callback(const focus_callback &cb)
         {
             m_focus_callback = cb;
 
@@ -150,7 +150,7 @@ namespace ui
             return *this;
         }
 
-        group &group::set_edge_callback(edge_callback cb)
+        group &group::set_edge_callback(const edge_callback &cb)
         {
             m_edge_callback = cb;
 
@@ -180,12 +180,12 @@ namespace ui
             return *this;
         }
 
-        group::focus_callback group::get_focus_callback()
+        const group::focus_callback &group::get_focus_callback()
         {
             return m_focus_callback;
         }
 
-        group::edge_callback group::get_edge_callback()
+        const group::edge_callback &group::get_edge_callback()
         {
             return m_edge_callback;
         }
