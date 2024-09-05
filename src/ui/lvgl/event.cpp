@@ -10,57 +10,45 @@ namespace ui
     {
         event::code event::get_code()
         {
-            return m_code;
-        }
+            auto e = static_cast<lv_event_t *>(mp_event);
 
-        event::key_code event::get_key_code()
-        {
-            return *static_cast<event::key_code *>(m_parameter);
-        }
-
-        uint32_t event::get_key_value()
-        {
-            return *static_cast<uint32_t *>(m_parameter);
+            return static_cast<event::code>(lv_event_get_code(e));
         }
 
         void *event::user_data()
         {
-            return m_user_data;
+            return mp_user_data;
         }
 
         void *event::parameter()
         {
-            return m_parameter;
+            auto e = static_cast<lv_event_t *>(mp_event);
+
+            return lv_event_get_param(e);
         }
 
         object &event::current_target()
         {
-            return *m_current_target;
+            auto e = static_cast<lv_event_t *>(mp_event);
+
+            return object::from_lv_object(lv_event_get_current_target_obj(e));
         }
 
-        object &event::original_target()
+        object &event::target()
         {
-            return *m_original_target;
+            auto e = static_cast<lv_event_t *>(mp_event);
+
+            return object::from_lv_object(lv_event_get_target_obj(e));
         }
 
-        event::event(void *lv_event)
+        uint32_t event::get_key()
         {
-            auto e = static_cast<lv_event_t *>(lv_event);
+            return lv_event_get_key(static_cast<lv_event_t *>(mp_event));
+        }
 
-            m_code = static_cast<event::code>(lv_event_get_code(e));
-
-            auto dsc = static_cast<event::descriptor *>(lv_event_get_user_data(e));
-
-            m_user_data = dsc->m_user_data;
-            m_parameter = lv_event_get_param(e);
-
-            lv_obj_t *lv_target_current = lv_event_get_current_target_obj(e);
-            lv_obj_t *lv_target = lv_event_get_target_obj(e);
-
-            const bool bubbled = lv_target_current != lv_target;
-
-            m_current_target = &object::from_lv_object(lv_target_current);
-            m_original_target = bubbled ? &object::from_lv_object(lv_target) : m_current_target;
+        event::event(void *lv_event) : mp_event(lv_event),
+                                       mp_user_data(static_cast<event::descriptor *>(lv_event_get_user_data(static_cast<lv_event_t *>(lv_event)))->m_user_data)
+        {
         }
     }
 }

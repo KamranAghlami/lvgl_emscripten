@@ -81,22 +81,6 @@ namespace ui
                 PREPROCESS = 0x8000,
             };
 
-            enum class key_code : uint32_t
-            {
-                UP = 17,
-                DOWN = 18,
-                RIGHT = 19,
-                LEFT = 20,
-                ESC = 27,
-                DEL = 127,
-                BACKSPACE = 8,
-                ENTER = 10,
-                NEXT = 9,
-                PREV = 11,
-                HOME = 2,
-                END = 3,
-            };
-
             struct descriptor
             {
                 descriptor(const callback &cb, void *user_data = nullptr) : m_callback(cb), m_user_data(user_data) {}
@@ -107,21 +91,17 @@ namespace ui
             };
 
             code get_code();
-            key_code get_key_code();
-            uint32_t get_key_value();
             void *user_data();
             void *parameter();
             object &current_target();
-            object &original_target();
+            object &target();
+            uint32_t get_key();
 
         private:
             event(void *lv_event);
 
-            code m_code;
-            void *m_user_data;
-            void *m_parameter;
-            object *m_current_target;
-            object *m_original_target;
+            void *mp_event;
+            void *mp_user_data;
 
             friend class object;
         };

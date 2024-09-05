@@ -11,6 +11,22 @@ namespace ui
         class group
         {
         public:
+            enum class key_code : uint32_t
+            {
+                UP = 17,
+                DOWN = 18,
+                RIGHT = 19,
+                LEFT = 20,
+                ESC = 27,
+                DEL = 127,
+                BACKSPACE = 8,
+                ENTER = 10,
+                NEXT = 9,
+                PREV = 11,
+                HOME = 2,
+                END = 3,
+            };
+
             static void focus_object(object &obj);
 
             group();

@@ -30,10 +30,10 @@ namespace ui
 
                 auto on_key = [this](lvgl::event &e)
                 {
-                    switch (e.get_key_code())
+                    switch (static_cast<lvgl::group::key_code>(e.get_key()))
                     {
-                    case lvgl::event::key_code::UP:
-                    case lvgl::event::key_code::RIGHT:
+                    case lvgl::group::key_code::UP:
+                    case lvgl::group::key_code::RIGHT:
                         if (m_columns < 16 && m_rows < 16)
                         {
                             m_columns *= 2;
@@ -44,8 +44,8 @@ namespace ui
 
                         break;
 
-                    case lvgl::event::key_code::DOWN:
-                    case lvgl::event::key_code::LEFT:
+                    case lvgl::group::key_code::DOWN:
+                    case lvgl::group::key_code::LEFT:
                         if (m_columns > 1 && m_rows > 1)
                         {
                             m_columns /= 2;
@@ -62,6 +62,17 @@ namespace ui
                 };
 
                 add_event_callback(lvgl::event::code::KEY, on_key);
+
+                auto on_pressed = [this](lvgl::event &e)
+                {
+                    lv_obj_set_style_bg_color(static_cast<lv_obj_t *>(e.target().lv_object()),
+                                              lv_color_make(lv_rand(0, 0xFF),
+                                                            lv_rand(0, 0xFF),
+                                                            lv_rand(0, 0xFF)),
+                                              LV_PART_MAIN | LV_STATE_DEFAULT);
+                };
+
+                add_event_callback(lvgl::event::code::PRESSED, on_pressed);
 
                 draw();
             }
@@ -101,22 +112,12 @@ namespace ui
                     {
                         m_children.push_back(std::make_unique<object>(this));
 
-                        auto on_pressed = [this](lvgl::event &e)
-                        {
-                            lv_obj_set_style_bg_color(static_cast<lv_obj_t *>(e.current_target().lv_object()),
-                                                      lv_color_make(lv_rand(0, 0xFF),
-                                                                    lv_rand(0, 0xFF),
-                                                                    lv_rand(0, 0xFF)),
-                                                      LV_PART_MAIN | LV_STATE_DEFAULT);
-                        };
-
                         object &rect = *m_children.back();
 
                         rect.set_grid_cell(
                                 grid_alignment::STRETCH, j, 1,
                                 grid_alignment::STRETCH, i, 1)
-                            .add_flag(flag::CLICKABLE | flag::EVENT_BUBBLE)
-                            .add_event_callback(lvgl::event::code::PRESSED, on_pressed);
+                            .add_flag(flag::CLICKABLE | flag::EVENT_BUBBLE);
                     }
             }
 
