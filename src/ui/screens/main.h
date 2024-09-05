@@ -79,8 +79,11 @@ namespace ui
 
             ~main()
             {
-                lv_free(m_row_dsc);
-                lv_free(m_col_dsc);
+                if (m_row_dsc)
+                    lv_free(m_row_dsc);
+
+                if (m_col_dsc)
+                    lv_free(m_col_dsc);
             }
 
         private:
