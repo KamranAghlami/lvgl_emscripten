@@ -3,6 +3,11 @@
 #include <unordered_map>
 #include <functional>
 
+extern "C"
+{
+    struct lv_group_t;
+}
+
 namespace ui
 {
     namespace lvgl
@@ -77,14 +82,14 @@ namespace ui
 
             group &activate();
 
-            void *lv_group();
+            lv_group_t *lv_group();
 
         private:
-            static group &from_lv_group(void *lv_grp);
+            static group &from_lv_group(lv_group_t *lv_grp);
 
-            static std::unordered_map<void *, group *> s_groups;
+            static std::unordered_map<lv_group_t *, group *> s_groups;
 
-            void *mp_group;
+            lv_group_t *mp_group;
             focus_callback m_focus_callback = nullptr;
             edge_callback m_edge_callback = nullptr;
 

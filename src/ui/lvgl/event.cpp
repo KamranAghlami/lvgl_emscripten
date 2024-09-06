@@ -10,9 +10,7 @@ namespace ui
     {
         event::code event::get_code()
         {
-            auto e = static_cast<lv_event_t *>(mp_event);
-
-            return static_cast<event::code>(lv_event_get_code(e));
+            return static_cast<event::code>(lv_event_get_code(mp_event));
         }
 
         void *event::user_data()
@@ -22,32 +20,26 @@ namespace ui
 
         void *event::parameter()
         {
-            auto e = static_cast<lv_event_t *>(mp_event);
-
-            return lv_event_get_param(e);
+            return lv_event_get_param(mp_event);
         }
 
         object &event::current_target_object()
         {
-            auto e = static_cast<lv_event_t *>(mp_event);
-
-            return object::from_lv_object(lv_event_get_current_target_obj(e));
+            return object::from_lv_object(lv_event_get_current_target_obj(mp_event));
         }
 
         object &event::target_object()
         {
-            auto e = static_cast<lv_event_t *>(mp_event);
-
-            return object::from_lv_object(lv_event_get_target_obj(e));
+            return object::from_lv_object(lv_event_get_target_obj(mp_event));
         }
 
         uint32_t event::get_key()
         {
-            return lv_event_get_key(static_cast<lv_event_t *>(mp_event));
+            return lv_event_get_key(mp_event);
         }
 
-        event::event(void *lv_event) : mp_event(lv_event),
-                                       mp_user_data(static_cast<event::descriptor *>(lv_event_get_user_data(static_cast<lv_event_t *>(lv_event)))->m_user_data)
+        event::event(lv_event_t *lv_event) : mp_event(lv_event),
+                                             mp_user_data(static_cast<event::descriptor *>(lv_event_get_user_data(lv_event))->m_user_data)
         {
         }
     }

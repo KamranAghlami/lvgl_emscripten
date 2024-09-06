@@ -2,6 +2,11 @@
 
 #include <functional>
 
+extern "C"
+{
+    struct lv_timer_t;
+}
+
 namespace ui
 {
     namespace lvgl
@@ -33,7 +38,7 @@ namespace ui
             void *get_user_data();
 
         private:
-            void *mp_timer;
+            lv_timer_t *mp_timer;
             callback m_callback;
             void *mp_user_data;
         };

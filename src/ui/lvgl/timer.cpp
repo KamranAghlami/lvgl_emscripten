@@ -17,24 +17,24 @@ namespace ui
 
             mp_timer = lv_timer_create(on_timeout, period, this);
 
-            lv_timer_set_auto_delete(static_cast<lv_timer_t *>(mp_timer), false);
+            lv_timer_set_auto_delete(mp_timer, false);
         }
 
         timer::~timer()
         {
-            lv_timer_delete(static_cast<lv_timer_t *>(mp_timer));
+            lv_timer_delete(mp_timer);
         }
 
         timer &timer::pause()
         {
-            lv_timer_pause(static_cast<lv_timer_t *>(mp_timer));
+            lv_timer_pause(mp_timer);
 
             return *this;
         }
 
         timer &timer::resume()
         {
-            lv_timer_resume(static_cast<lv_timer_t *>(mp_timer));
+            lv_timer_resume(mp_timer);
 
             return *this;
         }
@@ -48,7 +48,7 @@ namespace ui
 
         timer &timer::set_period(uint32_t period)
         {
-            lv_timer_set_period(static_cast<lv_timer_t *>(mp_timer), period);
+            lv_timer_set_period(mp_timer, period);
 
             return *this;
         }
@@ -62,28 +62,28 @@ namespace ui
 
         timer &timer::set_repeat_count(int32_t repeat_count)
         {
-            lv_timer_set_repeat_count(static_cast<lv_timer_t *>(mp_timer), repeat_count);
+            lv_timer_set_repeat_count(mp_timer, repeat_count);
 
             return *this;
         }
 
         timer &timer::ready()
         {
-            lv_timer_ready(static_cast<lv_timer_t *>(mp_timer));
+            lv_timer_ready(mp_timer);
 
             return *this;
         }
 
         timer &timer::reset()
         {
-            lv_timer_reset(static_cast<lv_timer_t *>(mp_timer));
+            lv_timer_reset(mp_timer);
 
             return *this;
         }
 
         bool timer::paused()
         {
-            return lv_timer_get_paused(static_cast<lv_timer_t *>(mp_timer));
+            return lv_timer_get_paused(mp_timer);
         }
 
         const timer::callback &timer::get_callback()

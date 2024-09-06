@@ -2,6 +2,11 @@
 
 #include <functional>
 
+extern "C"
+{
+    struct lv_event_t;
+}
+
 namespace ui
 {
     namespace lvgl
@@ -98,9 +103,9 @@ namespace ui
             uint32_t get_key();
 
         private:
-            event(void *lv_event);
+            event(lv_event_t *lv_event);
 
-            void *mp_event;
+            lv_event_t *mp_event;
             void *mp_user_data;
 
             friend class object;

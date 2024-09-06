@@ -65,7 +65,7 @@ namespace ui
 
                 auto on_pressed = [this](lvgl::event &e)
                 {
-                    lv_obj_set_style_bg_color(static_cast<lv_obj_t *>(e.target_object().lv_object()),
+                    lv_obj_set_style_bg_color(e.target_object().lv_object(),
                                               lv_color_make(lv_rand(0, 0xFF),
                                                             lv_rand(0, 0xFF),
                                                             lv_rand(0, 0xFF)),
@@ -115,7 +115,7 @@ namespace ui
                 for (int32_t i = 0; i < m_rows; i++)
                     for (int32_t j = 0; j < m_columns; j++)
                     {
-                        m_children.push_back(std::make_unique<object>(this));
+                        m_children.push_back(std::make_unique<object>(*this));
 
                         object &rect = *m_children.back();
 
@@ -123,6 +123,12 @@ namespace ui
                                 grid_alignment::STRETCH, j, 1,
                                 grid_alignment::STRETCH, i, 1)
                             .add_flag(flag::CLICKABLE | flag::EVENT_BUBBLE);
+
+                        lv_obj_set_style_bg_color(rect.lv_object(),
+                                                  lv_color_make(lv_rand(0, 0xFF),
+                                                                lv_rand(0, 0xFF),
+                                                                lv_rand(0, 0xFF)),
+                                                  LV_PART_MAIN | LV_STATE_DEFAULT);
                     }
             }
 

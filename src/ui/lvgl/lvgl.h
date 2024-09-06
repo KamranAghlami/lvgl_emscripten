@@ -7,6 +7,7 @@
 #include "ui/lvgl/timer.h"
 #include "ui/lvgl/object.h"
 #include "ui/lvgl/screen.h"
+#include "ui/lvgl/label.h"
 
 namespace ui
 {

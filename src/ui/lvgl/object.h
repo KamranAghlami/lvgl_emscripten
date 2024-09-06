@@ -7,6 +7,11 @@
 #include "ui/lvgl/event.h"
 #include "ui/lvgl/group.h"
 
+extern "C"
+{
+    struct lv_obj_t;
+}
+
 namespace ui
 {
     namespace lvgl
@@ -141,7 +146,7 @@ namespace ui
             static int32_t GRID_FR(uint32_t fr);
             static int32_t GRID_TEMPLATE_LAST();
 
-            object(object *parent);
+            object(object &parent);
 
             virtual ~object();
 
@@ -203,17 +208,17 @@ namespace ui
             screen &screen();
             group *group();
 
-            void *lv_object();
+            lv_obj_t *lv_object();
 
         protected:
-            static object &from_lv_object(void *lv_obj);
+            static object &from_lv_object(lv_obj_t *lv_obj);
 
-            explicit object(void *lv_obj);
+            explicit object(lv_obj_t *lv_obj);
 
         private:
-            static std::unordered_map<void *, object *> s_objects;
+            static std::unordered_map<lv_obj_t *, object *> s_objects;
 
-            void *mp_object;
+            lv_obj_t *mp_object;
 
             std::vector<event::descriptor *> m_event_descriptors;
 
