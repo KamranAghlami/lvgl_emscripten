@@ -93,25 +93,6 @@ namespace ui
             return lv_obj_has_flag(mp_object, static_cast<lv_obj_flag_t>(f));
         }
 
-        object &object::add_state(const state s)
-        {
-            lv_obj_add_state(mp_object, static_cast<lv_state_t>(s));
-
-            return *this;
-        }
-
-        object &object::remove_state(const state s)
-        {
-            lv_obj_remove_state(mp_object, static_cast<lv_state_t>(s));
-
-            return *this;
-        }
-
-        bool object::has_state(const state s)
-        {
-            return lv_obj_has_state(mp_object, static_cast<lv_state_t>(s));
-        }
-
         object &object::set_x(const int32_t x)
         {
             lv_obj_set_x(mp_object, x);

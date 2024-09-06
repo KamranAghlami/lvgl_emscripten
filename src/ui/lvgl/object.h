@@ -74,6 +74,19 @@ namespace ui
                 ANY = 0xFFFF,
             };
 
+            enum class part : uint32_t
+            {
+                MAIN = 0x000000,
+                SCROLLBAR = 0x010000,
+                INDICATOR = 0x020000,
+                KNOB = 0x030000,
+                SELECTED = 0x040000,
+                ITEMS = 0x050000,
+                CURSOR = 0x060000,
+                CUSTOM_FIRST = 0x080000,
+                ANY = 0x0F0000,
+            };
+
             enum class alignment : uint8_t
             {
                 DEFAULT = 0,
@@ -158,9 +171,6 @@ namespace ui
             object &add_flag(const flag f);
             object &remove_flag(const flag f);
             bool has_flag(const flag f);
-            object &add_state(const state s);
-            object &remove_state(const state s);
-            bool has_state(const state s);
 
             object &set_x(const int32_t x);
             object &set_y(const int32_t y);
@@ -267,45 +277,5 @@ namespace ui
             return lhs;
         }
 
-        inline object::state operator|(object::state lhs, object::state rhs)
-        {
-            return static_cast<object::state>(static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs));
-        }
-
-        inline object::state operator&(object::state lhs, object::state rhs)
-        {
-            return static_cast<object::state>(static_cast<uint32_t>(lhs) & static_cast<uint32_t>(rhs));
-        }
-
-        inline object::state operator^(object::state lhs, object::state rhs)
-        {
-            return static_cast<object::state>(static_cast<uint32_t>(lhs) ^ static_cast<uint32_t>(rhs));
-        }
-
-        inline object::state operator~(object::state lhs)
-        {
-            return static_cast<object::state>(~static_cast<uint32_t>(lhs));
-        }
-
-        inline object::state &operator|=(object::state &lhs, object::state rhs)
-        {
-            lhs = lhs | rhs;
-
-            return lhs;
-        }
-
-        inline object::state &operator&=(object::state &lhs, object::state rhs)
-        {
-            lhs = lhs & rhs;
-
-            return lhs;
-        }
-
-        inline object::state &operator^=(object::state &lhs, object::state rhs)
-        {
-            lhs = lhs ^ rhs;
-
-            return lhs;
-        }
     }
 }

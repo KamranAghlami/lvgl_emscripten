@@ -8,6 +8,8 @@
 #include "ui/lvgl/object.h"
 #include "ui/lvgl/screen.h"
 #include "ui/lvgl/label.h"
+#include "ui/lvgl/image.h"
+#include "ui/lvgl/style.h"
 
 namespace ui
 {
