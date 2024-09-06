@@ -17,7 +17,7 @@ namespace ui
 
         screen &screen::load()
         {
-            lv_screen_load((lv_object()));
+            lv_screen_load(lv_object());
 
             return *this;
         }

@@ -6,7 +6,7 @@ namespace ui
 {
     namespace lvgl
     {
-        label::label(object &parent) : object(lv_label_create((parent.lv_object())))
+        label::label(object &parent) : object(lv_label_create(parent.lv_object()))
         {
         }
 

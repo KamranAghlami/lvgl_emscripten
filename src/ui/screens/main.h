@@ -6,13 +6,14 @@
 #include <lvgl.h>
 
 #include "ui/lvgl/lvgl.h"
+#include "ui/widgets/label_thingy.h"
 
 namespace ui
 {
     namespace screens
     {
         // TODO:
-        // styles selectors animations labels buttons images fonts ...
+        // styles selectors animations buttons images fonts ...
 
         class main : public lvgl::screen
         {
@@ -63,17 +64,6 @@ namespace ui
 
                 add_event_callback(lvgl::event::code::KEY, on_key);
 
-                auto on_pressed = [this](lvgl::event &e)
-                {
-                    lv_obj_set_style_bg_color(e.target_object().lv_object(),
-                                              lv_color_make(lv_rand(0, 0xFF),
-                                                            lv_rand(0, 0xFF),
-                                                            lv_rand(0, 0xFF)),
-                                              LV_PART_MAIN | LV_STATE_DEFAULT);
-                };
-
-                add_event_callback(lvgl::event::code::PRESSED, on_pressed);
-
                 remove_flag(flag::CLICKABLE);
 
                 draw();
@@ -115,20 +105,15 @@ namespace ui
                 for (int32_t i = 0; i < m_rows; i++)
                     for (int32_t j = 0; j < m_columns; j++)
                     {
-                        m_children.push_back(std::make_unique<object>(*this));
+                        m_children.push_back(std::make_unique<label_thingy>(*this));
 
-                        object &rect = *m_children.back();
+                        auto &lt = static_cast<label_thingy &>(*m_children.back());
 
-                        rect.set_grid_cell(
+                        lt.set_text_fmt("%u", i * m_rows + j)
+                            .set_grid_cell(
                                 grid_alignment::STRETCH, j, 1,
                                 grid_alignment::STRETCH, i, 1)
                             .add_flag(flag::CLICKABLE | flag::EVENT_BUBBLE);
-
-                        lv_obj_set_style_bg_color(rect.lv_object(),
-                                                  lv_color_make(lv_rand(0, 0xFF),
-                                                                lv_rand(0, 0xFF),
-                                                                lv_rand(0, 0xFF)),
-                                                  LV_PART_MAIN | LV_STATE_DEFAULT);
                     }
             }
 

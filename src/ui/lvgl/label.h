@@ -49,7 +49,7 @@ namespace ui
         template <typename... Args>
         label &label::set_text_fmt(const char *fmt, Args &&...args)
         {
-            lv_label_set_text_fmt((lv_object()), fmt, std::forward<Args>(args)...);
+            lv_label_set_text_fmt(lv_object(), fmt, std::forward<Args>(args)...);
 
             return *this;
         }

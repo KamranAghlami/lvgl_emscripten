@@ -27,17 +27,17 @@ namespace ui
 
         void group::swap_object(object &obj1, object &obj2)
         {
-            lv_group_swap_obj((obj1.lv_object()), (obj2.lv_object()));
+            lv_group_swap_obj(obj1.lv_object(), obj2.lv_object());
         }
 
         void group::remove_object(object &obj)
         {
-            lv_group_remove_obj((obj.lv_object()));
+            lv_group_remove_obj(obj.lv_object());
         }
 
         void group::focus_object(object &obj)
         {
-            lv_group_focus_obj((obj.lv_object()));
+            lv_group_focus_obj(obj.lv_object());
         }
 
         group &group::from_lv_group(lv_group_t *lv_grp)
@@ -63,7 +63,7 @@ namespace ui
 
         group &group::add_object(object &obj)
         {
-            lv_group_add_obj(mp_group, (obj.lv_object()));
+            lv_group_add_obj(mp_group, obj.lv_object());
 
             return *this;
         }
