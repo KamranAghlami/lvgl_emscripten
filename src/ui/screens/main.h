@@ -6,7 +6,7 @@
 #include <lvgl.h>
 
 #include "ui/lvgl/lvgl.h"
-#include "ui/widgets/label_thingy.h"
+#include "ui/widgets/widget_thingy.h"
 
 namespace ui
 {
@@ -105,14 +105,14 @@ namespace ui
                 for (int32_t i = 0; i < m_rows; i++)
                     for (int32_t j = 0; j < m_columns; j++)
                     {
-                        m_children.push_back(std::make_unique<label_thingy>(*this));
+                        m_children.push_back(std::make_unique<widget_thingy>(*this));
 
-                        auto &lt = static_cast<label_thingy &>(*m_children.back());
+                        auto &lt = static_cast<widget_thingy &>(*m_children.back());
 
-                        lt.set_text_fmt("%u", i * m_rows + j)
-                            .set_grid_cell(
-                                grid_alignment::STRETCH, j, 1,
-                                grid_alignment::STRETCH, i, 1)
+                        // lt.set_text_fmt("%u", i * m_rows + j)
+                        lt.set_grid_cell(
+                              grid_alignment::STRETCH, j, 1,
+                              grid_alignment::STRETCH, i, 1)
                             .add_flag(flag::CLICKABLE | flag::EVENT_BUBBLE);
                     }
             }
