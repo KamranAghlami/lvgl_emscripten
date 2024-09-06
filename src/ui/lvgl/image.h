@@ -30,18 +30,18 @@ namespace ui
             image(object &parent);
             ~image();
 
-            image &set_src(const void *src);
-            image &set_offset_x(int32_t x);
-            image &set_offset_y(int32_t y);
-            image &set_rotation(int32_t angle);
-            image &set_pivot(int32_t x, int32_t y);
-            image &set_scale(uint32_t zoom);
-            image &set_scale_x(uint32_t zoom);
-            image &set_scale_y(uint32_t zoom);
+            image &set_source(const void *source);
+            image &set_offset_x(int32_t offset_x);
+            image &set_offset_y(int32_t offset_y);
+            image &set_rotation(int32_t rotation);
+            image &set_pivot(int32_t pivot_x, int32_t pivot_y);
+            image &set_scale(uint32_t scale);
+            image &set_scale_x(uint32_t scale_x);
+            image &set_scale_y(uint32_t scale_y);
             image &set_blend_mode(style::blend_mode mode);
-            image &set_antialias(bool antialias);
-            image &set_inner_align(image_alignment alignment);
-            const void *get_src();
+            image &set_antialiasing(bool enable);
+            image &set_inner_alignment(image_alignment alignment);
+            const void *get_source();
             int32_t get_offset_x();
             int32_t get_offset_y();
             int32_t get_rotation();
@@ -49,8 +49,8 @@ namespace ui
             int32_t get_scale_x();
             int32_t get_scale_y();
             style::blend_mode get_blend_mode();
-            bool get_antialias();
-            image_alignment get_inner_align();
+            bool get_antialiasing();
+            image_alignment get_inner_alignment();
         };
     }
 }
