@@ -13,7 +13,7 @@ namespace ui
     namespace screens
     {
         // TODO:
-        // styles selectors animations buttons fonts ...
+        // filesystem/caching styles selectors animations fonts ...
 
         class main : public lvgl::screen
         {
@@ -109,7 +109,6 @@ namespace ui
 
                         auto &lt = static_cast<widget_thingy &>(*m_children.back());
 
-                        // lt.set_text_fmt("%u", i * m_rows + j)
                         lt.set_grid_cell(
                               grid_alignment::STRETCH, j, 1,
                               grid_alignment::STRETCH, i, 1)
