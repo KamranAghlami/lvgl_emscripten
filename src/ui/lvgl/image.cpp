@@ -51,7 +51,7 @@ namespace ui
 
         image &image::set_scale(uint32_t scale)
         {
-            lv_image_set_rotation(lv_object(), scale);
+            lv_image_set_scale(lv_object(), scale);
 
             return *this;
         }
