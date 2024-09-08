@@ -109,9 +109,10 @@ namespace ui
 
                         auto &lt = static_cast<widget_thingy &>(*m_children.back());
 
-                        lt.set_grid_cell(
-                              grid_alignment::STRETCH, j, 1,
-                              grid_alignment::STRETCH, i, 1)
+                        lt.set_text_fmt("%u", i * m_rows + j)
+                            .set_grid_cell(
+                                grid_alignment::STRETCH, j, 1,
+                                grid_alignment::STRETCH, i, 1)
                             .add_flag(flag::CLICKABLE | flag::EVENT_BUBBLE);
                     }
             }

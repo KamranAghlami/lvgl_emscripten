@@ -41,6 +41,8 @@ application::application()
     io::mouse::get();
     io::keyboard::get();
 
+    set_scaling(emscripten_get_device_pixel_ratio());
+
     auto on_fs_ready = [](lv_timer_t *timer) -> void
     {
         auto *app = static_cast<application *>(lv_timer_get_user_data(timer));
