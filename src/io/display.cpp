@@ -2,7 +2,7 @@
 
 namespace io
 {
-    display::display()
+    display::display() : m_scaling(emscripten_get_device_pixel_ratio())
     {
         mp_display = lv_display_create(m_width, m_height);
 

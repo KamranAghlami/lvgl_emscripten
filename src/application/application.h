@@ -23,9 +23,13 @@ public:
     application &operator=(const application &) = delete;
     application &operator=(application &&) = delete;
 
+    float scaling();
+
     void set_scaling(float scaling);
     void set_active_group(ui::lvgl::group &group);
 
 protected:
     virtual void on_ready() = 0;
+
+    float m_scaling = 1.0f;
 };

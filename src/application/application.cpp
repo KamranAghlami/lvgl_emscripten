@@ -41,8 +41,6 @@ application::application()
     io::mouse::get();
     io::keyboard::get();
 
-    set_scaling(emscripten_get_device_pixel_ratio());
-
     auto on_fs_ready = [](lv_timer_t *timer) -> void
     {
         auto *app = static_cast<application *>(lv_timer_get_user_data(timer));
@@ -72,8 +70,17 @@ application::~application()
     lv_deinit();
 }
 
+float application::scaling()
+{
+    return m_scaling;
+}
+
 void application::set_scaling(float scaling)
 {
+    m_scaling = scaling;
+
+    scaling *= emscripten_get_device_pixel_ratio();
+
     io::display::get().set_scaling(scaling);
     io::touch::get().set_scaling(scaling);
     io::mouse::get().set_scaling(scaling);

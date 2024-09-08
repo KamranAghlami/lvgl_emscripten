@@ -2,7 +2,7 @@
 
 namespace io
 {
-    touch::touch()
+    touch::touch() : m_scaling(emscripten_get_device_pixel_ratio())
     {
         auto on_touch_start = [](int type, const EmscriptenTouchEvent *touch_event, void *user_data)
         {

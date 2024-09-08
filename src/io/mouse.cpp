@@ -2,7 +2,7 @@
 
 namespace io
 {
-    mouse::mouse()
+    mouse::mouse() : m_scaling(emscripten_get_device_pixel_ratio())
     {
         auto on_mouse_down = [](int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
         {
