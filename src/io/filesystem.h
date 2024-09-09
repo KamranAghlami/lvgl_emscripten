@@ -34,14 +34,6 @@ namespace io
         bool ready();
 
     private:
-        struct fetch_context
-        {
-            fetch_context(const std::string &path, const fetch_callback &callback) : m_path(path), m_callback(callback) {}
-
-            const std::string m_path;
-            const fetch_callback m_callback;
-        };
-
         class cache_entry
         {
         public:
@@ -102,6 +94,7 @@ namespace io
 
         const char m_letter;
         size_t m_prefetching_count;
+        std::unordered_multimap<std::string, fetch_callback> m_fetching_list;
         std::unordered_map<std::string, cache_entry *> m_cache;
 
         lv_fs_drv_t m_driver;

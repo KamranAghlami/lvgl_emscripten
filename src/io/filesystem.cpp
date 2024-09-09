@@ -85,28 +85,36 @@ namespace io
             return;
         }
 
-        emscripten_fetch_attr_t attribute;
+        auto fetching_range = m_fetching_list.equal_range(full_path);
 
-        emscripten_fetch_attr_init(&attribute);
+        if (fetching_range.first != fetching_range.second)
+        {
+            m_fetching_list.emplace(full_path, callback);
 
-        strcpy(attribute.requestMethod, "GET");
-
-        attribute.userData = new fetch_context(full_path, callback);
-        attribute.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
+            return;
+        }
 
         auto on_succeeded = [](emscripten_fetch_t *fetch)
         {
-            auto context = static_cast<fetch_context *>(fetch->userData);
-
             auto &fs = io::filesystem::get();
+            auto path = static_cast<std::string *>(fetch->userData);
 
-            if (fs.m_cache.find(context->m_path) == fs.m_cache.end())
-                fs.m_cache[context->m_path] = new cache_entry(reinterpret_cast<const uint8_t *>(fetch->data), fetch->numBytes);
+            fs.m_cache[*path] = new cache_entry(reinterpret_cast<const uint8_t *>(fetch->data), fetch->numBytes);
 
-            if (context->m_callback)
-                context->m_callback(fs.m_letter + std::string(":") + context->m_path);
+            auto range = fs.m_fetching_list.equal_range(*path);
 
-            delete context;
+            std::string lv_path = fs.m_letter + std::string(":") + *path;
+
+            while (range.first != range.second)
+            {
+                if (range.first->second)
+                    range.first->second(lv_path);
+
+                range.first++;
+            }
+
+            fs.m_fetching_list.erase(*path);
+            delete path;
 
             emscripten_fetch_close(fetch);
         };
@@ -115,18 +123,23 @@ namespace io
         {
             LV_LOG_WARN("fetching %s failed, HTTP status code: %d.", fetch->url, fetch->status);
 
-            auto context = static_cast<fetch_context *>(fetch->userData);
+            auto &fs = io::filesystem::get();
+            auto path = static_cast<std::string *>(fetch->userData);
 
-            if (context->m_callback)
-                context->m_callback("");
-
-            delete context;
+            fs.m_fetching_list.erase(*path);
+            delete path;
 
             emscripten_fetch_close(fetch);
         };
 
+        emscripten_fetch_attr_t attribute;
+        emscripten_fetch_attr_init(&attribute);
+
+        strcpy(attribute.requestMethod, "GET");
+        attribute.userData = new std::string(full_path);
         attribute.onsuccess = on_succeeded;
         attribute.onerror = on_failed;
+        attribute.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
 
         auto result = emscripten_fetch(&attribute, full_path.c_str());
 
@@ -134,8 +147,12 @@ namespace io
         {
             LV_LOG_WARN("fetching %s failed.", full_path.c_str());
 
-            delete static_cast<fetch_context *>(attribute.userData);
+            delete static_cast<std::string *>(attribute.userData);
+
+            return;
         }
+
+        m_fetching_list.emplace(full_path, callback);
     }
 
     bool filesystem::ready()
