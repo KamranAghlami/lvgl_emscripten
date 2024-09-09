@@ -44,11 +44,30 @@ namespace io
         m_driver.user_data = this;
 
         lv_fs_drv_register(&m_driver);
+
+        auto on_timeout = [](ui::lvgl::timer &timer)
+        {
+            auto &fs = io::filesystem::get();
+
+            for (auto &entry : fs.m_cache)
+                if (entry.second->invalidated())
+                {
+                    delete entry.second;
+
+                    fs.m_cache.erase(entry.first);
+
+                    timer.ready();
+
+                    return;
+                }
+        };
+
+        mp_timer = std::make_unique<ui::lvgl::timer>(on_timeout, 60000);
     }
 
     filesystem::~filesystem()
     {
-        for (auto pair : m_cache)
+        for (auto &pair : m_cache)
             delete pair.second;
     }
 
@@ -155,6 +174,41 @@ namespace io
         return !m_prefetching_count;
     }
 
+    filesystem::cache_entry::cache_entry(const uint8_t *data, const size_t size) : m_data(data, data + size)
+    {
+    }
+
+    void filesystem::cache_entry::increase_reference()
+    {
+        m_references++;
+    }
+
+    void filesystem::cache_entry::decrease_reference()
+    {
+        m_references--;
+
+        if (!m_references)
+            m_last_used = emscripten_get_now();
+    }
+
+    bool filesystem::cache_entry::invalidated() const
+    {
+        if (m_last_used == 0.0f)
+            return false;
+
+        return !m_references && (emscripten_get_now() - m_last_used > 10000.f);
+    }
+
+    const uint8_t *filesystem::cache_entry::data() const
+    {
+        return m_data.data();
+    }
+
+    size_t filesystem::cache_entry::size() const
+    {
+        return m_data.size();
+    }
+
     filesystem::file_handle *filesystem::open(const char *path, lv_fs_mode_t mode)
     {
         if (mode & LV_FS_MODE_WR)
@@ -175,13 +229,6 @@ namespace io
         auto entry = m_cache[file->m_path];
 
         entry->decrease_reference();
-
-        // if (entry->invalidated())
-        // {
-        //     delete entry;
-
-        //     m_cache.erase(file->m_path);
-        // }
 
         delete file;
 

@@ -4,8 +4,11 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 #include <lvgl.h>
+
+#include "ui/lvgl/timer.h"
 
 namespace io
 {
@@ -37,36 +40,19 @@ namespace io
         class cache_entry
         {
         public:
-            cache_entry(const uint8_t *data, const size_t size) : m_data(data, data + size) {};
+            cache_entry(const uint8_t *data, const size_t size);
 
-            void increase_reference()
-            {
-                m_references++;
-            }
+            void increase_reference();
+            void decrease_reference();
+            bool invalidated() const;
 
-            void decrease_reference()
-            {
-                m_references--;
-            }
-
-            bool invalidated() const
-            {
-                return !m_references;
-            }
-
-            const uint8_t *data() const
-            {
-                return m_data.data();
-            }
-
-            size_t size() const
-            {
-                return m_data.size();
-            }
+            const uint8_t *data() const;
+            size_t size() const;
 
         private:
             std::vector<uint8_t> m_data;
             size_t m_references = 0;
+            float m_last_used = 0.0f;
         };
 
         struct file_handle
@@ -98,5 +84,6 @@ namespace io
         std::unordered_map<std::string, cache_entry *> m_cache;
 
         lv_fs_drv_t m_driver;
+        std::unique_ptr<ui::lvgl::timer> mp_timer;
     };
 }
