@@ -35,7 +35,7 @@ namespace ui
             ~style();
 
         private:
-            style(void *lv_style);
+            void *mp_style;
         };
     }
 }

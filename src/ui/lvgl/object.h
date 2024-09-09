@@ -17,6 +17,7 @@ namespace ui
     namespace lvgl
     {
         class screen;
+        class style;
 
         class object
         {
@@ -196,6 +197,10 @@ namespace ui
             object &set_grid_align(grid_alignment column, grid_alignment row);
             object &set_grid_cell(grid_alignment column, int32_t col_pos, int32_t col_span,
                                   grid_alignment row, int32_t row_pos, int32_t row_span);
+
+            object &add_style(const style &stl, style::selector sel);
+            object &remove_style(const style &stl, style::selector sel);
+            object &clear_styles();
 
             object &invalidate();
 
