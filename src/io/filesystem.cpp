@@ -102,16 +102,11 @@ namespace io
             fs.m_cache[*path] = new cache_entry(reinterpret_cast<const uint8_t *>(fetch->data), fetch->numBytes);
 
             auto range = fs.m_fetching_list.equal_range(*path);
-
             std::string lv_path = fs.m_letter + std::string(":") + *path;
 
-            while (range.first != range.second)
-            {
-                if (range.first->second)
-                    range.first->second(lv_path);
-
-                range.first++;
-            }
+            for (auto it = range.first; it != range.second; it++)
+                if (it->second)
+                    it->second(lv_path);
 
             fs.m_fetching_list.erase(*path);
             delete path;
