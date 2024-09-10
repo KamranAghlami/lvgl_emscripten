@@ -45,10 +45,10 @@ namespace ui
         {
             const auto c = lvgl::color::random();
 
-            m_style.set_background_color(c, LV_PART_MAIN | LV_STATE_DEFAULT);
-            m_style.set_text_color(c.negative(), LV_PART_MAIN | LV_STATE_DEFAULT);
+            m_style.set_background_color(c);
+            m_style.set_text_color(c.negative());
 
-            add_style(m_style, lvgl::style::part::MAIN | lvgl::style::state::DEFAULT);
+            add_style(m_style, lvgl::object::part::MAIN | lvgl::object::state::DEFAULT);
         }
 
         lvgl::style m_style;

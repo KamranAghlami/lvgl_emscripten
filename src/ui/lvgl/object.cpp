@@ -232,14 +232,14 @@ namespace ui
             return *this;
         }
 
-        object &object::add_style(const style &stl, style::selector sel)
+        object &object::add_style(const style &stl, selector sel)
         {
             lv_obj_add_style(mp_object, static_cast<const lv_style_t *>(stl.mp_style), static_cast<lv_style_selector_t>(sel));
 
             return *this;
         }
 
-        object &object::remove_style(const style &stl, style::selector sel)
+        object &object::remove_style(const style &stl, selector sel)
         {
             lv_obj_remove_style(mp_object, static_cast<const lv_style_t *>(stl.mp_style), static_cast<lv_style_selector_t>(sel));
 
