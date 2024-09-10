@@ -4,6 +4,7 @@
 #include <lvgl.h>
 
 #include "ui/lvgl/screen.h"
+#include "ui/lvgl/style.h"
 
 namespace ui
 {

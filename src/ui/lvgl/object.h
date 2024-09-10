@@ -6,7 +6,6 @@
 
 #include "ui/lvgl/event.h"
 #include "ui/lvgl/group.h"
-#include "ui/lvgl/style.h"
 
 extern "C"
 {
@@ -18,6 +17,7 @@ namespace ui
     namespace lvgl
     {
         class screen;
+        class style;
 
         class object
         {

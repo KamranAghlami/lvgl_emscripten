@@ -45,7 +45,7 @@ namespace ui
         {
             const auto c = lvgl::color::random();
 
-            m_style.set_background_color(c);
+            m_style.set_bg_color(c);
             m_style.set_text_color(c.negative());
 
             add_style(m_style, lvgl::object::part::MAIN | lvgl::object::state::DEFAULT);
