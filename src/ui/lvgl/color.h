@@ -9,6 +9,8 @@ namespace ui
         class color
         {
         public:
+            static color random();
+
             color() : m_blue(0), m_green(0), m_red(0) {}
             color(uint8_t red, uint8_t green, uint8_t blue) : m_blue(blue), m_green(green), m_red(red) {}
 
@@ -16,7 +18,7 @@ namespace ui
             uint8_t green() const { return m_green; }
             uint8_t red() const { return m_red; }
 
-            color negative() const { return color(0xFF - m_red, 0xFF - m_green, 0xFF - m_blue); }
+            color negative() const;
 
         private:
             uint8_t m_blue;

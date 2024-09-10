@@ -43,7 +43,7 @@ namespace ui
     private:
         void recolor()
         {
-            const lvgl::color c(lv_rand(0, 0xFF), lv_rand(0, 0xFF), lv_rand(0, 0xFF));
+            const auto c = lvgl::color::random();
 
             m_style.set_background_color(c, LV_PART_MAIN | LV_STATE_DEFAULT);
             m_style.set_text_color(c.negative(), LV_PART_MAIN | LV_STATE_DEFAULT);
