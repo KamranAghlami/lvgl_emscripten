@@ -216,6 +216,34 @@ namespace ui
             return *this;
         }
 
+        style &style::set_pad_all(int32_t value)
+        {
+            lv_style_set_pad_all(lv_style, value);
+
+            return *this;
+        }
+
+        style &style::set_pad_hor(int32_t value)
+        {
+            lv_style_set_pad_hor(lv_style, value);
+
+            return *this;
+        }
+
+        style &style::set_pad_ver(int32_t value)
+        {
+            lv_style_set_pad_ver(lv_style, value);
+
+            return *this;
+        }
+
+        style &style::set_pad_gap(int32_t value)
+        {
+            lv_style_set_pad_gap(lv_style, value);
+
+            return *this;
+        }
+
         style &style::set_margin_top(int32_t v)
         {
             lv_style_set_margin_top(lv_style, v);

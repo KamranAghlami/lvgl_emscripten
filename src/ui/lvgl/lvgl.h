@@ -18,6 +18,9 @@ namespace ui
     {
         using async_callback = std::function<void(void *)>;
 
+        void *malloc(size_t size);
+        void free(void *data);
+
         void async_call(const async_callback &cb, void *user_data = nullptr);
     }
 }

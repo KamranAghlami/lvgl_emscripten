@@ -18,6 +18,16 @@ namespace ui
             void *m_user_data;
         };
 
+        void *malloc(size_t size)
+        {
+            return lv_malloc(size);
+        }
+
+        void free(void *data)
+        {
+            return lv_free(data);
+        }
+
         void async_call(const async_callback &cb, void *user_data)
         {
             auto async_cb = [](void *user_data)

@@ -103,6 +103,10 @@ namespace ui
             style &set_pad_right(int32_t v);
             style &set_pad_row(int32_t v);
             style &set_pad_column(int32_t v);
+            style &set_pad_all(int32_t value);
+            style &set_pad_hor(int32_t value);
+            style &set_pad_ver(int32_t value);
+            style &set_pad_gap(int32_t value);
             style &set_margin_top(int32_t v);
             style &set_margin_bottom(int32_t v);
             style &set_margin_left(int32_t v);
