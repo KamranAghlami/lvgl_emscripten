@@ -13,7 +13,7 @@ namespace ui
     namespace screens
     {
         // TODO:
-        // styles selectors animations fonts ...
+        // styles animations fonts ...
 
         class main : public lvgl::screen
         {
