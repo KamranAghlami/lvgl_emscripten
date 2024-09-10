@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include <ui/lvgl/color.h>
+
 namespace ui
 {
     namespace lvgl
@@ -9,7 +11,18 @@ namespace ui
         class style
         {
         public:
-            using selector = uint32_t;
+            enum class part : uint32_t
+            {
+                MAIN = 0x000000,
+                SCROLLBAR = 0x010000,
+                INDICATOR = 0x020000,
+                KNOB = 0x030000,
+                SELECTED = 0x040000,
+                ITEMS = 0x050000,
+                CURSOR = 0x060000,
+                CUSTOM_FIRST = 0x080000,
+                ANY = 0x0F0000,
+            };
 
             enum class state : uint16_t
             {
@@ -29,19 +42,6 @@ namespace ui
                 ANY = 0xFFFF,
             };
 
-            enum class part : uint32_t
-            {
-                MAIN = 0x000000,
-                SCROLLBAR = 0x010000,
-                INDICATOR = 0x020000,
-                KNOB = 0x030000,
-                SELECTED = 0x040000,
-                ITEMS = 0x050000,
-                CURSOR = 0x060000,
-                CUSTOM_FIRST = 0x080000,
-                ANY = 0x0F0000,
-            };
-
             enum class blend_mode : uint8_t
             {
                 NORMAL,
@@ -50,8 +50,54 @@ namespace ui
                 MULTIPLY,
             };
 
+            class selector
+            {
+            public:
+                selector(uint32_t value) : m_value(value) {}
+                selector(part p) : m_value(static_cast<uint32_t>(p)) {}
+                selector(state s) : m_value(static_cast<uint32_t>(s)) {}
+
+                operator uint32_t() const { return m_value; }
+
+                friend inline selector operator|(const selector &lhs, const selector &rhs)
+                {
+                    return lhs.m_value | rhs.m_value;
+                }
+
+            private:
+                uint32_t m_value;
+            };
+
+            friend inline selector operator|(const part lhs, const part rhs)
+            {
+                return static_cast<uint32_t>(lhs) | static_cast<uint32_t>(rhs);
+            }
+
+            friend inline selector operator|(const state lhs, const state rhs)
+            {
+                return static_cast<uint16_t>(lhs) | static_cast<uint16_t>(rhs);
+            }
+
+            friend inline selector operator|(const part lhs, const state rhs)
+            {
+                return static_cast<uint32_t>(lhs) | static_cast<uint16_t>(rhs);
+            }
+
+            friend inline selector operator|(const state lhs, const part rhs)
+            {
+                return static_cast<uint16_t>(lhs) | static_cast<uint32_t>(rhs);
+            }
+
             style();
             ~style();
+
+            style(const style &) = delete;
+            style(style &&) = delete;
+            style &operator=(const style &) = delete;
+            style &operator=(style &&) = delete;
+
+            style &set_background_color(const color &c, const selector sel);
+            style &set_text_color(const color &c, const selector sel);
 
         private:
             void *mp_style;

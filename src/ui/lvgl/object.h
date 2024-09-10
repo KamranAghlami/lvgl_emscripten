@@ -230,21 +230,21 @@ namespace ui
             return static_cast<object::flag>(~static_cast<uint32_t>(lhs));
         }
 
-        inline object::flag &operator|=(object::flag &lhs, object::flag rhs)
+        inline object::flag &operator|=(object::flag &lhs, const object::flag rhs)
         {
             lhs = lhs | rhs;
 
             return lhs;
         }
 
-        inline object::flag &operator&=(object::flag &lhs, object::flag rhs)
+        inline object::flag &operator&=(object::flag &lhs, const object::flag rhs)
         {
             lhs = lhs & rhs;
 
             return lhs;
         }
 
-        inline object::flag &operator^=(object::flag &lhs, object::flag rhs)
+        inline object::flag &operator^=(object::flag &lhs, const object::flag rhs)
         {
             lhs = lhs ^ rhs;
 
