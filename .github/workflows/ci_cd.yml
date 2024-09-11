@@ -34,13 +34,14 @@ jobs:
           cd static
           mkdir wasm
           mv ../application* wasm/
-          sed -i 's|"/"|"/${{github.repository}}"|' manifest.json
           sed -i 's|\.\./build/application\.js|wasm/application.js|' index.js
           TAG_NAME=${GITHUB_REF#refs/tags/}
           sed -i "s|v0\.0\.0|$TAG_NAME|" service_worker.js
           sed -i 's|\.\./build/application\.js|wasm/application.js|' service_worker.js
           sed -i 's|\.\./build/application\.wasm|wasm/application.wasm|' service_worker.js
           tar zcf ../${{github.event.repository.name}}.tar.gz *
+          REPO_NAME=$(echo "${{github.repository}}" | cut -d'/' -f2)
+          sed -i "s|\"/\"|\"/$REPO_NAME\"|" manifest.json
 
       - name: Release (1/4)
         if: startsWith(github.ref, 'refs/tags/')
