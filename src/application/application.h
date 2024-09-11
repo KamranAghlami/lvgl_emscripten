@@ -24,6 +24,7 @@ public:
     application &operator=(application &&) = delete;
 
     float scaling();
+    float pixel_ratio();
 
     void set_scaling(float scaling);
     void set_active_group(ui::lvgl::group &group);

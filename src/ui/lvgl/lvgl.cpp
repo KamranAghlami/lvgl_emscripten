@@ -38,10 +38,10 @@ namespace ui
 
                 info->~async_info();
 
-                lv_free(info);
+                free(info);
             };
 
-            auto info_mem = lv_malloc(sizeof(async_info));
+            auto info_mem = malloc(sizeof(async_info));
             auto info = new (info_mem) async_info(cb, user_data);
 
             lv_async_call(async_cb, info);

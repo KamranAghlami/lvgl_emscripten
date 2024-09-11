@@ -188,6 +188,9 @@ namespace ui
             style &set_grid_cell_y_align(object::grid_alignment v);
             style &set_grid_cell_row_span(int32_t v);
 
+            void report_change();
+            void *lv_style();
+
         private:
             void *mp_style;
 

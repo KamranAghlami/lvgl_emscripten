@@ -75,11 +75,16 @@ float application::scaling()
     return m_scaling;
 }
 
+float application::pixel_ratio()
+{
+    return emscripten_get_device_pixel_ratio();
+}
+
 void application::set_scaling(float scaling)
 {
     m_scaling = scaling;
 
-    scaling *= emscripten_get_device_pixel_ratio();
+    scaling *= pixel_ratio();
 
     io::display::get().set_scaling(scaling);
     io::touch::get().set_scaling(scaling);

@@ -18,6 +18,7 @@ namespace ui
             uint8_t green() const { return m_green; }
             uint8_t red() const { return m_red; }
 
+            color darkened(uint8_t v) const;
             color negative() const;
 
         private:

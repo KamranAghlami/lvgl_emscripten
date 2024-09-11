@@ -9,21 +9,21 @@ namespace io
             return static_cast<mouse *>(user_data)->on_mouse_down(type, mouse_event, user_data);
         };
 
-        emscripten_set_mousedown_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_mouse_down);
+        emscripten_set_mousedown_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_mouse_down);
 
         auto on_mouse_up = [](int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
         {
             return static_cast<mouse *>(user_data)->on_mouse_up(type, mouse_event, user_data);
         };
 
-        emscripten_set_mouseup_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_mouse_up);
+        emscripten_set_mouseup_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_mouse_up);
 
         auto on_mouse_move = [](int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
         {
             return static_cast<mouse *>(user_data)->on_mouse_move(type, mouse_event, user_data);
         };
 
-        emscripten_set_mousemove_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_mouse_move);
+        emscripten_set_mousemove_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_mouse_move);
 
         mp_device = lv_indev_create();
 
@@ -42,7 +42,7 @@ namespace io
             return static_cast<mouse *>(user_data)->on_wheel(type, wheel_event, user_data);
         };
 
-        emscripten_set_wheel_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_wheel);
+        emscripten_set_wheel_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_wheel);
 
         mp_device_aux = lv_indev_create();
 
@@ -97,7 +97,7 @@ namespace io
             break;
         }
 
-        return EM_FALSE;
+        return EM_TRUE;
     }
 
     EM_BOOL mouse::on_mouse_up(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
@@ -124,7 +124,7 @@ namespace io
             break;
         }
 
-        return EM_FALSE;
+        return EM_TRUE;
     }
 
     EM_BOOL mouse::on_mouse_move(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
@@ -134,7 +134,7 @@ namespace io
 
         lv_indev_read(mp_device);
 
-        return EM_FALSE;
+        return EM_TRUE;
     }
 
     EM_BOOL mouse::on_wheel(int type, const EmscriptenWheelEvent *wheel_event, void *user_data)
@@ -146,7 +146,7 @@ namespace io
             lv_indev_read(mp_device_aux);
         }
 
-        return EM_FALSE;
+        return EM_TRUE;
     }
 
     void mouse::on_mouse_read(lv_indev_data_t *data)

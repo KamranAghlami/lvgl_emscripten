@@ -26,19 +26,19 @@ namespace io
         {
             static_cast<display *>(user_data)->update_size();
 
-            return EM_FALSE;
+            return EM_TRUE;
         };
 
-        emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_resize);
+        emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_resize);
 
         auto on_orientation_change = [](int event_type, const EmscriptenOrientationChangeEvent *orientation_change_event, void *user_data) -> EM_BOOL
         {
             static_cast<display *>(user_data)->update_size();
 
-            return EM_FALSE;
+            return EM_TRUE;
         };
 
-        emscripten_set_orientationchange_callback(this, EM_FALSE, on_orientation_change);
+        emscripten_set_orientationchange_callback(this, EM_TRUE, on_orientation_change);
     }
 
     display::~display()

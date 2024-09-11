@@ -11,7 +11,7 @@ namespace io
             return static_cast<keyboard *>(user_data)->on_key_down(type, mouse_event, user_data);
         };
 
-        emscripten_set_keydown_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_key_down);
+        emscripten_set_keydown_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_key_down);
 
         mp_device = lv_indev_create();
 
@@ -43,7 +43,7 @@ namespace io
 
         if (keyboard_event->key[1] != '\0')
             if (!(m_last_state.key = map_control_key(keyboard_event)))
-                return EM_FALSE;
+                return EM_TRUE;
 
         lv_indev_read(mp_device);
 
@@ -51,7 +51,7 @@ namespace io
 
         lv_indev_read(mp_device);
 
-        return EM_FALSE;
+        return EM_TRUE;
     }
 
     uint32_t keyboard::map_control_key(const EmscriptenKeyboardEvent *keyboard_event)

@@ -9,28 +9,28 @@ namespace io
             return static_cast<touch *>(user_data)->on_touch_start(type, touch_event, user_data);
         };
 
-        emscripten_set_touchstart_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_touch_start);
+        emscripten_set_touchstart_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_touch_start);
 
         auto on_touch_move = [](int type, const EmscriptenTouchEvent *touch_event, void *user_data)
         {
             return static_cast<touch *>(user_data)->on_touch_move(type, touch_event, user_data);
         };
 
-        emscripten_set_touchmove_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_touch_move);
+        emscripten_set_touchmove_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_touch_move);
 
         auto on_touch_end = [](int type, const EmscriptenTouchEvent *touch_event, void *user_data)
         {
             return static_cast<touch *>(user_data)->on_touch_end(type, touch_event, user_data);
         };
 
-        emscripten_set_touchend_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_touch_end);
+        emscripten_set_touchend_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_touch_end);
 
         auto on_touch_cancel = [](int type, const EmscriptenTouchEvent *touch_event, void *user_data)
         {
             return static_cast<touch *>(user_data)->on_touch_cancel(type, touch_event, user_data);
         };
 
-        emscripten_set_touchcancel_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_FALSE, on_touch_cancel);
+        emscripten_set_touchcancel_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_touch_cancel);
 
         mp_device = lv_indev_create();
 
@@ -58,12 +58,12 @@ namespace io
     EM_BOOL touch::on_touch_start(int type, const EmscriptenTouchEvent *touch_event, void *user_data)
     {
         if (!touch_event->numTouches)
-            return EM_FALSE;
+            return EM_TRUE;
 
         const EmscriptenTouchPoint &touch_point = touch_event->touches[0];
 
         if (!touch_point.isChanged)
-            return EM_FALSE;
+            return EM_TRUE;
 
         m_last_state.x = touch_point.targetX * m_scaling;
         m_last_state.y = touch_point.targetY * m_scaling;
@@ -71,18 +71,18 @@ namespace io
 
         lv_indev_read(mp_device);
 
-        return EM_FALSE;
+        return EM_TRUE;
     }
 
     EM_BOOL touch::on_touch_move(int type, const EmscriptenTouchEvent *touch_event, void *user_data)
     {
         if (!touch_event->numTouches)
-            return EM_FALSE;
+            return EM_TRUE;
 
         const EmscriptenTouchPoint &touch_point = touch_event->touches[0];
 
         if (!touch_point.isChanged)
-            return EM_FALSE;
+            return EM_TRUE;
 
         m_last_state.x = touch_point.targetX * m_scaling;
         m_last_state.y = touch_point.targetY * m_scaling;
@@ -90,18 +90,18 @@ namespace io
 
         lv_indev_read(mp_device);
 
-        return EM_FALSE;
+        return EM_TRUE;
     }
 
     EM_BOOL touch::on_touch_end(int type, const EmscriptenTouchEvent *touch_event, void *user_data)
     {
         if (!touch_event->numTouches)
-            return EM_FALSE;
+            return EM_TRUE;
 
         const EmscriptenTouchPoint &touch_point = touch_event->touches[0];
 
         if (!touch_point.isChanged)
-            return EM_FALSE;
+            return EM_TRUE;
 
         m_last_state.x = touch_point.targetX * m_scaling;
         m_last_state.y = touch_point.targetY * m_scaling;
@@ -109,24 +109,24 @@ namespace io
 
         lv_indev_read(mp_device);
 
-        return EM_FALSE;
+        return EM_TRUE;
     }
 
     EM_BOOL touch::on_touch_cancel(int type, const EmscriptenTouchEvent *touch_event, void *user_data)
     {
         if (!touch_event->numTouches)
-            return EM_FALSE;
+            return EM_TRUE;
 
         const EmscriptenTouchPoint &touch_point = touch_event->touches[0];
 
         if (!touch_point.isChanged)
-            return EM_FALSE;
+            return EM_TRUE;
 
         m_last_state.present = false;
 
         lv_indev_read(mp_device);
 
-        return EM_FALSE;
+        return EM_TRUE;
     }
 
     void touch::on_touch_read(lv_indev_data_t *data)

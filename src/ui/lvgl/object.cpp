@@ -3,6 +3,7 @@
 #include <cassert>
 #include <lvgl.h>
 
+#include "ui/lvgl/lvgl.h"
 #include "ui/lvgl/screen.h"
 #include "ui/lvgl/style.h"
 
@@ -64,7 +65,7 @@ namespace ui
             {
                 dsc->~descriptor();
 
-                lv_free(dsc);
+                lvgl::free(dsc);
             }
 
             s_objects.erase(mp_object);
@@ -275,7 +276,7 @@ namespace ui
                 static_cast<event::descriptor *>(lv_event_get_user_data(lv_event))->m_callback(e);
             };
 
-            auto dsc_mem = lv_malloc(sizeof(event::descriptor));
+            auto dsc_mem = lvgl::malloc(sizeof(event::descriptor));
             auto dsc = new (dsc_mem) event::descriptor(callback, user_data);
 
             dsc->mp_descriptor = lv_obj_add_event_cb(mp_object, proxy_callback, static_cast<lv_event_code_t>(c), dsc);
