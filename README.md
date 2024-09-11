@@ -1,5 +1,5 @@
 # lvgl_emscripten
-A boilerplate project for creating web applications using the [LVGL](https://lvgl.io/) and [Emscripten](https://emscripten.org/).
+A template project for creating web applications using the [LVGL](https://lvgl.io/) and [Emscripten](https://emscripten.org/).
 
 ### Build
 In order to build the project using VSCode add this to your _`settings.json`_ file.
