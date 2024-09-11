@@ -97,7 +97,7 @@ namespace io
             break;
         }
 
-        return EM_TRUE;
+        return mouse_event->button ? EM_TRUE : EM_FALSE;
     }
 
     EM_BOOL mouse::on_mouse_up(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
@@ -124,7 +124,7 @@ namespace io
             break;
         }
 
-        return EM_TRUE;
+        return mouse_event->button ? EM_TRUE : EM_FALSE;
     }
 
     EM_BOOL mouse::on_mouse_move(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)
