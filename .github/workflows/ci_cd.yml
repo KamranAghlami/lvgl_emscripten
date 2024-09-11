@@ -34,6 +34,7 @@ jobs:
           cd static
           mkdir wasm
           mv ../application* wasm/
+          sed -i 's|"/"|"/${{github.repository}}"|' manifest.json
           sed -i 's|\.\./build/application\.js|wasm/application.js|' index.js
           TAG_NAME=${GITHUB_REF#refs/tags/}
           sed -i "s|v0\.0\.0|$TAG_NAME|" service_worker.js
