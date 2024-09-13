@@ -1,13 +1,7 @@
 #include "ui/lvgl/style.h"
 
 #define _lv_style static_cast<lv_style_t *>(mp_style)
-#define lv_color(c)         \
-    lv_color_t              \
-    {                       \
-        .blue = c.blue(),   \
-        .green = c.green(), \
-        .red = c.red()      \
-    }
+#define _lv_color(c) lv_color_make((c).red(), (c).green(), (c).blue())
 
 #include <lvgl.h>
 
@@ -274,9 +268,9 @@ namespace ui
             return *this;
         }
 
-        style &style::set_bg_color(color v)
+        style &style::set_bg_color(const color &v)
         {
-            lv_style_set_bg_color(_lv_style, lv_color(v));
+            lv_style_set_bg_color(_lv_style, _lv_color(v));
 
             return *this;
         }
@@ -288,9 +282,9 @@ namespace ui
             return *this;
         }
 
-        style &style::set_bg_grad_color(color v)
+        style &style::set_bg_grad_color(const color &v)
         {
-            lv_style_set_bg_grad_color(_lv_style, lv_color(v));
+            lv_style_set_bg_grad_color(_lv_style, _lv_color(v));
 
             return *this;
         }
@@ -344,9 +338,9 @@ namespace ui
             return *this;
         }
 
-        style &style::set_bg_image_recolor(color v)
+        style &style::set_bg_image_recolor(const color &v)
         {
-            lv_style_set_bg_image_recolor(_lv_style, lv_color(v));
+            lv_style_set_bg_image_recolor(_lv_style, _lv_color(v));
 
             return *this;
         }
@@ -365,9 +359,9 @@ namespace ui
             return *this;
         }
 
-        style &style::set_border_color(color v)
+        style &style::set_border_color(const color &v)
         {
-            lv_style_set_border_color(_lv_style, lv_color(v));
+            lv_style_set_border_color(_lv_style, _lv_color(v));
 
             return *this;
         }
@@ -407,9 +401,9 @@ namespace ui
             return *this;
         }
 
-        style &style::set_outline_color(color v)
+        style &style::set_outline_color(const color &v)
         {
-            lv_style_set_outline_color(_lv_style, lv_color(v));
+            lv_style_set_outline_color(_lv_style, _lv_color(v));
 
             return *this;
         }
@@ -456,9 +450,9 @@ namespace ui
             return *this;
         }
 
-        style &style::set_shadow_color(color v)
+        style &style::set_shadow_color(const color &v)
         {
-            lv_style_set_shadow_color(_lv_style, lv_color(v));
+            lv_style_set_shadow_color(_lv_style, _lv_color(v));
 
             return *this;
         }
@@ -477,9 +471,9 @@ namespace ui
             return *this;
         }
 
-        style &style::set_image_recolor(color v)
+        style &style::set_image_recolor(const color &v)
         {
-            lv_style_set_image_recolor(_lv_style, lv_color(v));
+            lv_style_set_image_recolor(_lv_style, _lv_color(v));
 
             return *this;
         }
@@ -519,9 +513,9 @@ namespace ui
             return *this;
         }
 
-        style &style::set_line_color(color v)
+        style &style::set_line_color(const color &v)
         {
-            lv_style_set_line_color(_lv_style, lv_color(v));
+            lv_style_set_line_color(_lv_style, _lv_color(v));
 
             return *this;
         }
@@ -547,9 +541,9 @@ namespace ui
             return *this;
         }
 
-        style &style::set_arc_color(color v)
+        style &style::set_arc_color(const color &v)
         {
-            lv_style_set_arc_color(_lv_style, lv_color(v));
+            lv_style_set_arc_color(_lv_style, _lv_color(v));
 
             return *this;
         }
@@ -568,9 +562,9 @@ namespace ui
             return *this;
         }
 
-        style &style::set_text_color(color v)
+        style &style::set_text_color(const color &v)
         {
-            lv_style_set_text_color(_lv_style, lv_color(v));
+            lv_style_set_text_color(_lv_style, _lv_color(v));
 
             return *this;
         }

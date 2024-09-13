@@ -202,6 +202,7 @@ namespace ui
             int32_t y();
             int32_t width();
             int32_t height();
+            object &coords(int32_t *x1, int32_t *y1, int32_t *x2 = nullptr, int32_t *y2 = nullptr);
 
             object &align(const alignment align, const int32_t x_ofs = 0, const int32_t y_ofs = 0);
             object &align_to(const object &base, const alignment align, const int32_t x_ofs = 0, const int32_t y_ofs = 0);

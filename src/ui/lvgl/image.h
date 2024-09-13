@@ -51,6 +51,9 @@ namespace ui
             style::blend_mode get_blend_mode();
             bool get_antialiasing();
             image_alignment get_inner_alignment();
+
+        protected:
+            explicit image(lv_obj_t *lv_obj);
         };
     }
 }

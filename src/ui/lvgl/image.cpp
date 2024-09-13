@@ -10,6 +10,10 @@ namespace ui
         {
         }
 
+        image::image(lv_obj_t *lv_obj) : object(lv_obj)
+        {
+        }
+
         image::~image()
         {
         }

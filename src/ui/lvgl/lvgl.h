@@ -12,6 +12,7 @@
 #include "ui/lvgl/label.h"
 #include "ui/lvgl/button.h"
 #include "ui/lvgl/image.h"
+#include "ui/lvgl/canvas.h"
 
 namespace ui
 {

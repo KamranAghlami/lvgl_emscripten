@@ -157,6 +157,27 @@ namespace ui
             return lv_obj_get_height(mp_object);
         }
 
+        object &object::coords(int32_t *x1, int32_t *y1, int32_t *x2, int32_t *y2)
+        {
+            lv_area_t lv_coords;
+
+            lv_obj_get_coords(lv_object(), &lv_coords);
+
+            if (x1)
+                *x1 = lv_coords.x1;
+
+            if (y1)
+                *y1 = lv_coords.y1;
+
+            if (x2)
+                *x2 = lv_coords.x2;
+
+            if (y2)
+                *y2 = lv_coords.y2;
+
+            return *this;
+        }
+
         object &object::align(const alignment align, const int32_t x_ofs, const int32_t y_ofs)
         {
             lv_obj_align(mp_object, static_cast<lv_align_t>(align), x_ofs, y_ofs);

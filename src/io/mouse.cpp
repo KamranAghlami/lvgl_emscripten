@@ -146,7 +146,7 @@ namespace io
             lv_indev_read(mp_device_aux);
         }
 
-        return EM_TRUE;
+        return EM_FALSE;
     }
 
     void mouse::on_mouse_read(lv_indev_data_t *data)
