@@ -7,6 +7,7 @@
 
 #include "ui/lvgl/lvgl.h"
 #include "ui/widgets/widget_thingy.h"
+#include "application/application.h"
 
 namespace ui
 {
@@ -24,7 +25,7 @@ namespace ui
 
                 auto on_load = [this](lvgl::event &e)
                 {
-                    m_group.activate();
+                    application::get()->set_active_group(m_group);
                 };
 
                 add_event_callback(lvgl::event::code::SCREEN_LOADED, on_load);
