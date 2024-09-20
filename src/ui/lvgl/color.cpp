@@ -4,13 +4,15 @@
 
 #include <lvgl.h>
 
+#include "ui/lvgl/lvgl.h"
+
 namespace ui
 {
     namespace lvgl
     {
         color color::random()
         {
-            return color(lv_rand(0, 0xFF), lv_rand(0, 0xFF), lv_rand(0, 0xFF));
+            return color(lvgl::random(0, 0xFF), lvgl::random(0, 0xFF), lvgl::random(0, 0xFF));
         };
 
         color color::darkened(uint8_t v) const

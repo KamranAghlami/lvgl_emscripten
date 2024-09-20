@@ -26,7 +26,7 @@ namespace event
         {
             dispatcher::handler_type proxy = [this, handler](const event &e) -> bool
             {
-                return (static_cast<T *>(this)->*handler)(static_cast<const E &>(e));
+                return (dynamic_cast<T *>(this)->*handler)(static_cast<const E &>(e));
             };
 
             m_handler_ids.push_back(m_dispatcher.subscribe<E>(proxy));

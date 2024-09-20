@@ -3,8 +3,6 @@
 #define _lv_color(c) lv_color_make((c).red(), (c).green(), (c).blue())
 #define _lv_color32(c) lv_color32_make((c).red(), (c).green(), (c).blue(), (c).alpha())
 
-#include <algorithm>
-
 #include <lvgl.h>
 
 namespace ui
@@ -69,16 +67,14 @@ namespace ui
 
         canvas &canvas::copy_buf(int32_t x, int32_t y, lv_draw_buf_t *buffer)
         {
-            const auto draw_buf = get_draw_buf();
-
-            const lv_area_t source_area = {
+            const lv_area_t area = {
                 .x1 = x,
                 .y1 = y,
-                .x2 = std::min(x + buffer->header.w, static_cast<int32_t>(draw_buf->header.w)) - 1,
-                .y2 = std::min(y + buffer->header.h, static_cast<int32_t>(draw_buf->header.h)) - 1,
+                .x2 = x + buffer->header.w - 1,
+                .y2 = y + buffer->header.h - 1,
             };
 
-            lv_canvas_copy_buf(lv_object(), &source_area, buffer, nullptr);
+            lv_canvas_copy_buf(lv_object(), &area, buffer, nullptr);
 
             return *this;
         }

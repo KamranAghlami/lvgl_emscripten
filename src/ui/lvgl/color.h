@@ -44,20 +44,20 @@ namespace ui
 
             static color24 random();
 
-            color24() : m_blue(0), m_green(0), m_red(0) {}
-            color24(uint8_t red, uint8_t green, uint8_t blue) : m_blue(blue), m_green(green), m_red(red) {}
+            color24() : m_red(0), m_green(0), m_blue(0) {}
+            color24(uint8_t red, uint8_t green, uint8_t blue) : m_red(red), m_green(green), m_blue(blue) {}
 
-            uint8_t blue() const { return m_blue; }
-            uint8_t green() const { return m_green; }
             uint8_t red() const { return m_red; }
+            uint8_t green() const { return m_green; }
+            uint8_t blue() const { return m_blue; }
 
             color24 darkened(uint8_t v) const;
             color24 negative() const;
 
         protected:
-            uint8_t m_blue;
-            uint8_t m_green;
             uint8_t m_red;
+            uint8_t m_green;
+            uint8_t m_blue;
         };
 
         class color32 : public color24

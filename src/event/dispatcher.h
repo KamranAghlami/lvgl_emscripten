@@ -44,14 +44,21 @@ namespace event
         }
 
         template <typename E>
-        void dispatch(const E &event)
+        bool dispatch(const E &event)
         {
+            bool handled = false;
             auto handlers = m_handlers.find(std::type_index(typeid(E)));
 
             if (handlers != m_handlers.end())
                 for (auto &[_, handler] : handlers->second)
+                {
+                    handled = true;
+
                     if (!handler(event))
                         break;
+                }
+
+            return handled;
         }
 
     private:

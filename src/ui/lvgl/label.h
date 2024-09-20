@@ -25,6 +25,9 @@ namespace ui
             };
 
             label(object &parent);
+
+            explicit label(lv_obj_t *lv_obj);
+
             ~label();
 
             label &set_text(const char *text);

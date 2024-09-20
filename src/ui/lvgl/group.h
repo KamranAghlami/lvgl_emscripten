@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <functional>
 
+#include "ui/lvgl/memory.h"
+
 extern "C"
 {
     struct lv_group_t;
@@ -80,14 +82,12 @@ namespace ui
             bool get_editing();
             bool get_wrap();
 
-            group &activate();
-
             lv_group_t *lv_group();
 
         private:
             static group &from_lv_group(lv_group_t *lv_grp);
 
-            static std::unordered_map<lv_group_t *, group *> s_groups;
+            static std::unordered_map<lv_group_t *, group *, std::hash<lv_group_t *>, std::equal_to<lv_group_t *>, allocator<std::pair<lv_group_t *const, group *>>> s_groups;
 
             lv_group_t *mp_group;
             focus_callback m_focus_callback = nullptr;

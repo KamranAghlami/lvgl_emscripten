@@ -1,14 +1,38 @@
 #include "ui/lvgl/theme.h"
 
+#include <cstring>
+#include <cassert>
+
 #include <lvgl.h>
 #include <src/themes/lv_theme_private.h>
-
-#include "ui/lvgl/lvgl.h"
 
 namespace ui
 {
     namespace lvgl
     {
+        std::unordered_map<lv_theme_t *, theme *, std::hash<lv_theme_t *>, std::equal_to<lv_theme_t *>, allocator<std::pair<lv_theme_t *const, theme *>>> theme::s_themes;
+
+        void theme::set_active(theme &thm)
+        {
+            lv_display_set_theme(NULL, thm.mp_theme);
+        }
+
+        theme *theme::get_active()
+        {
+            auto lv_thm = lv_display_get_theme(NULL);
+
+            return lv_thm ? &from_lv_theme(lv_thm) : nullptr;
+        }
+
+        theme &theme::from_lv_theme(lv_theme_t *lv_thm)
+        {
+            auto it = s_themes.find(lv_thm);
+
+            assert(it != s_themes.end());
+
+            return *it->second;
+        }
+
         theme::theme() : mp_theme(static_cast<lv_theme_t *>(lvgl::malloc(sizeof(lv_theme_t))))
         {
             lv_theme_t *default_theme = lv_display_get_theme(NULL);
@@ -30,16 +54,54 @@ namespace ui
             lv_theme_set_apply_cb(mp_theme, apply_cb);
 
             mp_theme->user_data = this;
+
+            s_themes.emplace(mp_theme, this);
         }
 
         theme::~theme()
         {
             lvgl::free(mp_theme);
+
+            s_themes.erase(mp_theme);
         }
 
-        void theme::activate()
+        theme &theme::set_parent(theme &parent)
+        {
+            lv_theme_set_parent(mp_theme, parent.mp_theme);
+
+            return *this;
+        }
+
+        font *theme::get_font_small()
+        {
+            return mp_theme->font_small ? &font::from_lv_font(mp_theme->font_small) : nullptr;
+        }
+
+        font *theme::get_font_normal()
+        {
+            return mp_theme->font_normal ? &font::from_lv_font(mp_theme->font_normal) : nullptr;
+        }
+
+        font *theme::get_font_large()
+        {
+            return mp_theme->font_large ? &font::from_lv_font(mp_theme->font_large) : nullptr;
+        }
+
+        color theme::get_color_primary()
+        {
+            return color(mp_theme->color_primary.red, mp_theme->color_primary.green, mp_theme->color_primary.blue);
+        }
+
+        color theme::get_color_secondary()
+        {
+            return color(mp_theme->color_secondary.red, mp_theme->color_secondary.green, mp_theme->color_secondary.blue);
+        }
+
+        theme &theme::activate()
         {
             lv_display_set_theme(NULL, mp_theme);
+
+            return *this;
         }
 
         lv_theme_t *theme::lv_theme()

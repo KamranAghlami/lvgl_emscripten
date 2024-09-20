@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "ui/lvgl/memory.h"
 #include "ui/lvgl/event.h"
 #include "ui/lvgl/group.h"
 
@@ -81,6 +82,18 @@ namespace ui
                 OUT_RIGHT_TOP,
                 OUT_RIGHT_MID,
                 OUT_RIGHT_BOTTOM,
+            };
+
+            enum class direction : uint8_t
+            {
+                NONE = 0x00,
+                LEFT = (1 << 0),
+                RIGHT = (1 << 1),
+                TOP = (1 << 2),
+                BOTTOM = (1 << 3),
+                HOR = LEFT | RIGHT,
+                VER = TOP | BOTTOM,
+                ALL = HOR | VER,
             };
 
             enum class layout : uint8_t
@@ -180,6 +193,8 @@ namespace ui
 
             object(object &parent);
 
+            explicit object(lv_obj_t *lv_obj);
+
             virtual ~object();
 
             object(const object &) = delete;
@@ -221,18 +236,24 @@ namespace ui
             object &remove_style(const style &stl, selector sel = 0);
             object &clear_styles();
 
+            object &invalidate_area(const int32_t x1, const int32_t y1, const int32_t x2, const int32_t y2);
             object &invalidate();
 
             bool is_visible();
 
-            void add_event_callback(event::code c, const event::callback &callback, void *user_data = nullptr);
-            void send_event(event::code c, void *parameter = nullptr);
+            object &add_event_callback(event::code c, const event::callback &callback, void *user_data = nullptr);
+            object &send_event(event::code c, void *parameter = nullptr);
+
+            state get_state();
+            bool has_state(state s);
+            object &add_state(state s);
+            object &remove_state(state s);
 
             int32_t index();
-            void set_index(int32_t index);
+            object &set_index(int32_t index);
 
             object *parent();
-            void set_parent(object &parent);
+            object &set_parent(object &parent);
 
             object *child(int32_t index = 0);
             uint32_t child_count();
@@ -247,14 +268,12 @@ namespace ui
         protected:
             static object &from_lv_object(lv_obj_t *lv_obj);
 
-            explicit object(lv_obj_t *lv_obj);
-
         private:
-            static std::unordered_map<lv_obj_t *, object *> s_objects;
+            static std::unordered_map<lv_obj_t *, object *, std::hash<lv_obj_t *>, std::equal_to<lv_obj_t *>, allocator<std::pair<lv_obj_t *const, object *>>> s_objects;
 
             lv_obj_t *mp_object;
 
-            std::vector<event::descriptor *> m_event_descriptors;
+            std::vector<event::descriptor *, allocator<event::descriptor *>> m_event_descriptors;
 
             friend class event;
             friend class group;

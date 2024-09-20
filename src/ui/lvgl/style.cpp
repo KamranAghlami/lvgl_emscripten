@@ -5,7 +5,7 @@
 
 #include <lvgl.h>
 
-#include "ui/lvgl/lvgl.h"
+#include "ui/lvgl/memory.h"
 
 namespace ui
 {

@@ -56,6 +56,19 @@ namespace io
 
     uint32_t keyboard::map_control_key(const EmscriptenKeyboardEvent *keyboard_event)
     {
+        if (keyboard_event->key[0] == 'F' &&
+            keyboard_event->key[1] >= '1' &&
+            keyboard_event->key[1] <= '9')
+        {
+            const char *start_ptr = keyboard_event->key + 1;
+            char *end_ptr = nullptr;
+
+            const uint32_t code = strtoul(start_ptr, &end_ptr, 10);
+
+            if (*end_ptr == '\0' && code)
+                return 0x0100002F + code; // F1 -> 0x01000030
+        }
+
         if (!strcmp("ArrowUp", keyboard_event->key))
             return LV_KEY_UP;
 

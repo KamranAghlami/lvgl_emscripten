@@ -18,10 +18,6 @@ namespace io
         lv_display_set_flush_cb(mp_display, flush_cb);
         lv_display_set_user_data(mp_display, this);
 
-        subscribe(&display::on_size_change);
-
-        update_size();
-
         auto on_resize = [](int event_type, const EmscriptenUiEvent *ui_event, void *user_data) -> EM_BOOL
         {
             static_cast<display *>(user_data)->update_size();
@@ -39,6 +35,10 @@ namespace io
         };
 
         emscripten_set_orientationchange_callback(this, EM_TRUE, on_orientation_change);
+
+        subscribe(&display::on_size_change);
+
+        update_size();
     }
 
     display::~display()

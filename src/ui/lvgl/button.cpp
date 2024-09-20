@@ -10,6 +10,10 @@ namespace ui
         {
         }
 
+        button::button(lv_obj_t *lv_obj) : object(lv_obj)
+        {
+        }
+
         button::~button()
         {
         }

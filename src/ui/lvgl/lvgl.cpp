@@ -18,16 +18,6 @@ namespace ui
             void *m_user_data;
         };
 
-        void *malloc(size_t size)
-        {
-            return lv_malloc(size);
-        }
-
-        void free(void *data)
-        {
-            return lv_free(data);
-        }
-
         void async_call(const async_callback &cb, void *user_data)
         {
             auto async_cb = [](void *user_data)
@@ -45,6 +35,11 @@ namespace ui
             auto info = new (info_mem) async_info(cb, user_data);
 
             lv_async_call(async_cb, info);
+        }
+
+        uint32_t random(const uint32_t min, uint32_t max)
+        {
+            return lv_rand(min, max);
         }
     }
 }

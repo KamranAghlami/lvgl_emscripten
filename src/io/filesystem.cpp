@@ -49,20 +49,22 @@ namespace io
         {
             auto &fs = io::filesystem::get();
 
-            for (auto &entry : fs.m_cache)
-                if (entry.second->invalidated())
+            auto it = fs.m_cache.begin();
+
+            while (it != fs.m_cache.end())
+            {
+                if (it->second->invalidated())
                 {
-                    delete entry.second;
+                    delete it->second;
 
-                    fs.m_cache.erase(entry.first);
-
-                    timer.ready();
-
-                    return;
+                    it = fs.m_cache.erase(it);
                 }
+                else
+                    it++;
+            }
         };
 
-        mp_timer = std::make_unique<ui::lvgl::timer>(on_timeout, 60000);
+        mp_timer = std::make_unique<ui::lvgl::timer>(on_timeout, 10000);
     }
 
     filesystem::~filesystem()
@@ -229,6 +231,8 @@ namespace io
         auto entry = m_cache[file->m_path];
 
         entry->decrease_reference();
+
+        mp_timer->reset();
 
         delete file;
 

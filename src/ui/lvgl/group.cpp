@@ -4,14 +4,13 @@
 
 #include <lvgl.h>
 
-#include "application/application.h"
 #include "ui/lvgl/object.h"
 
 namespace ui
 {
     namespace lvgl
     {
-        std::unordered_map<lv_group_t *, group *> group::s_groups;
+        std::unordered_map<lv_group_t *, group *, std::hash<lv_group_t *>, std::equal_to<lv_group_t *>, allocator<std::pair<lv_group_t *const, group *>>> group::s_groups;
 
         void group::set_default(group &grp)
         {
@@ -20,9 +19,9 @@ namespace ui
 
         group *group::get_default()
         {
-            auto lv_group = lv_group_get_default();
+            auto lv_grp = lv_group_get_default();
 
-            return lv_group ? &from_lv_group(lv_group) : nullptr;
+            return lv_grp ? &from_lv_group(lv_grp) : nullptr;
         }
 
         void group::swap_object(object &obj1, object &obj2)
@@ -198,13 +197,6 @@ namespace ui
         bool group::get_wrap()
         {
             return lv_group_get_wrap(mp_group);
-        }
-
-        group &group::activate()
-        {
-            application::get()->set_active_group(*this);
-
-            return *this;
         }
 
         lv_group_t *group::lv_group()

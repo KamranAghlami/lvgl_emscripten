@@ -60,12 +60,12 @@ namespace ui
 
             enum class base_direction : uint8_t
             {
-                LV_BASE_DIR_LTR = 0x00,
-                LV_BASE_DIR_RTL = 0x01,
-                LV_BASE_DIR_AUTO = 0x02,
+                LTR = 0x00,
+                RTL = 0x01,
+                AUTO = 0x02,
 
-                LV_BASE_DIR_NEUTRAL = 0x20,
-                LV_BASE_DIR_WEAK = 0x21,
+                NEUTRAL = 0x20,
+                WEAK = 0x21,
             };
 
             style();

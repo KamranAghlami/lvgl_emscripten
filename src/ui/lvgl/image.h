@@ -28,7 +28,10 @@ namespace ui
             };
 
             image(object &parent);
-            ~image();
+
+            explicit image(lv_obj_t *lv_obj);
+
+            virtual ~image();
 
             image &set_source(const void *source);
             image &set_offset_x(int32_t offset_x);
@@ -51,9 +54,6 @@ namespace ui
             style::blend_mode get_blend_mode();
             bool get_antialiasing();
             image_alignment get_inner_alignment();
-
-        protected:
-            explicit image(lv_obj_t *lv_obj);
         };
     }
 }

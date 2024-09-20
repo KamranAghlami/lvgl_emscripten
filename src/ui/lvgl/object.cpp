@@ -3,7 +3,6 @@
 #include <cassert>
 #include <lvgl.h>
 
-#include "ui/lvgl/lvgl.h"
 #include "ui/lvgl/screen.h"
 #include "ui/lvgl/style.h"
 
@@ -11,7 +10,7 @@ namespace ui
 {
     namespace lvgl
     {
-        std::unordered_map<lv_obj_t *, object *> object::s_objects;
+        std::unordered_map<lv_obj_t *, object *, std::hash<lv_obj_t *>, std::equal_to<lv_obj_t *>, allocator<std::pair<lv_obj_t *const, object *>>> object::s_objects;
 
         int32_t object::SIZE_CONTENT()
         {
@@ -276,6 +275,20 @@ namespace ui
             return *this;
         }
 
+        object &object::invalidate_area(const int32_t x1, const int32_t y1, const int32_t x2, const int32_t y2)
+        {
+            const lv_area_t area{
+                .x1 = x1,
+                .y1 = y1,
+                .x2 = x2,
+                .y2 = y2,
+            };
+
+            lv_obj_invalidate_area(mp_object, &area);
+
+            return *this;
+        }
+
         object &object::invalidate()
         {
             lv_obj_invalidate(mp_object);
@@ -288,7 +301,7 @@ namespace ui
             return lv_obj_is_visible(mp_object);
         }
 
-        void object::add_event_callback(event::code c, const event::callback &callback, void *user_data)
+        object &object::add_event_callback(event::code c, const event::callback &callback, void *user_data)
         {
             auto proxy_callback = [](lv_event_t *lv_event)
             {
@@ -303,11 +316,39 @@ namespace ui
             dsc->mp_descriptor = lv_obj_add_event_cb(mp_object, proxy_callback, static_cast<lv_event_code_t>(c), dsc);
 
             m_event_descriptors.push_back(dsc);
+
+            return *this;
         }
 
-        void object::send_event(event::code c, void *parameter)
+        object &object::send_event(event::code c, void *parameter)
         {
             lv_obj_send_event(mp_object, static_cast<lv_event_code_t>(c), parameter);
+
+            return *this;
+        }
+
+        object::state object::get_state()
+        {
+            return static_cast<object::state>(lv_obj_get_state(mp_object));
+        }
+
+        bool object::has_state(state s)
+        {
+            return lv_obj_has_state(mp_object, static_cast<lv_state_t>(s));
+        }
+
+        object &object::add_state(state s)
+        {
+            lv_obj_add_state(mp_object, static_cast<lv_state_t>(s));
+
+            return *this;
+        }
+
+        object &object::remove_state(state s)
+        {
+            lv_obj_remove_state(mp_object, static_cast<lv_state_t>(s));
+
+            return *this;
         }
 
         int32_t object::index()
@@ -315,9 +356,11 @@ namespace ui
             return lv_obj_get_index(mp_object);
         }
 
-        void object::set_index(int32_t index)
+        object &object::set_index(int32_t index)
         {
             lv_obj_move_to_index(mp_object, index);
+
+            return *this;
         }
 
         object *object::parent()
@@ -327,9 +370,11 @@ namespace ui
             return lv_parent ? &from_lv_object(lv_parent) : nullptr;
         }
 
-        void object::set_parent(object &parent)
+        object &object::set_parent(object &parent)
         {
             lv_obj_set_parent(mp_object, parent.mp_object);
+
+            return *this;
         }
 
         object *object::child(int32_t index)
