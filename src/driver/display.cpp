@@ -1,6 +1,6 @@
-#include "io/display.h"
+#include "driver/display.h"
 
-namespace io
+namespace driver
 {
     display::display() : m_scaling(emscripten_get_device_pixel_ratio())
     {

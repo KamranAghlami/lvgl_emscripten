@@ -1,6 +1,6 @@
-#include "io/touch.h"
+#include "driver/touch.h"
 
-namespace io
+namespace driver
 {
     touch::touch() : m_scaling(emscripten_get_device_pixel_ratio())
     {

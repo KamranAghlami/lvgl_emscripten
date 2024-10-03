@@ -5,7 +5,7 @@
 
 #include "ui/lvgl/group.h"
 
-namespace io
+namespace driver
 {
     class mouse
     {

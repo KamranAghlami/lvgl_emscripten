@@ -1,8 +1,8 @@
-#include "io/filesystem.h"
+#include "driver/filesystem.h"
 
 #include <emscripten/fetch.h>
 
-namespace io
+namespace driver
 {
     filesystem::filesystem() : m_letter('N'), m_prefetching_count(0)
     {
@@ -47,7 +47,7 @@ namespace io
 
         auto on_timeout = [](ui::lvgl::timer &timer)
         {
-            auto &fs = io::filesystem::get();
+            auto &fs = driver::filesystem::get();
 
             auto it = fs.m_cache.begin();
 
@@ -117,7 +117,7 @@ namespace io
 
         auto on_succeeded = [](emscripten_fetch_t *fetch)
         {
-            auto &fs = io::filesystem::get();
+            auto &fs = driver::filesystem::get();
             auto path = static_cast<std::string *>(fetch->userData);
 
             fs.m_cache[*path] = new cache_entry(reinterpret_cast<const uint8_t *>(fetch->data), fetch->numBytes);
@@ -139,7 +139,7 @@ namespace io
         {
             LV_LOG_WARN("fetching %s failed, HTTP status code: %d.", fetch->url, fetch->status);
 
-            auto &fs = io::filesystem::get();
+            auto &fs = driver::filesystem::get();
             auto path = static_cast<std::string *>(fetch->userData);
 
             fs.m_fetching_list.erase(*path);

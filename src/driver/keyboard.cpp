@@ -1,8 +1,8 @@
-#include "io/keyboard.h"
+#include "driver/keyboard.h"
 
 #include <cstring>
 
-namespace io
+namespace driver
 {
     keyboard::keyboard()
     {

@@ -3,7 +3,7 @@
 #include <emscripten/html5.h>
 #include <lvgl.h>
 
-namespace io
+namespace driver
 {
     class touch
     {

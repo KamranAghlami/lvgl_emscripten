@@ -1,6 +1,6 @@
-#include "io/mouse.h"
+#include "driver/mouse.h"
 
-namespace io
+namespace driver
 {
     mouse::mouse() : m_scaling(emscripten_get_device_pixel_ratio())
     {

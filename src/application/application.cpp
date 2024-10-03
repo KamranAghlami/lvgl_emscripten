@@ -5,11 +5,11 @@
 #include <emscripten/html5.h>
 #include <lvgl.h>
 
-#include "io/display.h"
-#include "io/filesystem.h"
-#include "io/touch.h"
-#include "io/mouse.h"
-#include "io/keyboard.h"
+#include "driver/display.h"
+#include "driver/filesystem.h"
+#include "driver/touch.h"
+#include "driver/mouse.h"
+#include "driver/keyboard.h"
 
 static application *s_instance = nullptr;
 
@@ -35,17 +35,17 @@ application::application()
 
     lv_tick_set_cb(tick_get_cb);
 
-    io::display::get();
-    io::filesystem::get();
-    io::touch::get();
-    io::mouse::get();
-    io::keyboard::get();
+    driver::display::get();
+    driver::filesystem::get();
+    driver::touch::get();
+    driver::mouse::get();
+    driver::keyboard::get();
 
     auto on_fs_ready = [](lv_timer_t *timer) -> void
     {
         auto *app = static_cast<application *>(lv_timer_get_user_data(timer));
 
-        if (!io::filesystem::get().ready())
+        if (!driver::filesystem::get().ready())
             return;
 
         app->on_ready();
@@ -86,13 +86,13 @@ void application::set_scaling(float scaling)
 
     scaling *= pixel_ratio();
 
-    io::display::get().set_scaling(scaling);
-    io::touch::get().set_scaling(scaling);
-    io::mouse::get().set_scaling(scaling);
+    driver::display::get().set_scaling(scaling);
+    driver::touch::get().set_scaling(scaling);
+    driver::mouse::get().set_scaling(scaling);
 }
 
 void application::set_active_group(ui::lvgl::group &group)
 {
-    io::mouse::get().set_group(group);
-    io::keyboard::get().set_group(group);
+    driver::mouse::get().set_group(group);
+    driver::keyboard::get().set_group(group);
 }

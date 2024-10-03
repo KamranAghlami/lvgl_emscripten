@@ -3,7 +3,7 @@
 #include <lvgl.h>
 
 #include "ui/lvgl/lvgl.h"
-#include "io/filesystem.h"
+#include "driver/filesystem.h"
 
 namespace ui
 {
@@ -17,7 +17,7 @@ namespace ui
                 m_image.set_source(path.c_str());
             };
 
-            io::filesystem::get().fetch("image/icon.png", on_fetch);
+            driver::filesystem::get().fetch("image/icon.png", on_fetch);
 
             m_image.align(alignment::CENTER);
             m_label.align(alignment::CENTER);
