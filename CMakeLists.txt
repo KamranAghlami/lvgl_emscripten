@@ -20,4 +20,4 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(lvgl)
 target_compile_definitions(lvgl PUBLIC LV_CONF_INCLUDE_SIMPLE)
 target_include_directories(lvgl PUBLIC src)
-target_link_libraries(${PROJECT_NAME} PRIVATE lvgl)
+target_link_libraries(${PROJECT_NAME} PRIVATE lvgl lvgl::thorvg)

@@ -263,7 +263,7 @@ namespace ui
             screen &screen();
             group *group();
 
-            lv_obj_t *lv_object();
+            lv_obj_t *lv_object() const;
 
         protected:
             static object &from_lv_object(lv_obj_t *lv_obj);
@@ -277,6 +277,9 @@ namespace ui
 
             friend class event;
             friend class group;
+
+            friend bool operator==(const object &lhs, const object &rhs);
+            friend bool operator!=(const object &lhs, const object &rhs);
         };
 
         inline object::flag operator|(object::flag lhs, object::flag rhs)
@@ -338,6 +341,16 @@ namespace ui
         inline object::selector operator|(const object::state lhs, const object::part rhs)
         {
             return static_cast<uint16_t>(lhs) | static_cast<uint32_t>(rhs);
+        }
+
+        inline bool operator==(const object &lhs, const object &rhs)
+        {
+            return lhs.lv_object() == rhs.lv_object();
+        }
+
+        inline bool operator!=(const object &lhs, const object &rhs)
+        {
+            return !(lhs == rhs);
         }
     }
 }

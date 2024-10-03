@@ -72,21 +72,6 @@ namespace ui
             return *this;
         }
 
-        font *theme::get_font_small()
-        {
-            return mp_theme->font_small ? &font::from_lv_font(mp_theme->font_small) : nullptr;
-        }
-
-        font *theme::get_font_normal()
-        {
-            return mp_theme->font_normal ? &font::from_lv_font(mp_theme->font_normal) : nullptr;
-        }
-
-        font *theme::get_font_large()
-        {
-            return mp_theme->font_large ? &font::from_lv_font(mp_theme->font_large) : nullptr;
-        }
-
         color theme::get_color_primary()
         {
             return color(mp_theme->color_primary.red, mp_theme->color_primary.green, mp_theme->color_primary.blue);

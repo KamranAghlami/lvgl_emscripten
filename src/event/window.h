@@ -9,10 +9,14 @@ namespace event
         class size_changed : public event
         {
         public:
-            size_changed(const int width, const int height) : m_width(width), m_height(height) {}
+            size_changed(const int width, const int height)
+                : m_width(width),
+                  m_height(height)
+            {
+            }
 
-            int m_width = 0;
-            int m_height = 0;
+            const int m_width;
+            const int m_height;
         };
     }
 }

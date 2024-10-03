@@ -2,10 +2,10 @@
 
 #include <cstdint>
 
-#include <ui/lvgl/object.h>
-#include <ui/lvgl/color.h>
-#include <ui/lvgl/font.h>
-#include <ui/lvgl/animation.h>
+#include "ui/lvgl/object.h"
+#include "ui/lvgl/color.h"
+#include "ui/lvgl/font.h"
+#include "ui/lvgl/animation.h"
 
 namespace ui
 {
@@ -188,6 +188,7 @@ namespace ui
             style &set_grid_cell_y_align(object::grid_alignment v);
             style &set_grid_cell_row_span(int32_t v);
 
+            void reset();
             void report_change();
             void *lv_style();
 

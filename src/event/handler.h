@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <vector>
 
 #include "event/dispatcher.h"
@@ -26,7 +27,11 @@ namespace event
         {
             dispatcher::handler_type proxy = [this, handler](const event &e) -> bool
             {
-                return (dynamic_cast<T *>(this)->*handler)(static_cast<const E &>(e));
+                auto t_ptr = dynamic_cast<T *>(this);
+
+                assert(t_ptr);
+
+                return (t_ptr->*handler)(static_cast<const E &>(e));
             };
 
             m_handler_ids.push_back(m_dispatcher.subscribe<E>(proxy));

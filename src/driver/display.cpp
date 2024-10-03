@@ -94,7 +94,8 @@ namespace driver
         if (new_width == m_width && new_height == m_height)
             return;
 
-        event::dispatcher::global().dispatch(event::window::size_changed(new_width, new_height));
+        event::dispatcher::global()
+            .dispatch(event::window::size_changed(new_width, new_height));
     }
 
     void display::set_bitmap(const int x1, const int y1, const int x2, const int y2, uint8_t *buffer)

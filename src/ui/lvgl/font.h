@@ -1,8 +1,6 @@
 #pragma once
 
-#include <unordered_map>
-
-#include "ui/lvgl/memory.h"
+#include <cstdint>
 
 extern "C"
 {
@@ -16,7 +14,7 @@ namespace ui
         class font
         {
         public:
-            font(const char *path, int32_t size = 14);
+            font(const char *path, const int32_t size);
             ~font();
 
             font(const font &) = delete;
@@ -29,13 +27,7 @@ namespace ui
             lv_font_t *lv_font() const;
 
         private:
-            static font &from_lv_font(const lv_font_t *lv_fnt);
-
-            static std::unordered_map<lv_font_t *, font *, std::hash<lv_font_t *>, std::equal_to<lv_font_t *>, allocator<std::pair<lv_font_t *const, font *>>> s_fonts;
-
             lv_font_t *mp_font;
-
-            friend class theme;
         };
     }
 }

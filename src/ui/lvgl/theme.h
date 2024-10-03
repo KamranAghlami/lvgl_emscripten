@@ -31,9 +31,6 @@ namespace ui
             theme &operator=(theme &&) = delete;
 
             theme &set_parent(theme &parent);
-            font *get_font_small();
-            font *get_font_normal();
-            font *get_font_large();
             color get_color_primary();
             color get_color_secondary();
 

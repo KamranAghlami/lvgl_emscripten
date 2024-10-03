@@ -45,6 +45,8 @@ namespace ui
             public:
                 tab_descriptor_base(object &tab_bar);
 
+                virtual ~tab_descriptor_base() = default;
+
                 button &get_button()
                 {
                     return m_button;
@@ -55,7 +57,7 @@ namespace ui
                     return m_label;
                 }
 
-                virtual ~tab_descriptor_base() = default;
+                virtual lvgl::object &get_content() = 0;
 
             private:
                 button m_button;
@@ -72,7 +74,7 @@ namespace ui
                 {
                 }
 
-                T &get_content()
+                object &get_content() override
                 {
                     return m_content;
                 }
@@ -81,11 +83,11 @@ namespace ui
                 T m_content;
             };
 
+            std::vector<std::unique_ptr<tab_descriptor_base>> m_tabs;
+
         private:
             object m_tab_bar;
             object m_content;
-
-            std::vector<std::unique_ptr<tab_descriptor_base>> m_tabs;
         };
 
         template <typename T>

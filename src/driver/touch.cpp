@@ -31,23 +31,16 @@ namespace driver
         };
 
         emscripten_set_touchcancel_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, EM_TRUE, on_touch_cancel);
-
-        mp_device = lv_indev_create();
-
-        auto on_touch_read = [](lv_indev_t *device, lv_indev_data_t *data)
-        {
-            static_cast<touch *>(lv_indev_get_driver_data(device))->on_touch_read(data);
-        };
-
-        lv_indev_set_type(mp_device, LV_INDEV_TYPE_POINTER);
-        lv_indev_set_read_cb(mp_device, on_touch_read);
-        lv_indev_set_mode(mp_device, LV_INDEV_MODE_EVENT);
-        lv_indev_set_driver_data(mp_device, this);
     }
 
     touch::~touch()
     {
-        lv_indev_delete(mp_device);
+        for (auto &dev : m_devices)
+        {
+            dev.second->~device();
+
+            ui::lvgl::free(dev.second);
+        }
     }
 
     void touch::set_scaling(float scaling)
@@ -57,84 +50,162 @@ namespace driver
 
     EM_BOOL touch::on_touch_start(int type, const EmscriptenTouchEvent *touch_event, void *user_data)
     {
-        if (!touch_event->numTouches)
-            return EM_TRUE;
+        for (size_t i = 0; i < touch_event->numTouches; i++)
+        {
+            const EmscriptenTouchPoint &touch_point = touch_event->touches[i];
 
-        const EmscriptenTouchPoint &touch_point = touch_event->touches[0];
+            if (!touch_point.isChanged)
+                continue;
 
-        if (!touch_point.isChanged)
-            return EM_TRUE;
+            auto &dev = get_device(touch_point.identifier);
 
-        m_last_state.x = touch_point.targetX * m_scaling;
-        m_last_state.y = touch_point.targetY * m_scaling;
-        m_last_state.present = true;
-
-        lv_indev_read(mp_device);
+            dev.set_x(touch_point.targetX * m_scaling);
+            dev.set_y(touch_point.targetY * m_scaling);
+            dev.set_pressed(true);
+            dev.read();
+        }
 
         return EM_TRUE;
     }
 
     EM_BOOL touch::on_touch_move(int type, const EmscriptenTouchEvent *touch_event, void *user_data)
     {
-        if (!touch_event->numTouches)
-            return EM_TRUE;
+        for (size_t i = 0; i < touch_event->numTouches; i++)
+        {
+            const EmscriptenTouchPoint &touch_point = touch_event->touches[i];
 
-        const EmscriptenTouchPoint &touch_point = touch_event->touches[0];
+            if (!touch_point.isChanged)
+                continue;
 
-        if (!touch_point.isChanged)
-            return EM_TRUE;
+            auto &dev = get_device(touch_point.identifier);
 
-        m_last_state.x = touch_point.targetX * m_scaling;
-        m_last_state.y = touch_point.targetY * m_scaling;
-        m_last_state.present = true;
-
-        lv_indev_read(mp_device);
+            dev.set_x(touch_point.targetX * m_scaling);
+            dev.set_y(touch_point.targetY * m_scaling);
+            dev.set_pressed(true);
+            dev.read();
+        }
 
         return EM_TRUE;
     }
 
     EM_BOOL touch::on_touch_end(int type, const EmscriptenTouchEvent *touch_event, void *user_data)
     {
-        if (!touch_event->numTouches)
-            return EM_TRUE;
+        for (size_t i = 0; i < touch_event->numTouches; i++)
+        {
+            const EmscriptenTouchPoint &touch_point = touch_event->touches[i];
 
-        const EmscriptenTouchPoint &touch_point = touch_event->touches[0];
+            if (!touch_point.isChanged)
+                continue;
 
-        if (!touch_point.isChanged)
-            return EM_TRUE;
+            auto &dev = get_device(touch_point.identifier);
 
-        m_last_state.x = touch_point.targetX * m_scaling;
-        m_last_state.y = touch_point.targetY * m_scaling;
-        m_last_state.present = false;
+            dev.set_x(touch_point.targetX * m_scaling);
+            dev.set_y(touch_point.targetY * m_scaling);
+            dev.set_pressed(false);
 
-        lv_indev_read(mp_device);
+            dev.read();
+
+            release_device(dev);
+        }
 
         return EM_TRUE;
     }
 
     EM_BOOL touch::on_touch_cancel(int type, const EmscriptenTouchEvent *touch_event, void *user_data)
     {
-        if (!touch_event->numTouches)
-            return EM_TRUE;
+        for (size_t i = 0; i < touch_event->numTouches; i++)
+        {
+            const EmscriptenTouchPoint &touch_point = touch_event->touches[i];
 
-        const EmscriptenTouchPoint &touch_point = touch_event->touches[0];
+            if (!touch_point.isChanged)
+                continue;
 
-        if (!touch_point.isChanged)
-            return EM_TRUE;
+            auto &dev = get_device(touch_point.identifier);
 
-        m_last_state.present = false;
+            dev.set_x(touch_point.targetX * m_scaling);
+            dev.set_y(touch_point.targetY * m_scaling);
+            dev.set_pressed(false);
 
-        lv_indev_read(mp_device);
+            dev.read();
+
+            release_device(dev);
+        }
 
         return EM_TRUE;
     }
 
-    void touch::on_touch_read(lv_indev_data_t *data)
+    touch::device &touch::get_device(int identifier)
     {
-        if (m_last_state.present)
+        const auto &dev = m_devices.find(identifier);
+
+        if (dev != m_devices.end())
+            return *dev->second;
+
+        auto new_dev_mem = ui::lvgl::malloc(sizeof(device));
+        auto new_dev = new (new_dev_mem) device(identifier);
+        auto p_dev = m_devices.emplace(identifier, new_dev).first->second;
+
+        return *p_dev;
+    }
+
+    void touch::release_device(device &dev)
+    {
+        m_devices.erase(dev.get_identifier());
+
+        dev.~device();
+
+        ui::lvgl::free(&dev);
+    }
+
+    touch::device::device(int identifier) : m_identifier(identifier), mp_indev(lv_indev_create())
+    {
+        auto on_touch_read = [](lv_indev_t *indev, lv_indev_data_t *data)
         {
-            data->point.x = m_last_state.x;
-            data->point.y = m_last_state.y;
+            static_cast<device *>(lv_indev_get_driver_data(indev))->on_touch_read(data);
+        };
+
+        lv_indev_set_type(mp_indev, LV_INDEV_TYPE_POINTER);
+        lv_indev_set_read_cb(mp_indev, on_touch_read);
+        lv_indev_set_mode(mp_indev, LV_INDEV_MODE_EVENT);
+        lv_indev_set_driver_data(mp_indev, this);
+    }
+
+    touch::device::~device()
+    {
+        lv_indev_delete(mp_indev);
+    }
+
+    void touch::device::read()
+    {
+        lv_indev_read(mp_indev);
+    }
+
+    int touch::device::get_identifier()
+    {
+        return m_identifier;
+    }
+
+    void touch::device::set_x(const int x)
+    {
+        m_state.x = x;
+    }
+
+    void touch::device::set_y(const int y)
+    {
+        m_state.y = y;
+    }
+
+    void touch::device::set_pressed(const bool pressed)
+    {
+        m_state.pressed = pressed;
+    }
+
+    void touch::device::on_touch_read(lv_indev_data_t *data)
+    {
+        if (m_state.pressed)
+        {
+            data->point.x = m_state.x;
+            data->point.y = m_state.y;
             data->state = LV_INDEV_STATE_PRESSED;
         }
         else

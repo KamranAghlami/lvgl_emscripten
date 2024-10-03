@@ -38,12 +38,22 @@ namespace driver
 
     EM_BOOL keyboard::on_key_down(int type, const EmscriptenKeyboardEvent *keyboard_event, void *user_data)
     {
-        m_last_state.key = keyboard_event->key[0];
-        m_last_state.pressed = true;
+        const bool is_combination = keyboard_event->ctrlKey ||
+                                    keyboard_event->shiftKey ||
+                                    keyboard_event->altKey ||
+                                    keyboard_event->metaKey;
 
-        if (keyboard_event->key[1] != '\0')
-            if (!(m_last_state.key = map_control_key(keyboard_event)))
-                return EM_TRUE;
+        if (is_combination || keyboard_event->key[1])
+        {
+            m_last_state.key = map_control_key(keyboard_event);
+
+            if (!m_last_state.key)
+                return EM_FALSE;
+        }
+        else
+            m_last_state.key = keyboard_event->key[0];
+
+        m_last_state.pressed = true;
 
         lv_indev_read(mp_device);
 

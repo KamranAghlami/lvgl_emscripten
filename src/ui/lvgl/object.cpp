@@ -70,7 +70,7 @@ namespace ui
             s_objects.erase(mp_object);
         }
 
-        lv_obj_t *object::lv_object()
+        lv_obj_t *object::lv_object() const
         {
             return mp_object;
         }

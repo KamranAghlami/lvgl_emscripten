@@ -18,7 +18,8 @@ namespace ui
 
         style::~style()
         {
-            lv_style_reset(_lv_style);
+            reset();
+            report_change();
 
             lvgl::free(mp_style);
         }
@@ -798,6 +799,11 @@ namespace ui
             lv_style_set_grid_cell_row_span(_lv_style, v);
 
             return *this;
+        }
+
+        void style::reset()
+        {
+            lv_style_reset(_lv_style);
         }
 
         void style::report_change()
