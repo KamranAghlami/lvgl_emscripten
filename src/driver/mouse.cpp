@@ -68,7 +68,7 @@ namespace driver
         m_scaling = scaling;
     }
 
-    void mouse::set_group(ui::lvgl::group &group)
+    void mouse::set_group(lvgl::group &group)
     {
         lv_indev_set_group(mp_device_aux, group.lv_group());
     }

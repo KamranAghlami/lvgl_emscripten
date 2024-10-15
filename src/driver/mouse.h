@@ -3,7 +3,7 @@
 #include <emscripten/html5.h>
 #include <lvgl.h>
 
-#include "ui/lvgl/group.h"
+#include "lvgl/group.h"
 
 namespace driver
 {
@@ -34,7 +34,7 @@ namespace driver
         mouse &operator=(mouse &&) = delete;
 
         void set_scaling(float scaling);
-        void set_group(ui::lvgl::group &group);
+        void set_group(lvgl::group &group);
 
     private:
         mouse();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ui/lvgl/group.h"
+#include "lvgl/group.h"
 
 #define DEFINE_MAIN(class) \
     int main()             \
@@ -27,7 +27,7 @@ public:
     float pixel_ratio();
 
     void set_scaling(float scaling);
-    void set_active_group(ui::lvgl::group &group);
+    void set_active_group(lvgl::group &group);
 
 protected:
     virtual void on_ready() = 0;

@@ -18,5 +18,16 @@ namespace event
             const int m_width;
             const int m_height;
         };
+
+        class visibility_changed : public event
+        {
+        public:
+            visibility_changed(const bool hidden)
+                : m_hidden(hidden)
+            {
+            }
+
+            const bool m_hidden;
+        };
     }
 }

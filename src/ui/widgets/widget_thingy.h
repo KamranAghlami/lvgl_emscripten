@@ -2,7 +2,7 @@
 
 #include <lvgl.h>
 
-#include "ui/lvgl/lvgl.h"
+#include "lvgl/lvgl.h"
 #include "driver/filesystem.h"
 
 namespace ui
@@ -12,7 +12,7 @@ namespace ui
     public:
         widget_thingy(object &parent) : object(parent), m_image(*this), m_label(*this)
         {
-            auto on_fetch = [this](const std::string &path)
+            auto on_fetch = [this](const lvgl::string &path)
             {
                 m_image.set_source(path.c_str());
             };

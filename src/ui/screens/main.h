@@ -5,7 +5,7 @@
 
 #include <lvgl.h>
 
-#include "ui/lvgl/lvgl.h"
+#include "lvgl/lvgl.h"
 #include "ui/widgets/widget_thingy.h"
 #include "application/application.h"
 

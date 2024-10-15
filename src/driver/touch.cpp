@@ -39,7 +39,7 @@ namespace driver
         {
             dev.second->~device();
 
-            ui::lvgl::free(dev.second);
+            lvgl::free(dev.second);
         }
     }
 
@@ -141,7 +141,7 @@ namespace driver
         if (dev != m_devices.end())
             return *dev->second;
 
-        auto new_dev_mem = ui::lvgl::malloc(sizeof(device));
+        auto new_dev_mem = lvgl::malloc(sizeof(device));
         auto new_dev = new (new_dev_mem) device(identifier);
         auto p_dev = m_devices.emplace(identifier, new_dev).first->second;
 
@@ -154,7 +154,7 @@ namespace driver
 
         dev.~device();
 
-        ui::lvgl::free(&dev);
+        lvgl::free(&dev);
     }
 
     touch::device::device(int identifier) : m_identifier(identifier), mp_indev(lv_indev_create())
@@ -172,7 +172,18 @@ namespace driver
 
     touch::device::~device()
     {
-        lv_indev_delete(mp_indev);
+        auto delete_async = [](lv_timer_t *timer)
+        {
+            auto indev = static_cast<lv_indev_t *>(lv_timer_get_user_data(timer));
+
+            if (lv_indev_get_active_obj() || lv_indev_get_scroll_obj(indev))
+                return;
+
+            lv_indev_delete(static_cast<lv_indev_t *>(lv_timer_get_user_data(timer)));
+            lv_timer_delete(timer);
+        };
+
+        lv_timer_create(delete_async, 1000, mp_indev);
     }
 
     void touch::device::read()

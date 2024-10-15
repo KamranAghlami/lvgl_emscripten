@@ -3,7 +3,7 @@
 #include <emscripten/html5.h>
 #include <lvgl.h>
 
-#include "ui/lvgl/group.h"
+#include "lvgl/group.h"
 
 namespace driver
 {
@@ -30,7 +30,7 @@ namespace driver
         keyboard &operator=(const keyboard &) = delete;
         keyboard &operator=(keyboard &&) = delete;
 
-        void set_group(ui::lvgl::group &group);
+        void set_group(lvgl::group &group);
 
     private:
         keyboard();

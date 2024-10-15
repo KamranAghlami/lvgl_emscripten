@@ -36,6 +36,7 @@ namespace driver
 
         void update_size();
         void set_bitmap(const int x1, const int y1, const int x2, const int y2, uint8_t *buffer);
+        void on_visibility_change(bool hidden);
 
         int m_width = 0;
         int m_height = 0;

@@ -8,14 +8,15 @@
 
 #include <lvgl.h>
 
-#include "ui/lvgl/timer.h"
+#include "lvgl/memory.h"
+#include "lvgl/timer.h"
 
 namespace driver
 {
     class filesystem
     {
     public:
-        using fetch_callback = std::function<void(const std::string &)>;
+        using fetch_callback = std::function<void(const lvgl::string &)>;
 
         static filesystem &get()
         {
@@ -31,8 +32,8 @@ namespace driver
         filesystem &operator=(const filesystem &) = delete;
         filesystem &operator=(filesystem &&) = delete;
 
-        void prefetch(const std::vector<std::string> &paths);
-        void fetch(const std::string &path, const fetch_callback &callback = nullptr);
+        void prefetch(const lvgl::vector<lvgl::string> &paths);
+        void fetch(const lvgl::string &path, const fetch_callback &callback = nullptr);
 
         bool ready();
 
@@ -50,19 +51,19 @@ namespace driver
             size_t size() const;
 
         private:
-            std::vector<uint8_t> m_data;
+            lvgl::vector<uint8_t> m_data;
             size_t m_references = 0;
             float m_last_used = 0.0f;
         };
 
         struct file_handle
         {
-            file_handle(const std::string &path, const cache_entry *entry) : m_path(path),
-                                                                             m_data(entry->data()),
-                                                                             m_size(entry->size()),
-                                                                             m_position(0) {}
+            file_handle(const lvgl::string &path, const cache_entry *entry) : m_path(path),
+                                                                              m_data(entry->data()),
+                                                                              m_size(entry->size()),
+                                                                              m_position(0) {}
 
-            const std::string m_path;
+            const lvgl::string m_path;
             const uint8_t *m_data;
             const size_t m_size;
             size_t m_position = 0;
@@ -76,14 +77,14 @@ namespace driver
         lv_fs_res_t seek(file_handle *file, uint32_t position, lv_fs_whence_t whence);
         lv_fs_res_t tell(file_handle *file, uint32_t *position);
 
-        std::string get_full_path(const std::string &path);
+        lvgl::string get_full_path(const lvgl::string &path);
 
         const char m_letter;
         size_t m_prefetching_count;
-        std::unordered_multimap<std::string, fetch_callback> m_fetching_list;
-        std::unordered_map<std::string, cache_entry *> m_cache;
+        lvgl::unordered_multimap<lvgl::string, fetch_callback> m_fetching_list;
+        lvgl::unordered_map<lvgl::string, cache_entry *> m_cache;
 
         lv_fs_drv_t m_driver;
-        std::unique_ptr<ui::lvgl::timer> mp_timer;
+        lvgl::unique_ptr<lvgl::timer> mp_timer;
     };
 }

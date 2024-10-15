@@ -1,5 +1,7 @@
 #include "driver/display.h"
 
+#include "lvgl/memory.h"
+
 namespace driver
 {
     display::display() : m_scaling(emscripten_get_device_pixel_ratio())
@@ -36,6 +38,15 @@ namespace driver
 
         emscripten_set_orientationchange_callback(this, EM_TRUE, on_orientation_change);
 
+        auto on_visibility_change = [](int event_type, const EmscriptenVisibilityChangeEvent *visibility_change_event, void *user_data) -> EM_BOOL
+        {
+            static_cast<display *>(user_data)->on_visibility_change(visibility_change_event->hidden);
+
+            return EM_TRUE;
+        };
+
+        emscripten_set_visibilitychange_callback(this, EM_TRUE, on_visibility_change);
+
         subscribe(&display::on_size_change);
 
         update_size();
@@ -45,8 +56,8 @@ namespace driver
     {
         lv_display_delete(mp_display);
 
-        free(mp_draw_buf_2);
-        free(mp_draw_buf_1);
+        lvgl::free(mp_draw_buf_2);
+        lvgl::free(mp_draw_buf_1);
     }
 
     void display::set_scaling(float scaling)
@@ -66,14 +77,14 @@ namespace driver
         const size_t buffer_size = (LV_COLOR_DEPTH / 8) * m_width * m_height * 0.1f;
 
         if (mp_draw_buf_1)
-            free(mp_draw_buf_1);
+            lvgl::free(mp_draw_buf_1);
 
-        mp_draw_buf_1 = malloc(buffer_size);
+        mp_draw_buf_1 = lvgl::malloc(buffer_size);
 
         if (mp_draw_buf_2)
-            free(mp_draw_buf_2);
+            lvgl::free(mp_draw_buf_2);
 
-        mp_draw_buf_2 = malloc(buffer_size);
+        mp_draw_buf_2 = lvgl::malloc(buffer_size);
 
         lv_display_set_resolution(mp_display, m_width, m_height);
         lv_display_set_buffers(mp_display, mp_draw_buf_1, mp_draw_buf_2, buffer_size, LV_DISPLAY_RENDER_MODE_PARTIAL);
@@ -118,5 +129,11 @@ namespace driver
                 context.putImageData(image, $0, $1);
             },
             x1, y1, width, height, size, buffer);
+    }
+
+    void display::on_visibility_change(bool hidden)
+    {
+        event::dispatcher::global()
+            .dispatch(event::window::visibility_changed(hidden));
     }
 }
