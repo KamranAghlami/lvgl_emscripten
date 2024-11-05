@@ -68,9 +68,9 @@ namespace driver
         m_scaling = scaling;
     }
 
-    void mouse::set_group(lvgl::group &group)
+    void mouse::set_group(lvgl::group &grp)
     {
-        lv_indev_set_group(mp_device_aux, group.lv_group());
+        lv_indev_set_group(mp_device_aux, grp.lv_group());
     }
 
     EM_BOOL mouse::on_mouse_down(int type, const EmscriptenMouseEvent *mouse_event, void *user_data)

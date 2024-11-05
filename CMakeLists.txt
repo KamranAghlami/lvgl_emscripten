@@ -10,12 +10,13 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE src)
 target_link_options(${PROJECT_NAME} PRIVATE -sALLOW_MEMORY_GROWTH -sFETCH)
+target_link_libraries(${PROJECT_NAME} PRIVATE -lembind)
 
 include(FetchContent)
 FetchContent_Declare(
   lvgl
   GIT_REPOSITORY https://github.com/lvgl/lvgl.git
-  GIT_TAG tags/v9.2.0
+  GIT_TAG tags/v9.2.2
 )
 FetchContent_MakeAvailable(lvgl)
 target_compile_definitions(lvgl PUBLIC LV_CONF_INCLUDE_SIMPLE)

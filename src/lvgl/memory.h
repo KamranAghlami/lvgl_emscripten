@@ -1,7 +1,13 @@
 #pragma once
 
 #include <limits>
+#include <list>
+#include <memory>
 #include <new>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace lvgl
 {
@@ -48,7 +54,15 @@ namespace lvgl
     using string = basic_string<char>;
 
     template <typename T>
+    using basic_ostringstream = std::basic_ostringstream<T, std::char_traits<T>, allocator<T>>;
+
+    using ostringstream = basic_ostringstream<char>;
+
+    template <typename T>
     using vector = std::vector<T, allocator<T>>;
+
+    template <typename T>
+    using list = std::list<T, allocator<T>>;
 
     template <typename K, typename V>
     using unordered_map = std::unordered_map<K, V, std::hash<K>, std::equal_to<K>, allocator<std::pair<K const, V>>>;

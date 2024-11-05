@@ -82,9 +82,9 @@ namespace lvgl
 
         lv_group_t *lv_group();
 
-    private:
         static group &from_lv_group(lv_group_t *lv_grp);
 
+    private:
         static lvgl::unordered_map<lv_group_t *, group *> s_groups;
 
         lv_group_t *mp_group;

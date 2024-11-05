@@ -1,6 +1,6 @@
-/**
+﻿/**
  * @file lv_conf.h
- * Configuration file for v9.2.0
+ * Configuration file for v9.2.2
  */
 
 /*
@@ -26,7 +26,7 @@
    COLOR SETTINGS
  *====================*/
 
-/*Color depth: 8 (A8), 16 (RGB565), 24 (RGB888), 32 (XRGB8888)*/
+/*Color depth: 1 (I1), 8 (L8), 16 (RGB565), 24 (RGB888), 32 (XRGB8888)*/
 #define LV_COLOR_DEPTH 32
 
 /*=========================
@@ -94,6 +94,14 @@
 
 #if LV_USE_OS == LV_OS_CUSTOM
     #define LV_OS_CUSTOM_INCLUDE <stdint.h>
+#endif
+#if LV_USE_OS == LV_OS_FREERTOS
+	/*
+	 * Unblocking an RTOS task with a direct notification is 45% faster and uses less RAM
+	 * than unblocking a task using an intermediary object such as a binary semaphore.
+	 * RTOS task notifications can only be used when there is only one task that can be the recipient of the event.
+	 */
+	#define LV_USE_FREERTOS_TASK_NOTIFY 1
 #endif
 
 /*========================
@@ -205,10 +213,16 @@
 #endif
 
 /* Use NXP's PXP on iMX RTxxx platforms. */
-#define LV_USE_DRAW_PXP 0
+#define LV_USE_PXP 0
 
-#if LV_USE_DRAW_PXP
-    #if LV_USE_OS
+#if LV_USE_PXP
+    /* Use PXP for drawing.*/
+    #define LV_USE_DRAW_PXP 1
+
+    /* Use PXP to rotate display.*/
+    #define LV_USE_ROTATE_PXP 0
+
+    #if LV_USE_DRAW_PXP && LV_USE_OS
         /* Use additional draw thread for PXP processing.*/
         #define LV_USE_PXP_DRAW_THREAD 1
     #endif
@@ -667,7 +681,7 @@
 #if LV_USE_THEME_DEFAULT
 
     /*0: Light mode; 1: Dark mode*/
-    #define LV_THEME_DEFAULT_DARK 1
+    #define LV_THEME_DEFAULT_DARK 0
 
     /*1: Enable grow on press*/
     #define LV_THEME_DEFAULT_GROW 1

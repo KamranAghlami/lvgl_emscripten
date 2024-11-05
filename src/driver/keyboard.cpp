@@ -6,6 +6,23 @@ namespace driver
 {
     keyboard::keyboard()
     {
+        {
+            emscripten::val document = emscripten::val::global("document");
+
+            m_input_element = document.call<emscripten::val>("createElement", std::string("input"));
+            m_input_element.set("type", "text");
+            m_input_element.set("contenteditable", "true");
+
+            m_input_element["style"].set("position", "absolute");
+            m_input_element["style"].set("left", 0);
+            m_input_element["style"].set("top", 0);
+            m_input_element["style"].set("opacity", 0);
+            m_input_element["style"].set("display", "");
+            m_input_element["style"].set("z-index", -2);
+
+            document["body"].call<void>("appendChild", m_input_element);
+        }
+
         auto on_key_down = [](int type, const EmscriptenKeyboardEvent *mouse_event, void *user_data)
         {
             return static_cast<keyboard *>(user_data)->on_key_down(type, mouse_event, user_data);
@@ -31,9 +48,42 @@ namespace driver
         lv_indev_delete(mp_device);
     }
 
-    void keyboard::set_group(lvgl::group &group)
+    void keyboard::set_group(lvgl::group &grp)
     {
-        lv_indev_set_group(mp_device, group.lv_group());
+        auto lv_group = lv_indev_get_group(mp_device);
+
+        if (lv_group)
+            lvgl::group::from_lv_group(lv_group).set_focus_callback(nullptr);
+
+        lv_indev_set_group(mp_device, grp.lv_group());
+
+        auto focus = [this](lvgl::object *obj)
+        {
+            if (obj && (obj->has_flag(lvgl::object::flag::USER_4) ||
+                        lv_obj_get_class(obj->lv_object()) == &lv_textarea_class))
+                show_keyboard();
+            else
+                hide_keyboard();
+        };
+
+        focus(grp.get_focused());
+
+        auto on_focus = [focus](lvgl::group &grp)
+        {
+            focus(grp.get_focused());
+        };
+
+        grp.set_focus_callback(on_focus);
+    }
+
+    void keyboard::show_keyboard()
+    {
+        m_input_element.call<void>("focus");
+    }
+
+    void keyboard::hide_keyboard()
+    {
+        m_input_element.call<void>("blur");
     }
 
     EM_BOOL keyboard::on_key_down(int type, const EmscriptenKeyboardEvent *keyboard_event, void *user_data)

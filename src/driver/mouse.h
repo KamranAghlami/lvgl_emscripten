@@ -34,7 +34,7 @@ namespace driver
         mouse &operator=(mouse &&) = delete;
 
         void set_scaling(float scaling);
-        void set_group(lvgl::group &group);
+        void set_group(lvgl::group &grp);
 
     private:
         mouse();
