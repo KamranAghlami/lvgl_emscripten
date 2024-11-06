@@ -20,7 +20,11 @@ namespace ui
 
             driver::filesystem::get().fetch("image/icon.png", on_fetch);
 
-            m_image.align(alignment::CENTER);
+            m_image
+                .set_scale(128)
+                .set_size(object::PERCENTAGE(100), object::PERCENTAGE(100))
+                .align(alignment::CENTER);
+
             m_label.align(alignment::CENTER);
 
             auto on_pressed = [this](lvgl::event &e)
