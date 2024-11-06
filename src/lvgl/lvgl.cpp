@@ -2,6 +2,8 @@
 
 #include <lvgl.h>
 
+#include "driver/memory.h"
+
 namespace lvgl
 {
     class async_info
@@ -26,10 +28,10 @@ namespace lvgl
 
             info->~async_info();
 
-            free(info);
+            driver::free(info);
         };
 
-        auto info_mem = malloc(sizeof(async_info));
+        auto info_mem = driver::malloc(sizeof(async_info));
         auto info = new (info_mem) async_info(cb, user_data);
 
         lv_async_call(async_cb, info);

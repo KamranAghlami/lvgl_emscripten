@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "lvgl/memory.h"
+#include "driver/memory.h"
 #include "lvgl/event.h"
 #include "lvgl/group.h"
 
@@ -277,11 +277,11 @@ namespace lvgl
         static object &from_lv_object(lv_obj_t *lv_obj);
 
     private:
-        static unordered_map<lv_obj_t *, object *> s_objects;
+        static driver::unordered_map<lv_obj_t *, object *> s_objects;
 
         lv_obj_t *mp_object;
 
-        vector<event::descriptor *> m_event_descriptors;
+        driver::vector<event::descriptor *> m_event_descriptors;
 
         friend class event;
         friend class group;

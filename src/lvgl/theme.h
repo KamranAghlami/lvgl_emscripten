@@ -2,9 +2,9 @@
 
 #include <unordered_map>
 
+#include "driver/memory.h"
 #include "lvgl/font.h"
 #include "lvgl/color.h"
-#include "lvgl/memory.h"
 
 extern "C"
 {
@@ -42,7 +42,7 @@ namespace lvgl
     private:
         static theme &from_lv_theme(lv_theme_t *lv_thm);
 
-        static unordered_map<lv_theme_t *, theme *> s_themes;
+        static driver::unordered_map<lv_theme_t *, theme *> s_themes;
 
         lv_theme_t *mp_theme;
     };

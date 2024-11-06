@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <functional>
 
-#include "lvgl/memory.h"
+#include "driver/memory.h"
 
 extern "C"
 {
@@ -85,7 +85,7 @@ namespace lvgl
         static group &from_lv_group(lv_group_t *lv_grp);
 
     private:
-        static lvgl::unordered_map<lv_group_t *, group *> s_groups;
+        static driver::unordered_map<lv_group_t *, group *> s_groups;
 
         lv_group_t *mp_group;
         focus_callback m_focus_callback = nullptr;

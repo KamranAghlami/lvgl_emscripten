@@ -3,10 +3,10 @@
 #include <memory>
 #include <vector>
 
+#include "driver/memory.h"
 #include "lvgl/object.h"
 #include "lvgl/button.h"
 #include "lvgl/label.h"
-#include "lvgl/memory.h"
 
 extern "C"
 {
@@ -70,7 +70,7 @@ namespace lvgl
     protected:
         virtual void focus_tab_bar() = 0;
 
-        vector<unique_ptr<tab>> m_tabs;
+        driver::vector<driver::unique_ptr<tab>> m_tabs;
 
     private:
         object m_tab_bar;
@@ -83,7 +83,7 @@ namespace lvgl
         static_assert(std::is_base_of_v<tabview::tab, T>, "T must be derived from lvgl::tabview::tab");
 
         m_tabs.push_back(
-            make_unique<T>(lv_tabview_add_tab(lv_object(), name), *this));
+            driver::make_unique<T>(lv_tabview_add_tab(lv_object(), name), *this));
 
         return *m_tabs.back();
     }

@@ -48,32 +48,23 @@ namespace driver
         lv_indev_delete(mp_device);
     }
 
-    void keyboard::set_group(lvgl::group &grp)
+    void keyboard::set_group(lv_group_t *group)
     {
-        auto lv_group = lv_indev_get_group(mp_device);
+        auto g = lv_indev_get_group(mp_device);
 
-        if (lv_group)
-            lvgl::group::from_lv_group(lv_group).set_focus_callback(nullptr);
+        if (g)
+            lv_group_set_focus_cb(g, nullptr);
 
-        lv_indev_set_group(mp_device, grp.lv_group());
+        lv_indev_set_group(mp_device, group);
 
-        auto focus = [this](lvgl::object *obj)
+        focus(lv_group_get_focused(group));
+
+        auto on_focus = [](lv_group_t *group)
         {
-            if (obj && (obj->has_flag(lvgl::object::flag::USER_4) ||
-                        lv_obj_get_class(obj->lv_object()) == &lv_textarea_class))
-                show_keyboard();
-            else
-                hide_keyboard();
+            get().focus(lv_group_get_focused(group));
         };
 
-        focus(grp.get_focused());
-
-        auto on_focus = [focus](lvgl::group &grp)
-        {
-            focus(grp.get_focused());
-        };
-
-        grp.set_focus_callback(on_focus);
+        lv_group_set_focus_cb(group, on_focus);
     }
 
     void keyboard::show_keyboard()
@@ -84,6 +75,21 @@ namespace driver
     void keyboard::hide_keyboard()
     {
         m_input_element.call<void>("blur");
+    }
+
+    void keyboard::focus(lv_obj_t *obj)
+    {
+        if (!obj)
+        {
+            hide_keyboard();
+
+            return;
+        }
+
+        if (lv_obj_get_class(obj) == &lv_textarea_class || lv_obj_has_flag(obj, LV_OBJ_FLAG_USER_4))
+            show_keyboard();
+        else
+            hide_keyboard();
     }
 
     EM_BOOL keyboard::on_key_down(int type, const EmscriptenKeyboardEvent *keyboard_event, void *user_data)

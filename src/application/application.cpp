@@ -91,7 +91,7 @@ void application::set_scaling(float scaling)
     driver::mouse::get().set_scaling(scaling);
 }
 
-void application::set_active_group(lvgl::group &group)
+void application::set_active_group(lv_group_t *group)
 {
     driver::mouse::get().set_group(group);
     driver::keyboard::get().set_group(group);

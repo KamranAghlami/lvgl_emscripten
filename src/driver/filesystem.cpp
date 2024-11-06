@@ -46,7 +46,7 @@ namespace driver
 
         lv_fs_drv_register(&m_driver);
 
-        auto on_timeout = [](lvgl::timer &timer)
+        auto on_timeout = [](lv_timer_t *timer)
         {
             auto &fs = driver::filesystem::get();
 
@@ -58,7 +58,7 @@ namespace driver
                 {
                     std::destroy_at(it->second);
 
-                    lvgl::free(it->second);
+                    driver::free(it->second);
 
                     it = fs.m_cache.erase(it);
                 }
@@ -67,20 +67,22 @@ namespace driver
             }
         };
 
-        mp_timer = lvgl::make_unique<lvgl::timer>(on_timeout, 10000);
+        mp_timer = lv_timer_create(on_timeout, 10000, nullptr);
     }
 
     filesystem::~filesystem()
     {
+        lv_timer_delete(mp_timer);
+
         for (auto &pair : m_cache)
         {
             std::destroy_at(pair.second);
 
-            lvgl::free(pair.second);
+            driver::free(pair.second);
         }
     }
 
-    void filesystem::prefetch(const lvgl::vector<lvgl::string> &paths)
+    void filesystem::prefetch(const driver::vector<driver::string> &paths)
     {
         size_t count = paths.size() - std::count(paths.begin(), paths.end(), "");
 
@@ -89,7 +91,7 @@ namespace driver
 
         m_prefetching_count += count;
 
-        auto on_fetch = [this](const lvgl::string &)
+        auto on_fetch = [this](const driver::string &)
         {
             m_prefetching_count--;
         };
@@ -98,17 +100,17 @@ namespace driver
             fetch(path, on_fetch);
     }
 
-    void filesystem::fetch(const lvgl::string &path, const fetch_callback &callback)
+    void filesystem::fetch(const driver::string &path, const fetch_callback &callback)
     {
         if (path.empty())
             return;
 
-        lvgl::string full_path = get_full_path(path);
+        driver::string full_path = get_full_path(path);
 
         if (m_cache.find(full_path) != m_cache.end())
         {
             if (callback)
-                callback(m_letter + lvgl::string(":") + full_path);
+                callback(m_letter + driver::string(":") + full_path);
 
             return;
         }
@@ -125,15 +127,15 @@ namespace driver
         auto on_succeeded = [](emscripten_fetch_t *fetch)
         {
             auto &fs = driver::filesystem::get();
-            auto path = static_cast<lvgl::string *>(fetch->userData);
+            auto path = static_cast<driver::string *>(fetch->userData);
 
-            auto cache_mem = lvgl::malloc(sizeof(cache_entry));
+            auto cache_mem = driver::malloc(sizeof(cache_entry));
             auto cache = new (cache_mem) cache_entry(reinterpret_cast<const uint8_t *>(fetch->data), fetch->numBytes);
 
             fs.m_cache[*path] = cache;
 
             auto range = fs.m_fetching_list.equal_range(*path);
-            lvgl::string lv_path = fs.m_letter + lvgl::string(":") + *path;
+            driver::string lv_path = fs.m_letter + driver::string(":") + *path;
 
             for (auto it = range.first; it != range.second; it++)
                 if (it->second)
@@ -143,7 +145,7 @@ namespace driver
 
             std::destroy_at(path);
 
-            lvgl::free(path);
+            driver::free(path);
 
             emscripten_fetch_close(fetch);
         };
@@ -153,13 +155,13 @@ namespace driver
             LV_LOG_WARN("fetching %s failed, HTTP status code: %d.", fetch->url, fetch->status);
 
             auto &fs = driver::filesystem::get();
-            auto path = static_cast<lvgl::string *>(fetch->userData);
+            auto path = static_cast<driver::string *>(fetch->userData);
 
             fs.m_fetching_list.erase(*path);
 
             std::destroy_at(path);
 
-            lvgl::free(path);
+            driver::free(path);
 
             emscripten_fetch_close(fetch);
         };
@@ -167,8 +169,8 @@ namespace driver
         emscripten_fetch_attr_t attribute;
         emscripten_fetch_attr_init(&attribute);
 
-        auto user_data_mem = lvgl::malloc(sizeof(lvgl::string));
-        auto user_data = new (user_data_mem) lvgl::string(full_path);
+        auto user_data_mem = driver::malloc(sizeof(driver::string));
+        auto user_data = new (user_data_mem) driver::string(full_path);
 
         strcpy(attribute.requestMethod, "GET");
         attribute.userData = user_data;
@@ -182,11 +184,11 @@ namespace driver
         {
             LV_LOG_WARN("fetching %s failed.", full_path.c_str());
 
-            auto _path = static_cast<lvgl::string *>(attribute.userData);
+            auto _path = static_cast<driver::string *>(attribute.userData);
 
             std::destroy_at(_path);
 
-            lvgl::free(_path);
+            driver::free(_path);
 
             return;
         }
@@ -246,7 +248,7 @@ namespace driver
 
         iterator->second->increase_reference();
 
-        auto handle_mem = lvgl::malloc(sizeof(file_handle));
+        auto handle_mem = driver::malloc(sizeof(file_handle));
         auto handle = new (handle_mem) file_handle(iterator->first, iterator->second);
 
         return handle;
@@ -258,11 +260,11 @@ namespace driver
 
         entry->decrease_reference();
 
-        mp_timer->reset();
+        lv_timer_reset(mp_timer);
 
         std::destroy_at(file);
 
-        lvgl::free(file);
+        driver::free(file);
 
         return LV_FS_RES_OK;
     }
@@ -307,9 +309,9 @@ namespace driver
         return LV_FS_RES_OK;
     }
 
-    lvgl::string filesystem::get_full_path(const lvgl::string &path)
+    driver::string filesystem::get_full_path(const driver::string &path)
     {
-        const lvgl::string script = "new URL('" + path + "', window.location.href).href";
+        const driver::string script = "new URL('" + path + "', window.location.href).href";
 
         return emscripten_run_script_string(script.c_str());
     }

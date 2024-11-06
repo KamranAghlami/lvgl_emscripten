@@ -8,7 +8,7 @@
 
 namespace lvgl
 {
-    unordered_map<lv_theme_t *, theme *> theme::s_themes;
+    driver::unordered_map<lv_theme_t *, theme *> theme::s_themes;
 
     void theme::set_active(theme &thm)
     {
@@ -31,7 +31,7 @@ namespace lvgl
         return *it->second;
     }
 
-    theme::theme() : mp_theme(static_cast<lv_theme_t *>(lvgl::malloc(sizeof(lv_theme_t))))
+    theme::theme() : mp_theme(static_cast<lv_theme_t *>(driver::malloc(sizeof(lv_theme_t))))
     {
         lv_theme_t *default_theme = lv_display_get_theme(NULL);
 
@@ -42,7 +42,7 @@ namespace lvgl
             lv_theme_set_parent(mp_theme, default_theme);
         }
         else
-            lvgl::memset(mp_theme, 0, sizeof(lv_theme_t));
+            memset(mp_theme, 0, sizeof(lv_theme_t));
 
         static auto apply_cb = [](lv_theme_t *t, lv_obj_t *o)
         {
@@ -58,7 +58,7 @@ namespace lvgl
 
     theme::~theme()
     {
-        lvgl::free(mp_theme);
+        driver::free(mp_theme);
 
         s_themes.erase(mp_theme);
     }

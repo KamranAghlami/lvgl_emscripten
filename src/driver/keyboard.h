@@ -4,9 +4,6 @@
 #include <emscripten/html5.h>
 #include <lvgl.h>
 
-#include "lvgl/group.h"
-#include "lvgl/object.h"
-
 namespace driver
 {
     class keyboard
@@ -32,13 +29,14 @@ namespace driver
         keyboard &operator=(const keyboard &) = delete;
         keyboard &operator=(keyboard &&) = delete;
 
-        void set_group(lvgl::group &grp);
+        void set_group(lv_group_t *group);
 
     private:
         keyboard();
 
         void show_keyboard();
         void hide_keyboard();
+        void focus(lv_obj_t *obj);
 
         EM_BOOL on_key_down(int type, const EmscriptenKeyboardEvent *keyboard_event, void *user_data);
 

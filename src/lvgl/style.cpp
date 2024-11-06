@@ -5,11 +5,11 @@
 
 #include <lvgl.h>
 
-#include "lvgl/memory.h"
+#include "driver/memory.h"
 
 namespace lvgl
 {
-    style::style() : mp_style(lvgl::malloc(sizeof(lv_style_t)))
+    style::style() : mp_style(driver::malloc(sizeof(lv_style_t)))
     {
         lv_style_init(_lv_style);
     }
@@ -19,7 +19,7 @@ namespace lvgl
         reset();
         report_change();
 
-        lvgl::free(mp_style);
+        driver::free(mp_style);
     }
 
     style &style::set_width(int32_t v)

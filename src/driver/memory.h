@@ -9,11 +9,10 @@
 #include <unordered_map>
 #include <vector>
 
-namespace lvgl
+namespace driver
 {
     void *malloc(size_t size);
     void free(void *data);
-    void memset(void *buffer, uint8_t value, size_t length);
 
     template <class T>
     struct allocator
@@ -30,7 +29,7 @@ namespace lvgl
             if (n > std::numeric_limits<std::size_t>::max() / sizeof(T))
                 throw std::bad_array_new_length();
 
-            if (auto p = static_cast<T *>(lvgl::malloc(n * sizeof(T))))
+            if (auto p = static_cast<T *>(driver::malloc(n * sizeof(T))))
                 return p;
 
             throw std::bad_alloc();
@@ -38,7 +37,7 @@ namespace lvgl
 
         void deallocate(T *p, std::size_t n) noexcept
         {
-            lvgl::free(p);
+            driver::free(p);
         }
     };
 
@@ -85,7 +84,7 @@ namespace lvgl
 
             ptr->~T();
 
-            free(ptr);
+            driver::free(ptr);
         }
     };
 
@@ -95,7 +94,7 @@ namespace lvgl
     template <typename T, typename... Args>
     unique_ptr<T> make_unique(Args &&...args)
     {
-        auto mem = malloc(sizeof(T));
+        auto mem = driver::malloc(sizeof(T));
 
         if (!mem)
             throw std::bad_alloc();
@@ -106,7 +105,7 @@ namespace lvgl
         }
         catch (...)
         {
-            free(mem);
+            driver::free(mem);
 
             throw;
         }

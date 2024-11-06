@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "event/dispatcher.h"
-#include "lvgl/memory.h"
+#include "driver/memory.h"
 
 namespace event
 {
@@ -40,6 +40,6 @@ namespace event
 
     private:
         dispatcher &m_dispatcher;
-        lvgl::vector<dispatcher::handler_id> m_handler_ids;
+        driver::vector<dispatcher::handler_id> m_handler_ids;
     };
 }

@@ -5,7 +5,7 @@
 #include <emscripten/html5.h>
 #include <lvgl.h>
 
-#include "lvgl/memory.h"
+#include "driver/memory.h"
 
 namespace driver
 {
@@ -75,6 +75,6 @@ namespace driver
 
         float m_scaling = 1.0f;
 
-        lvgl::unordered_map<int, device *> m_devices;
+        driver::unordered_map<int, device *> m_devices;
     };
 }

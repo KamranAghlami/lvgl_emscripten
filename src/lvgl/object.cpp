@@ -8,7 +8,7 @@
 
 namespace lvgl
 {
-    unordered_map<lv_obj_t *, object *> object::s_objects;
+    driver::unordered_map<lv_obj_t *, object *> object::s_objects;
 
     int32_t object::SIZE_CONTENT()
     {
@@ -62,7 +62,7 @@ namespace lvgl
         {
             dsc->~descriptor();
 
-            lvgl::free(dsc);
+            driver::free(dsc);
         }
 
         s_objects.erase(mp_object);
@@ -315,7 +315,7 @@ namespace lvgl
             static_cast<event::descriptor *>(lv_event_get_user_data(lv_event))->m_callback(e);
         };
 
-        auto dsc_mem = lvgl::malloc(sizeof(event::descriptor));
+        auto dsc_mem = driver::malloc(sizeof(event::descriptor));
         auto dsc = new (dsc_mem) event::descriptor(callback, user_data);
 
         dsc->mp_descriptor = lv_obj_add_event_cb(mp_object, proxy_callback, static_cast<lv_event_code_t>(c), dsc);

@@ -25,7 +25,7 @@ namespace ui
 
                 auto on_load = [this](lvgl::event &e)
                 {
-                    application::get()->set_active_group(m_group);
+                    application::get()->set_active_group(m_group.lv_group());
                 };
 
                 add_event_callback(lvgl::event::code::SCREEN_LOADED, on_load);

@@ -2,7 +2,6 @@
 
 #include <functional>
 
-#include "lvgl/memory.h"
 #include "lvgl/event.h"
 #include "lvgl/group.h"
 #include "lvgl/timer.h"

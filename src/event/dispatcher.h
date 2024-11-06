@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "event/event.h"
-#include "lvgl/memory.h"
+#include "driver/memory.h"
 
 namespace event
 {
@@ -65,7 +65,7 @@ namespace event
     private:
         static dispatcher s_dispatcher;
 
-        lvgl::unordered_map<std::type_index, lvgl::vector<std::tuple<handler_id, handler_type>>> m_handlers;
+        driver::unordered_map<std::type_index, driver::vector<std::tuple<handler_id, handler_type>>> m_handlers;
         handler_id m_handler_id = 0;
     };
 }
