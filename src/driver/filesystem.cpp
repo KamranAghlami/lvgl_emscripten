@@ -58,7 +58,7 @@ namespace driver
                 {
                     std::destroy_at(it->second);
 
-                    driver::free(it->second);
+                    memory::free(it->second);
 
                     it = fs.m_cache.erase(it);
                 }
@@ -78,11 +78,11 @@ namespace driver
         {
             std::destroy_at(pair.second);
 
-            driver::free(pair.second);
+            memory::free(pair.second);
         }
     }
 
-    void filesystem::prefetch(const driver::vector<driver::string> &paths)
+    void filesystem::prefetch(const memory::vector<memory::string> &paths)
     {
         size_t count = paths.size() - std::count(paths.begin(), paths.end(), "");
 
@@ -91,7 +91,7 @@ namespace driver
 
         m_prefetching_count += count;
 
-        auto on_fetch = [this](const driver::string &)
+        auto on_fetch = [this](const memory::string &)
         {
             m_prefetching_count--;
         };
@@ -100,17 +100,17 @@ namespace driver
             fetch(path, on_fetch);
     }
 
-    void filesystem::fetch(const driver::string &path, const fetch_callback &callback)
+    void filesystem::fetch(const memory::string &path, const fetch_callback &callback)
     {
         if (path.empty())
             return;
 
-        driver::string full_path = get_full_path(path);
+        memory::string full_path = get_full_path(path);
 
         if (m_cache.find(full_path) != m_cache.end())
         {
             if (callback)
-                callback(m_letter + driver::string(":") + full_path);
+                callback(m_letter + memory::string(":") + full_path);
 
             return;
         }
@@ -127,15 +127,15 @@ namespace driver
         auto on_succeeded = [](emscripten_fetch_t *fetch)
         {
             auto &fs = driver::filesystem::get();
-            auto path = static_cast<driver::string *>(fetch->userData);
+            auto path = static_cast<memory::string *>(fetch->userData);
 
-            auto cache_mem = driver::malloc(sizeof(cache_entry));
+            auto cache_mem = memory::allocate(sizeof(cache_entry));
             auto cache = new (cache_mem) cache_entry(reinterpret_cast<const uint8_t *>(fetch->data), fetch->numBytes);
 
             fs.m_cache[*path] = cache;
 
             auto range = fs.m_fetching_list.equal_range(*path);
-            driver::string lv_path = fs.m_letter + driver::string(":") + *path;
+            memory::string lv_path = fs.m_letter + memory::string(":") + *path;
 
             for (auto it = range.first; it != range.second; it++)
                 if (it->second)
@@ -145,7 +145,7 @@ namespace driver
 
             std::destroy_at(path);
 
-            driver::free(path);
+            memory::free(path);
 
             emscripten_fetch_close(fetch);
         };
@@ -155,13 +155,13 @@ namespace driver
             LV_LOG_WARN("fetching %s failed, HTTP status code: %d.", fetch->url, fetch->status);
 
             auto &fs = driver::filesystem::get();
-            auto path = static_cast<driver::string *>(fetch->userData);
+            auto path = static_cast<memory::string *>(fetch->userData);
 
             fs.m_fetching_list.erase(*path);
 
             std::destroy_at(path);
 
-            driver::free(path);
+            memory::free(path);
 
             emscripten_fetch_close(fetch);
         };
@@ -169,8 +169,8 @@ namespace driver
         emscripten_fetch_attr_t attribute;
         emscripten_fetch_attr_init(&attribute);
 
-        auto user_data_mem = driver::malloc(sizeof(driver::string));
-        auto user_data = new (user_data_mem) driver::string(full_path);
+        auto user_data_mem = memory::allocate(sizeof(memory::string));
+        auto user_data = new (user_data_mem) memory::string(full_path);
 
         strcpy(attribute.requestMethod, "GET");
         attribute.userData = user_data;
@@ -184,11 +184,11 @@ namespace driver
         {
             LV_LOG_WARN("fetching %s failed.", full_path.c_str());
 
-            auto _path = static_cast<driver::string *>(attribute.userData);
+            auto _path = static_cast<memory::string *>(attribute.userData);
 
             std::destroy_at(_path);
 
-            driver::free(_path);
+            memory::free(_path);
 
             return;
         }
@@ -248,7 +248,7 @@ namespace driver
 
         iterator->second->increase_reference();
 
-        auto handle_mem = driver::malloc(sizeof(file_handle));
+        auto handle_mem = memory::allocate(sizeof(file_handle));
         auto handle = new (handle_mem) file_handle(iterator->first, iterator->second);
 
         return handle;
@@ -264,7 +264,7 @@ namespace driver
 
         std::destroy_at(file);
 
-        driver::free(file);
+        memory::free(file);
 
         return LV_FS_RES_OK;
     }
@@ -309,9 +309,9 @@ namespace driver
         return LV_FS_RES_OK;
     }
 
-    driver::string filesystem::get_full_path(const driver::string &path)
+    memory::string filesystem::get_full_path(const memory::string &path)
     {
-        const driver::string script = "new URL('" + path + "', window.location.href).href";
+        const memory::string script = "new URL('" + path + "', window.location.href).href";
 
         return emscripten_run_script_string(script.c_str());
     }

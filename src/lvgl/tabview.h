@@ -70,7 +70,7 @@ namespace lvgl
     protected:
         virtual void focus_tab_bar() = 0;
 
-        driver::vector<driver::unique_ptr<tab>> m_tabs;
+        driver::memory::vector<driver::memory::unique_ptr<tab>> m_tabs;
 
     private:
         object m_tab_bar;
@@ -83,7 +83,7 @@ namespace lvgl
         static_assert(std::is_base_of_v<tabview::tab, T>, "T must be derived from lvgl::tabview::tab");
 
         m_tabs.push_back(
-            driver::make_unique<T>(lv_tabview_add_tab(lv_object(), name), *this));
+            driver::memory::make_unique<T>(lv_tabview_add_tab(lv_object(), name), *this));
 
         return *m_tabs.back();
     }

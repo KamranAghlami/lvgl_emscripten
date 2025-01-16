@@ -4,13 +4,16 @@
 
 namespace driver
 {
-    void *malloc(size_t size)
+    namespace memory
     {
-        return lv_malloc(size);
-    }
+        void *allocate(size_t size)
+        {
+            return lv_malloc(size);
+        }
 
-    void free(void *data)
-    {
-        return lv_free(data);
+        void free(void *data)
+        {
+            return lv_free(data);
+        }
     }
 }

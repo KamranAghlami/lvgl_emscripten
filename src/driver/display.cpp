@@ -56,8 +56,8 @@ namespace driver
     {
         lv_display_delete(mp_display);
 
-        driver::free(mp_draw_buf_2);
-        driver::free(mp_draw_buf_1);
+        memory::free(mp_draw_buf_2);
+        memory::free(mp_draw_buf_1);
     }
 
     void display::set_scaling(float scaling)
@@ -77,14 +77,14 @@ namespace driver
         const size_t buffer_size = (LV_COLOR_DEPTH / 8) * m_width * m_height * 0.1f;
 
         if (mp_draw_buf_1)
-            driver::free(mp_draw_buf_1);
+            memory::free(mp_draw_buf_1);
 
-        mp_draw_buf_1 = driver::malloc(buffer_size);
+        mp_draw_buf_1 = memory::allocate(buffer_size);
 
         if (mp_draw_buf_2)
-            driver::free(mp_draw_buf_2);
+            memory::free(mp_draw_buf_2);
 
-        mp_draw_buf_2 = driver::malloc(buffer_size);
+        mp_draw_buf_2 = memory::allocate(buffer_size);
 
         lv_display_set_resolution(mp_display, m_width, m_height);
         lv_display_set_buffers(mp_display, mp_draw_buf_1, mp_draw_buf_2, buffer_size, LV_DISPLAY_RENDER_MODE_PARTIAL);

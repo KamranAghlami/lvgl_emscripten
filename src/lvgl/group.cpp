@@ -8,7 +8,7 @@
 
 namespace lvgl
 {
-    driver::unordered_map<lv_group_t *, group *> group::s_groups;
+    driver::memory::unordered_map<lv_group_t *, group *> group::s_groups;
 
     void group::set_default(group &grp)
     {

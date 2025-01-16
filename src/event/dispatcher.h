@@ -65,7 +65,7 @@ namespace event
     private:
         static dispatcher s_dispatcher;
 
-        driver::unordered_map<std::type_index, driver::vector<std::tuple<handler_id, handler_type>>> m_handlers;
+        driver::memory::unordered_map<std::type_index, driver::memory::vector<std::tuple<handler_id, handler_type>>> m_handlers;
         handler_id m_handler_id = 0;
     };
 }

@@ -277,11 +277,11 @@ namespace lvgl
         static object &from_lv_object(lv_obj_t *lv_obj);
 
     private:
-        static driver::unordered_map<lv_obj_t *, object *> s_objects;
+        static driver::memory::unordered_map<lv_obj_t *, object *> s_objects;
 
         lv_obj_t *mp_object;
 
-        driver::vector<event::descriptor *> m_event_descriptors;
+        driver::memory::vector<event::descriptor *> m_event_descriptors;
 
         friend class event;
         friend class group;

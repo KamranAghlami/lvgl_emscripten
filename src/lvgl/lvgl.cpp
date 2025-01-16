@@ -28,10 +28,10 @@ namespace lvgl
 
             info->~async_info();
 
-            driver::free(info);
+            driver::memory::free(info);
         };
 
-        auto info_mem = driver::malloc(sizeof(async_info));
+        auto info_mem = driver::memory::allocate(sizeof(async_info));
         auto info = new (info_mem) async_info(cb, user_data);
 
         lv_async_call(async_cb, info);

@@ -1,7 +1,5 @@
 #include "lvgl/font.h"
 
-#include <cassert>
-
 #include <lvgl.h>
 
 namespace lvgl

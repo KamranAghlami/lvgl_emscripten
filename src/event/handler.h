@@ -40,6 +40,6 @@ namespace event
 
     private:
         dispatcher &m_dispatcher;
-        driver::vector<dispatcher::handler_id> m_handler_ids;
+        driver::memory::vector<dispatcher::handler_id> m_handler_ids;
     };
 }

@@ -15,7 +15,7 @@ namespace driver
     class filesystem
     {
     public:
-        using fetch_callback = std::function<void(const driver::string &)>;
+        using fetch_callback = std::function<void(const memory::string &)>;
 
         static filesystem &get()
         {
@@ -31,8 +31,8 @@ namespace driver
         filesystem &operator=(const filesystem &) = delete;
         filesystem &operator=(filesystem &&) = delete;
 
-        void prefetch(const driver::vector<driver::string> &paths);
-        void fetch(const driver::string &path, const fetch_callback &callback = nullptr);
+        void prefetch(const memory::vector<memory::string> &paths);
+        void fetch(const memory::string &path, const fetch_callback &callback = nullptr);
 
         bool ready();
 
@@ -50,19 +50,19 @@ namespace driver
             size_t size() const;
 
         private:
-            driver::vector<uint8_t> m_data;
+            memory::vector<uint8_t> m_data;
             size_t m_references = 0;
             float m_last_used = 0.0f;
         };
 
         struct file_handle
         {
-            file_handle(const driver::string &path, const cache_entry *entry) : m_path(path),
+            file_handle(const memory::string &path, const cache_entry *entry) : m_path(path),
                                                                                 m_data(entry->data()),
                                                                                 m_size(entry->size()),
                                                                                 m_position(0) {}
 
-            const driver::string m_path;
+            const memory::string m_path;
             const uint8_t *m_data;
             const size_t m_size;
             size_t m_position = 0;
@@ -76,12 +76,12 @@ namespace driver
         lv_fs_res_t seek(file_handle *file, uint32_t position, lv_fs_whence_t whence);
         lv_fs_res_t tell(file_handle *file, uint32_t *position);
 
-        driver::string get_full_path(const driver::string &path);
+        memory::string get_full_path(const memory::string &path);
 
         const char m_letter;
         size_t m_prefetching_count;
-        driver::unordered_multimap<driver::string, fetch_callback> m_fetching_list;
-        driver::unordered_map<driver::string, cache_entry *> m_cache;
+        memory::unordered_multimap<memory::string, fetch_callback> m_fetching_list;
+        memory::unordered_map<memory::string, cache_entry *> m_cache;
 
         lv_fs_drv_t m_driver;
         lv_timer_t *mp_timer;

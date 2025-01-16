@@ -75,6 +75,6 @@ namespace driver
 
         float m_scaling = 1.0f;
 
-        driver::unordered_map<int, device *> m_devices;
+        memory::unordered_map<int, device *> m_devices;
     };
 }

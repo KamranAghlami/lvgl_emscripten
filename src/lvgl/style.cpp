@@ -9,7 +9,7 @@
 
 namespace lvgl
 {
-    style::style() : mp_style(driver::malloc(sizeof(lv_style_t)))
+    style::style() : mp_style(driver::memory::allocate(sizeof(lv_style_t)))
     {
         lv_style_init(_lv_style);
     }
@@ -19,7 +19,7 @@ namespace lvgl
         reset();
         report_change();
 
-        driver::free(mp_style);
+        driver::memory::free(mp_style);
     }
 
     style &style::set_width(int32_t v)

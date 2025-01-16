@@ -39,7 +39,7 @@ namespace driver
         {
             dev.second->~device();
 
-            driver::free(dev.second);
+            memory::free(dev.second);
         }
     }
 
@@ -141,7 +141,7 @@ namespace driver
         if (dev != m_devices.end())
             return *dev->second;
 
-        auto new_dev_mem = driver::malloc(sizeof(device));
+        auto new_dev_mem = memory::allocate(sizeof(device));
         auto new_dev = new (new_dev_mem) device(identifier);
         auto p_dev = m_devices.emplace(identifier, new_dev).first->second;
 
@@ -154,7 +154,7 @@ namespace driver
 
         dev.~device();
 
-        driver::free(&dev);
+        memory::free(&dev);
     }
 
     touch::device::device(int identifier) : m_identifier(identifier), mp_indev(lv_indev_create())

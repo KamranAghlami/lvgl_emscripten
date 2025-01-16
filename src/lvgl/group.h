@@ -85,7 +85,7 @@ namespace lvgl
         static group &from_lv_group(lv_group_t *lv_grp);
 
     private:
-        static driver::unordered_map<lv_group_t *, group *> s_groups;
+        static driver::memory::unordered_map<lv_group_t *, group *> s_groups;
 
         lv_group_t *mp_group;
         focus_callback m_focus_callback = nullptr;

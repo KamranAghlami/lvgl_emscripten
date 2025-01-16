@@ -42,7 +42,7 @@ namespace lvgl
     private:
         static theme &from_lv_theme(lv_theme_t *lv_thm);
 
-        static driver::unordered_map<lv_theme_t *, theme *> s_themes;
+        static driver::memory::unordered_map<lv_theme_t *, theme *> s_themes;
 
         lv_theme_t *mp_theme;
     };
