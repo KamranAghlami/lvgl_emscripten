@@ -22,7 +22,7 @@ namespace event
         virtual ~handler()
         {
             for (const auto &id : m_subscription_ids)
-                unsubscribe(id);
+                m_dispatcher.unsubscribe(id);
         };
 
     protected:
@@ -45,6 +45,12 @@ namespace event
 
         void unsubscribe(subscription_id id)
         {
+            auto predicate = [id](const auto &_id)
+            {
+                return _id == id;
+            };
+
+            m_subscription_ids.erase(std::remove_if(m_subscription_ids.begin(), m_subscription_ids.end(), predicate), m_subscription_ids.end());
             m_dispatcher.unsubscribe(id);
         }
 
