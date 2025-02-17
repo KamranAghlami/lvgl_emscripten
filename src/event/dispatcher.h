@@ -16,7 +16,7 @@ namespace event
     {
     public:
         using handler_type = std::function<bool(const event &)>;
-        using handler_id = size_t;
+        using subscription_id = size_t;
 
         static dispatcher &global()
         {
@@ -24,14 +24,14 @@ namespace event
         }
 
         template <typename E>
-        handler_id subscribe(handler_type handler)
+        subscription_id subscribe(handler_type handler)
         {
-            m_handlers[std::type_index(typeid(E))].push_back({m_handler_id, handler});
+            m_handlers[std::type_index(typeid(E))].push_back({m_subscription_id, handler});
 
-            return m_handler_id++;
+            return m_subscription_id++;
         }
 
-        void unsubscribe(handler_id id)
+        void unsubscribe(subscription_id id)
         {
             for (auto &[_, handlers] : m_handlers)
             {
@@ -65,7 +65,7 @@ namespace event
     private:
         static dispatcher s_dispatcher;
 
-        driver::memory::unordered_map<std::type_index, driver::memory::vector<std::tuple<handler_id, handler_type>>> m_handlers;
-        handler_id m_handler_id = 0;
+        driver::memory::unordered_map<std::type_index, driver::memory::vector<std::tuple<subscription_id, handler_type>>> m_handlers;
+        subscription_id m_subscription_id = 0;
     };
 }

@@ -12,21 +12,24 @@ namespace event
     class handler
     {
     public:
+        using handler_type = dispatcher::handler_type;
+        using subscription_id = dispatcher::subscription_id;
+
         handler(dispatcher &d = dispatcher::global()) : m_dispatcher(d)
         {
         }
 
         virtual ~handler()
         {
-            for (const auto &id : m_handler_ids)
-                m_dispatcher.unsubscribe(id);
+            for (const auto &id : m_subscription_ids)
+                unsubscribe(id);
         };
 
     protected:
         template <typename C, typename E>
-        void subscribe(bool (C::*handler)(const E &))
+        subscription_id subscribe(bool (C::*handler)(const E &))
         {
-            dispatcher::handler_type proxy = [this, handler](const event &e) -> bool
+            handler_type proxy = [this, handler](const event &e) -> bool
             {
                 auto t_ptr = dynamic_cast<T *>(this);
 
@@ -35,11 +38,18 @@ namespace event
                 return (t_ptr->*handler)(static_cast<const E &>(e));
             };
 
-            m_handler_ids.push_back(m_dispatcher.subscribe<E>(proxy));
+            m_subscription_ids.push_back(m_dispatcher.subscribe<E>(proxy));
+
+            return m_subscription_ids.back();
+        }
+
+        void unsubscribe(subscription_id id)
+        {
+            m_dispatcher.unsubscribe(id);
         }
 
     private:
         dispatcher &m_dispatcher;
-        driver::memory::vector<dispatcher::handler_id> m_handler_ids;
+        driver::memory::vector<subscription_id> m_subscription_ids;
     };
 }
