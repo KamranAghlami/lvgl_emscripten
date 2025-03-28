@@ -1,6 +1,7 @@
 #include "driver/display.h"
 
 #include "driver/memory.h"
+#include "event/system.h"
 
 namespace driver
 {
@@ -47,13 +48,15 @@ namespace driver
 
         emscripten_set_visibilitychange_callback(this, EM_TRUE, on_visibility_change);
 
-        subscribe(&display::on_size_change);
+        event::system::global().subscribe(display::on_size_change, this);
 
         update_size();
     }
 
     display::~display()
     {
+        event::system::global().unsubscribe(display::on_size_change, this);
+
         lv_display_delete(mp_display);
 
         memory::free(mp_draw_buf_2);
@@ -105,7 +108,7 @@ namespace driver
         if (new_width == m_width && new_height == m_height)
             return;
 
-        event::dispatcher::global()
+        event::system::global()
             .dispatch(event::window::size_changed(new_width, new_height));
     }
 
@@ -133,7 +136,7 @@ namespace driver
 
     void display::on_visibility_change(bool hidden)
     {
-        event::dispatcher::global()
+        event::system::global()
             .dispatch(event::window::visibility_changed(hidden));
     }
 }

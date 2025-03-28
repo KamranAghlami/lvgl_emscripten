@@ -5,12 +5,11 @@
 #include <emscripten/html5.h>
 #include <lvgl.h>
 
-#include "event/handler.h"
 #include "event/window.h"
 
 namespace driver
 {
-    class display : public event::handler<display>
+    class display
     {
     public:
         static display &get()
@@ -30,6 +29,11 @@ namespace driver
         void set_scaling(float scaling);
 
     private:
+        static bool on_size_change(const event::window::size_changed *e, void *user_data)
+        {
+            return static_cast<display *>(user_data)->on_size_change(*e);
+        }
+
         display();
 
         bool on_size_change(const event::window::size_changed &event);

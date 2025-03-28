@@ -10,6 +10,7 @@
 #include "driver/touch.h"
 #include "driver/mouse.h"
 #include "driver/keyboard.h"
+#include "event/system.h"
 
 static application *s_instance = nullptr;
 
@@ -58,6 +59,8 @@ application::application()
     auto on_update = [](double, void *) -> EM_BOOL
     {
         lv_timer_handler();
+
+        event::system::global().dispatch_async_events();
 
         return EM_TRUE;
     };
