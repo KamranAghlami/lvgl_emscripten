@@ -105,7 +105,7 @@ static size_t first_index_of(const event_system_t *event_system, const char *typ
     return index;
 }
 
-static void on_subscribe_event(const subscribe_event_t *e, void *user_data)
+static bool on_subscribe_event(const subscribe_event_t *e, void *user_data)
 {
     const size_t capacity = e->event_system->capacity;
     const size_t count = e->event_system->count;
@@ -128,13 +128,15 @@ static void on_subscribe_event(const subscribe_event_t *e, void *user_data)
     e->event_system->entries[index] = (event_system_entry_t){
         .type = e->type,
         .handler = e->handler,
-        .user_data = user_data,
+        .user_data = e->user_data,
     };
 
     e->event_system->count++;
+
+    return true;
 }
 
-static void on_unsubscribe_event(const unsubscribe_event_t *e, void *user_data)
+static bool on_unsubscribe_event(const unsubscribe_event_t *e, void *user_data)
 {
     event_system_entry_t *entries = e->event_system->entries;
     const size_t count = e->event_system->count;
@@ -149,6 +151,8 @@ static void on_unsubscribe_event(const unsubscribe_event_t *e, void *user_data)
 
             break;
         }
+
+    return true;
 }
 
 event_system_t *event_system_global()
@@ -214,7 +218,7 @@ void _event_system_subscribe(event_system_t *event_system, const char *type, eve
     if (event_system->is_locked)
         event_system_dispatch_async_to(event_system, subscribe_event_t, &e);
     else
-        on_subscribe_event(&e, user_data);
+        on_subscribe_event(&e, NULL);
 }
 
 void _event_system_unsubscribe(event_system_t *event_system, const char *type, event_system_handler_t handler, void *user_data)
@@ -229,7 +233,7 @@ void _event_system_unsubscribe(event_system_t *event_system, const char *type, e
     if (event_system->is_locked)
         event_system_dispatch_async_to(event_system, unsubscribe_event_t, &e);
     else
-        on_unsubscribe_event(&e, user_data);
+        on_unsubscribe_event(&e, NULL);
 }
 
 bool _event_system_dispatch(event_system_t *event_system, const char *type, const void *event)
@@ -307,10 +311,14 @@ bool _event_system_dispatch_async_events(event_system_t *event_system)
     {
         event_system_async_event_t *event = (event_system_async_event_t *)&event_system->async.events[handled];
 
+        const size_t stride = event->stride;
+
         dispatched |= _event_system_dispatch(event_system, event->type, event->data);
 
-        handled += event->stride;
+        handled += stride;
     }
+
+    assert(handled == size);
 
     const size_t new_size = event_system->async.size;
 
