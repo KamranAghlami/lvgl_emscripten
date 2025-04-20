@@ -47,7 +47,7 @@ typedef struct subscribe_event_st
     const char *type;
     event_system_handler_t handler;
     void *user_data;
-} subscribe_event_t;
+} ___subscribe_event_t;
 
 typedef struct unsubscribe_event_st
 {
@@ -55,7 +55,7 @@ typedef struct unsubscribe_event_st
     const char *type;
     event_system_handler_t handler;
     void *user_data;
-} unsubscribe_event_t;
+} ___unsubscribe_event_t;
 
 static event_system_t *g_event_system = NULL;
 
@@ -105,7 +105,7 @@ static size_t first_index_of(const event_system_t *event_system, const char *typ
     return index;
 }
 
-static bool on_subscribe_event(const subscribe_event_t *e, void *user_data)
+static bool on_subscribe_event(const ___subscribe_event_t *e, void *user_data)
 {
     const size_t capacity = e->event_system->capacity;
     const size_t count = e->event_system->count;
@@ -136,7 +136,7 @@ static bool on_subscribe_event(const subscribe_event_t *e, void *user_data)
     return true;
 }
 
-static bool on_unsubscribe_event(const unsubscribe_event_t *e, void *user_data)
+static bool on_unsubscribe_event(const ___unsubscribe_event_t *e, void *user_data)
 {
     event_system_entry_t *entries = e->event_system->entries;
     const size_t count = e->event_system->count;
@@ -181,8 +181,8 @@ event_system_t *event_system_create()
         .is_locked = false,
     };
 
-    event_system_subscribe_to(event_system, subscribe_event_t, on_subscribe_event, NULL);
-    event_system_subscribe_to(event_system, unsubscribe_event_t, on_unsubscribe_event, NULL);
+    event_system_subscribe_to(event_system, ___subscribe_event_t, on_subscribe_event, NULL);
+    event_system_subscribe_to(event_system, ___unsubscribe_event_t, on_unsubscribe_event, NULL);
 
     return event_system;
 }
@@ -192,11 +192,10 @@ void event_system_delete(event_system_t *event_system)
     assert(!event_system->is_locked);
 
     while (_event_system_dispatch_async_events(event_system))
-    {
-    };
+        ;
 
-    event_system_unsubscribe_from(event_system, unsubscribe_event_t, on_unsubscribe_event, NULL);
-    event_system_unsubscribe_from(event_system, subscribe_event_t, on_subscribe_event, NULL);
+    event_system_unsubscribe_from(event_system, ___unsubscribe_event_t, on_unsubscribe_event, NULL);
+    event_system_unsubscribe_from(event_system, ___subscribe_event_t, on_subscribe_event, NULL);
 
     lv_free(event_system->async.events);
     lv_free(event_system->entries);
@@ -208,7 +207,7 @@ void event_system_delete(event_system_t *event_system)
 
 void _event_system_subscribe(event_system_t *event_system, const char *type, event_system_handler_t handler, void *user_data)
 {
-    const subscribe_event_t e = {
+    const ___subscribe_event_t e = {
         .event_system = event_system,
         .type = type,
         .handler = handler,
@@ -216,14 +215,14 @@ void _event_system_subscribe(event_system_t *event_system, const char *type, eve
     };
 
     if (event_system->is_locked)
-        event_system_dispatch_async_to(event_system, subscribe_event_t, &e);
+        event_system_dispatch_async_to(event_system, ___subscribe_event_t, &e);
     else
         on_subscribe_event(&e, NULL);
 }
 
 void _event_system_unsubscribe(event_system_t *event_system, const char *type, event_system_handler_t handler, void *user_data)
 {
-    const unsubscribe_event_t e = {
+    const ___unsubscribe_event_t e = {
         .event_system = event_system,
         .type = type,
         .handler = handler,
@@ -231,7 +230,7 @@ void _event_system_unsubscribe(event_system_t *event_system, const char *type, e
     };
 
     if (event_system->is_locked)
-        event_system_dispatch_async_to(event_system, unsubscribe_event_t, &e);
+        event_system_dispatch_async_to(event_system, ___unsubscribe_event_t, &e);
     else
         on_unsubscribe_event(&e, NULL);
 }
