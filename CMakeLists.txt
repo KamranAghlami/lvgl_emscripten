@@ -15,12 +15,14 @@ target_link_options(${PROJECT_NAME} PRIVATE -sALLOW_MEMORY_GROWTH -sFETCH)
 target_link_libraries(${PROJECT_NAME} PRIVATE -lembind)
 
 include(FetchContent)
+
+set(LV_BUILD_CONF_DIR "src" CACHE PATH "The directory containing lv_conf.h")
+
 FetchContent_Declare(
   lvgl
   GIT_REPOSITORY https://github.com/lvgl/lvgl.git
-  GIT_TAG tags/v9.2.2
+  GIT_TAG tags/v9.3.0
 )
 FetchContent_MakeAvailable(lvgl)
-target_compile_definitions(lvgl PUBLIC LV_CONF_INCLUDE_SIMPLE)
-target_include_directories(lvgl PUBLIC src)
-target_link_libraries(${PROJECT_NAME} PRIVATE lvgl lvgl::thorvg)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE lvgl::lvgl lvgl::thorvg)
