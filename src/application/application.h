@@ -1,9 +1,6 @@
 #pragma once
 
-extern "C"
-{
-    struct lv_group_t;
-}
+#include "lvgl.h"
 
 #define DEFINE_MAIN(class) \
     int main()             \
