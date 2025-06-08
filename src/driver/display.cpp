@@ -127,7 +127,7 @@ namespace driver
                 const context = canvas.getContext('2d', {willReadFrequently : true});
                 const image = context.createImageData($2, $3);
 
-                image.data.set(Module.HEAPU8.subarray($5, $5 + $4));
+                image.data.set(HEAPU8.subarray($5, $5 + $4));
 
                 context.putImageData(image, $0, $1);
             },
