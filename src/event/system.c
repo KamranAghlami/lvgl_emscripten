@@ -237,9 +237,6 @@ void _event_system_unsubscribe(event_system_t *event_system, const char *type, e
 
 bool _event_system_dispatch(event_system_t *event_system, const char *type, const void *event)
 {
-    const event_system_entry_t *entries = event_system->entries;
-    const size_t count = event_system->count;
-
     bool locked_by_this = false;
 
     if (!event_system->is_locked)
@@ -251,11 +248,11 @@ bool _event_system_dispatch(event_system_t *event_system, const char *type, cons
 
     bool dispatched = false;
 
-    for (size_t i = first_index_of(event_system, type); i < count && strcmp(entries[i].type, type) == 0; i++)
+    for (size_t i = first_index_of(event_system, type); i < event_system->count && strcmp(event_system->entries[i].type, type) == 0; i++)
     {
         dispatched = true;
 
-        if (!entries[i].handler(event, entries[i].user_data))
+        if (!event_system->entries[i].handler(event, event_system->entries[i].user_data))
             break;
     }
 
