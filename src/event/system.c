@@ -1,8 +1,9 @@
 #include "event/system.h"
 
+#include <assert.h>
+#include <stdalign.h>
 #include <stdint.h>
 #include <string.h>
-#include <assert.h>
 
 #include <lvgl.h>
 
@@ -38,7 +39,7 @@ typedef struct event_system_async_event_st
 {
     const char *type;
     size_t stride;
-    uint8_t data[1];
+    uint8_t data[];
 } event_system_async_event_t;
 
 typedef struct subscribe_event_st
@@ -90,10 +91,11 @@ static size_t first_index_of(const event_system_t *event_system, const char *typ
     while (left < right)
     {
         const size_t mid = left + (right - left) / 2;
+        const int result = strcmp(type, entries[mid].type);
 
-        if (strcmp(type, entries[mid].type) <= 0)
+        if (result <= 0)
         {
-            if (strcmp(type, entries[mid].type) == 0)
+            if (result == 0)
                 index = mid;
 
             right = mid;
@@ -122,8 +124,10 @@ static bool on_subscribe_event(const ___subscribe_event_t *e, void *user_data)
 
     event_system_entry_t *entries = e->event_system->entries;
 
-    if (index < count)
-        memmove(&entries[index + 1], &entries[index], (count - index) * sizeof(event_system_entry_t));
+    const size_t n_shiftr = count - index;
+
+    if (n_shiftr)
+        memmove(&entries[index + 1], &entries[index], n_shiftr * sizeof(event_system_entry_t));
 
     e->event_system->entries[index] = (event_system_entry_t){
         .type = e->type,
@@ -144,8 +148,10 @@ static bool on_unsubscribe_event(const ___unsubscribe_event_t *e, void *user_dat
     for (size_t i = first_index_of(e->event_system, e->type); i < count && strcmp(entries[i].type, e->type) == 0; i++)
         if (e->handler == entries[i].handler && e->user_data == entries[i].user_data)
         {
-            if (count - i != 1)
-                memmove(&entries[i], &entries[i + 1], (count - i) * sizeof(event_system_entry_t));
+            const size_t n_shiftl = count - i - 1;
+
+            if (n_shiftl)
+                memmove(&entries[i], &entries[i + 1], n_shiftl * sizeof(event_system_entry_t));
 
             e->event_system->count--;
 
@@ -265,7 +271,7 @@ bool _event_system_dispatch(event_system_t *event_system, const char *type, cons
 void _event_system_dispatch_async(event_system_t *event_system, const char *type, const void *event, const size_t size)
 {
     const size_t size_full = sizeof(event_system_async_event_t) + size;
-    const size_t alignment = sizeof(void *);
+    const size_t alignment = alignof(max_align_t);
     const size_t size_aligned = (size_full + alignment - 1) & ~(alignment - 1);
     const size_t capacity = event_system->async.capacity;
     const size_t size_used = event_system->async.size;
