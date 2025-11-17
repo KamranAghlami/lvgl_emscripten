@@ -190,6 +190,8 @@ event_system_t *event_system_create()
     event_system_subscribe_to(event_system, ___subscribe_event_t, on_subscribe_event, NULL);
     event_system_subscribe_to(event_system, ___unsubscribe_event_t, on_unsubscribe_event, NULL);
 
+    event_system_extensions_enable(event_system);
+
     return event_system;
 }
 
@@ -199,6 +201,8 @@ void event_system_delete(event_system_t *event_system)
 
     while (_event_system_dispatch_async_events(event_system))
         ;
+
+    event_system_extensions_disable(event_system);
 
     event_system_unsubscribe_from(event_system, ___unsubscribe_event_t, on_unsubscribe_event, NULL);
     event_system_unsubscribe_from(event_system, ___subscribe_event_t, on_subscribe_event, NULL);

@@ -1,5 +1,5 @@
-#ifndef EVENTSYSTEM_H
-#define EVENTSYSTEM_H
+#ifndef EVENT_SYSTEM_H
+#define EVENT_SYSTEM_H
 
 #ifdef __cplusplus
 extern "C"
@@ -8,6 +8,8 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdlib.h>
+
+#include "event/extensions.h"
 
 #define event_system_subscribe_to(es, T, h, ud) _event_system_subscribe(es, #T, (event_system_handler_t)h, ud)
 #define event_system_subscribe(T, h, ud) event_system_subscribe_to(event_system_global(), T, h, ud)
